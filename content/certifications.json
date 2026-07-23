@@ -1,0 +1,45 @@
+{
+  "certifications": [
+    {
+      "name": "Certified Associate in Project Management (CAPM)®",
+      "issuer": "Project Management Institute (PMI)",
+      "featured": true
+    },
+    {
+      "name": "Machine Learning with Python — Level 1",
+      "issuer": "Professional certification",
+      "featured": false
+    },
+    { "name": "Python", "issuer": "Professional certification", "featured": false },
+    {
+      "name": "Python for Data Science",
+      "issuer": "Professional certification",
+      "featured": false
+    }
+  ],
+  "publications": [
+    {
+      "title": "Twitter Topic Trending Analysis with the FastText Expansion Feature Using the Logistic Regression Method",
+      "authors": "Izzan Faikar Ramadhy",
+      "note": "Research on topic trend detection combining FastText feature expansion with logistic regression classification."
+    }
+  ],
+  "honors": [
+    {
+      "title": "Speaker — IRON FIRE Workshop and Public Presentation",
+      "year": "2023"
+    }
+  ],
+  "education": [
+    {
+      "school": "Universitas Telkom",
+      "degree": "Bachelor of Informatics (S1 Informatika)",
+      "period": "2018 — 2022"
+    },
+    {
+      "school": "SMAN 1 Tasikmalaya",
+      "degree": "Natural Sciences (IPA)",
+      "period": "2015 — 2018"
+    }
+  ]
+}

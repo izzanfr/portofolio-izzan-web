@@ -1,0 +1,105 @@
+[
+  {
+    "company": "Inixindo Jogja",
+    "location": "Yogyakarta Special Region, Indonesia",
+    "period": "Aug 2022 — Present",
+    "duration": "4 yrs",
+    "current": true,
+    "summary": "Seven parallel roles spanning consulting delivery and professional training.",
+    "roles": [
+      {
+        "title": "Information Technology Consultant",
+        "icon": "Compass",
+        "points": [
+          "Expert consultant for SPBE (National Digital Government Architecture) documentation projects serving government clients",
+          "Data Management consulting applying the DMBOK framework",
+          "Applied the COBIT 2019 framework for IT governance assessments",
+          "10+ completed consulting projects across SPBE architecture, Data Management, and IT Governance for public sector institutions"
+        ]
+      },
+      {
+        "title": "Data Science Instructor",
+        "icon": "LineChart",
+        "points": [
+          "Python for Data Science training, from data wrangling through model deployment",
+          "Hands-on Machine Learning model building (supervised & unsupervised)",
+          "Deep Learning fundamentals and practical implementation",
+          "Facilitated Power BI and Tableau training for dashboards and data visualization",
+          "Designed and delivered an end-to-end data analytics program for a financial sector client: EDA, diagnostic correlation, ARIMA time series forecasting, and strategic recommendation reporting using multi-year exchange rate data"
+        ]
+      },
+      {
+        "title": "Artificial Intelligence Instructor",
+        "icon": "BrainCircuit",
+        "points": [
+          "AI Governance training grounded in the NIST AI Risk Management Framework (AI RMF 1.0)",
+          "Bias mitigation techniques covering 3+ debiasing methods",
+          "AI Engineer workflow training aligned with UNESCO & ASEAN governance principles",
+          "Command and teaching of 7+ prompt engineering techniques for Generative AI",
+          "Applied Generative AI curriculum: Retrieval-Augmented Generation (RAG) for knowledge-base systems and workflow automation with n8n"
+        ]
+      },
+      {
+        "title": "Big Data Specialist Instructor",
+        "icon": "Database",
+        "points": [
+          "Hadoop ecosystem training (HDFS, YARN, MapReduce)",
+          "Hadoop cluster configuration and administration",
+          "Big Data Analytics with Apache Spark (PySpark)",
+          "Data ingestion training (Sqoop) and the wider Big Data tooling ecosystem (Hive, Sqoop, and more)"
+        ]
+      },
+      {
+        "title": "Project Management Instructor",
+        "icon": "ClipboardCheck",
+        "points": [
+          "Project management training grounded in real field delivery experience",
+          "Guided 100+ participants to passing the PMI CAPM® certification",
+          "Agile & Waterfall case studies",
+          "Microsoft Project training (scheduling, resource allocation)",
+          "In-depth PMBOK 6th & 7th Edition training"
+        ]
+      },
+      {
+        "title": "Data Management Instructor",
+        "icon": "Layers",
+        "points": [
+          "DMBOK-based Data Management training across all 11 knowledge areas",
+          "Hybrid COBIT 2019 + DMBOK assessment methodology",
+          "Data Science Management and Big Data Analytics Management as enterprise data strategy",
+          "Applied the 6 Core Values of Hexagonal Environmental Factors model"
+        ]
+      },
+      {
+        "title": "Digital Skills Instructor",
+        "icon": "Sparkles",
+        "points": [
+          "Microsoft Excel training for Gen BI (Generasi Baru Indonesia) across regional branches, 300+ participants",
+          "Design Thinking training (human-centered problem solving, 10+ innovation idea types)",
+          "Innovation Management training (Design Thinking → Business Model Canvas)",
+          "Digital Transformation and Digital Leadership training"
+        ]
+      }
+    ]
+  },
+  {
+    "company": "PT. Media Telekomunikasi Mandiri",
+    "location": "South Jakarta, Indonesia",
+    "period": "Jun 2021 — Aug 2021",
+    "duration": "3 mos",
+    "current": false,
+    "summary": "Strategic Marketing — competitive and product analysis for security offerings.",
+    "roles": [
+      {
+        "title": "Strategic Marketing",
+        "icon": "Target",
+        "points": [
+          "Internal and external business & product analysis to support strategic decisions on security products",
+          "Competitor analysis of security products, market positioning and differentiation",
+          "IT product trend research via Google Analytics",
+          "Coordinated with the project head on strategic planning"
+        ]
+      }
+    ]
+  }
+]
