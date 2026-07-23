@@ -55,7 +55,7 @@ export function Hero() {
             variants={rise}
             initial="hidden"
             animate="visible"
-            className="text-balance text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+            className="text-balance text-4xl leading-[1.03] tracking-display sm:text-5xl md:text-6xl lg:text-7xl"
           >
             {profile.name}
             <span className="ml-2 align-super font-mono text-base text-accent-strong dark:text-accent md:text-xl">
@@ -68,7 +68,7 @@ export function Hero() {
             variants={rise}
             initial="hidden"
             animate="visible"
-            className="mt-5 text-xl font-medium tracking-tight sm:text-2xl md:text-3xl"
+            className="mt-5 text-xl font-medium tracking-[-0.015em] sm:text-2xl md:text-3xl"
           >
             <span className="text-muted">I work as an </span>
             <RotatingText items={profile.roles} />

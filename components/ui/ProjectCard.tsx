@@ -39,7 +39,7 @@ export function ProjectCard({
             />
           </div>
 
-          <h3 className="text-lg font-semibold leading-snug tracking-tight text-balance">
+          <h3 className="text-balance text-lg leading-snug tracking-[-0.018em]">
             {project.title}
           </h3>
 

@@ -28,7 +28,7 @@ export default function ProjectsIndexPage() {
             />
             Back home
           </Link>
-          <h1 className="mt-8 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="mt-8 text-balance text-4xl tracking-display md:text-5xl">
             Projects
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">

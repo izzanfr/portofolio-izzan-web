@@ -9,7 +9,23 @@
     "roles": [
       {
         "title": "Information Technology Consultant",
+        "slug": "it-consultant",
         "icon": "Compass",
+        "photos": [
+          {
+            "src": "/experience/_placeholder.svg",
+            "alt": "Placeholder — replace with a photo from a consulting engagement",
+            "caption": "Placeholder: drop files in public/experience/it-consultant/ and update these paths"
+          },
+          {
+            "src": "/experience/_placeholder.svg",
+            "alt": "Placeholder — second photo slot"
+          },
+          {
+            "src": "/experience/_placeholder.svg",
+            "alt": "Placeholder — third photo slot"
+          }
+        ],
         "points": [
           "Expert consultant for SPBE (National Digital Government Architecture) documentation projects serving government clients",
           "Data Management consulting applying the DMBOK framework",
@@ -19,7 +35,19 @@
       },
       {
         "title": "Data Science Instructor",
+        "slug": "data-science-instructor",
         "icon": "LineChart",
+        "photos": [
+          {
+            "src": "/experience/_placeholder.svg",
+            "alt": "Placeholder — replace with a photo from a Data Science training session",
+            "caption": "Placeholder: drop files in public/experience/data-science-instructor/"
+          },
+          {
+            "src": "/experience/_placeholder.svg",
+            "alt": "Placeholder — second photo slot"
+          }
+        ],
         "points": [
           "Python for Data Science training, from data wrangling through model deployment",
           "Hands-on Machine Learning model building (supervised & unsupervised)",
@@ -30,7 +58,9 @@
       },
       {
         "title": "Artificial Intelligence Instructor",
+        "slug": "ai-instructor",
         "icon": "BrainCircuit",
+        "photos": [],
         "points": [
           "AI Governance training grounded in the NIST AI Risk Management Framework (AI RMF 1.0)",
           "Bias mitigation techniques covering 3+ debiasing methods",
@@ -41,7 +71,9 @@
       },
       {
         "title": "Big Data Specialist Instructor",
+        "slug": "big-data-instructor",
         "icon": "Database",
+        "photos": [],
         "points": [
           "Hadoop ecosystem training (HDFS, YARN, MapReduce)",
           "Hadoop cluster configuration and administration",
@@ -51,7 +83,9 @@
       },
       {
         "title": "Project Management Instructor",
+        "slug": "project-management-instructor",
         "icon": "ClipboardCheck",
+        "photos": [],
         "points": [
           "Project management training grounded in real field delivery experience",
           "Guided 100+ participants to passing the PMI CAPM® certification",
@@ -62,7 +96,9 @@
       },
       {
         "title": "Data Management Instructor",
+        "slug": "data-management-instructor",
         "icon": "Layers",
+        "photos": [],
         "points": [
           "DMBOK-based Data Management training across all 11 knowledge areas",
           "Hybrid COBIT 2019 + DMBOK assessment methodology",
@@ -72,7 +108,9 @@
       },
       {
         "title": "Digital Skills Instructor",
+        "slug": "digital-skills-instructor",
         "icon": "Sparkles",
+        "photos": [],
         "points": [
           "Microsoft Excel training for Gen BI (Generasi Baru Indonesia) across regional branches, 300+ participants",
           "Design Thinking training (human-centered problem solving, 10+ innovation idea types)",
@@ -92,7 +130,9 @@
     "roles": [
       {
         "title": "Strategic Marketing",
+        "slug": "strategic-marketing",
         "icon": "Target",
+        "photos": [],
         "points": [
           "Internal and external business & product analysis to support strategic decisions on security products",
           "Competitor analysis of security products, market positioning and differentiation",

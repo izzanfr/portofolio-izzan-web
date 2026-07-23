@@ -61,7 +61,7 @@ export default async function ProjectPage({ params }: Params) {
             ))}
           </ul>
 
-          <h1 className="mt-5 text-balance text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
+          <h1 className="mt-5 text-balance text-3xl leading-[1.06] tracking-display md:text-5xl">
             {project.title}
           </h1>
 

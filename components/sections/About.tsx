@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { profile } from "@/lib/content";
@@ -9,7 +9,7 @@ export function About() {
       id="about"
       eyebrow="About"
       title="Frameworks are only useful when someone can run them."
-      className="border-t border-border/60"
+      tone="base"
     >
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
         <div className="space-y-5">

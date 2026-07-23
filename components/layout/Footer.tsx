@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="border-t border-border bg-surface/40">
       <div className="container-page flex flex-col gap-8 py-12 md:flex-row md:items-start md:justify-between">
         <div className="max-w-sm">
-          <Link href="/" className="text-sm font-semibold tracking-tight">
+          <Link href="/" className="font-display text-base tracking-[-0.02em]">
             {profile.name}
             <span className="text-accent-strong dark:text-accent">.</span>
           </Link>

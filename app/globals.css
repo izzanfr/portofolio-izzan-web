@@ -20,6 +20,8 @@
   --accent-strong: #d98407;
   --accent-contrast: #1a1205;
   --grain-opacity: 0.035;
+  /* Alternating section wash — navy at ~4% over the page background */
+  --tint: #f3f5f9;
 }
 
 .dark {
@@ -35,6 +37,7 @@
   --accent-strong: #ffc05c;
   --accent-contrast: #1a1205;
   --grain-opacity: 0.05;
+  --tint: #0a1524;
 }
 
 @theme inline {
@@ -49,9 +52,11 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-contrast: var(--accent-contrast);
+  --color-tint: var(--tint);
 
   --font-sans: var(--font-sans-stack);
   --font-mono: var(--font-mono-stack);
+  --font-display: var(--font-display-stack);
 
   --radius-card: 1.125rem;
 }
@@ -69,6 +74,25 @@
     font-family: var(--font-sans-stack), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     transition: background-color 350ms ease, color 350ms ease;
+  }
+
+  /* Headings default to the display serif. Optical sizing is left on `auto` so
+     Fraunces thins its strokes as headings get larger; SOFT/WONK are dialed in
+     once here rather than per-component. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display-stack), Georgia, serif;
+    font-weight: 600;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 28, "WONK" 1;
+    letter-spacing: -0.022em;
+  }
+
+  h1 {
+    font-weight: 600;
+    letter-spacing: -0.032em;
+    line-height: 1.04;
   }
 
   ::selection {
@@ -132,5 +156,17 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* For display type on elements that aren't headings (pull quotes, stat figures) */
+  .font-display {
+    font-family: var(--font-display-stack), Georgia, serif;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 28, "WONK" 1;
+  }
+
+  /* Large hero-scale type wants tighter tracking than the h1 default */
+  .tracking-display {
+    letter-spacing: -0.038em;
   }
 }

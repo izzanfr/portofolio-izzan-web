@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider, themeInitScript } from "@/components/providers/ThemeProvider";
 import { profile } from "@/lib/content";
 
-const sans = Plus_Jakarta_Sans({
+// Display serif — SOFT/WONK axes are what keep large headings from reading generic
+const display = Fraunces({
+  variable: "--font-display-stack",
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["SOFT", "WONK", "opsz"],
+});
+
+const sans = Inter({
   variable: "--font-sans-stack",
   subsets: ["latin"],
   display: "swap",
@@ -53,7 +61,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${sans.variable} ${mono.variable} h-full antialiased`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

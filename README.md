@@ -61,6 +61,83 @@ automatically; no code changes needed.
 - `public/cv-izzan-faikar-ramadhy.pdf` — the "Download CV" button points here (path set in
   `profile.json`)
 
+## Uploading images
+
+Both galleries read their paths from the content JSON, so adding photos never requires touching a
+component. Anything left empty simply doesn't render — no empty frames.
+
+### Experience photos → `public/experience/`
+
+One folder per role, named after that role's `slug` in `content/experience.json`:
+
+```
+public/experience/
+  it-consultant/
+  data-science-instructor/
+  ai-instructor/
+  big-data-instructor/
+  project-management-instructor/
+  data-management-instructor/
+  digital-skills-instructor/
+  strategic-marketing/
+```
+
+Drop files in, then list them in the role's `photos` array:
+
+```json
+"photos": [
+  {
+    "src": "/experience/data-science-instructor/training-jakarta-01.jpg",
+    "alt": "Leading a Python for Data Science session in Jakarta",
+    "caption": "Optional — shown under the photo in the lightbox"
+  }
+]
+```
+
+- **Size:** 1600×1200 (4:3) works best. Thumbnails crop to 4:3; the lightbox shows the whole image,
+  so other ratios are fine too.
+- **Format:** JPG or WebP. Keep each file under ~400 KB.
+- **`alt` is required** — it is the accessible description, and it is the fallback caption.
+- **No photos yet?** Leave `"photos": []`. The role card renders normally without a gallery.
+- Two roles currently point at `/experience/_placeholder.svg` to demonstrate the layout. Replace
+  those entries when your real photos are ready.
+
+### Certificate images → `public/certificates/`
+
+Flat folder, one image per certification:
+
+```
+public/certificates/
+  capm-pmi.jpg
+  machine-learning-python-level-1.jpg
+  python.jpg
+  python-for-data-science.jpg
+```
+
+Then fill in the entry in `content/certifications.json`:
+
+```json
+{
+  "name": "Certified Associate in Project Management (CAPM)®",
+  "issuer": "Project Management Institute (PMI)",
+  "date": "Issued Mar 2023 · Expires Mar 2026",
+  "featured": true,
+  "image": "/certificates/capm-pmi.jpg",
+  "description": "A paragraph describing what the certification covers.",
+  "covers": ["Short", "Topic", "Chips"]
+}
+```
+
+- **Orientation:** any. Card thumbnails crop to 4:3; the modal renders the full image with
+  `object-contain`, so portrait and landscape scans both display whole.
+- **Size:** long edge ≥ 1600 px so the modal stays sharp. JPG, PNG, or WebP.
+- **`date`:** free text — leave `""` to hide the line entirely.
+- **`featured: true`** gives the card an amber border and a "Flagship credential" tag. Currently
+  only CAPM® is flagged.
+- **`covers`:** short chips listed under "What it covers" in the modal. An empty array hides the
+  block.
+- All four entries currently point at `/certificates/_placeholder.svg`.
+
 ## Project structure
 
 ```

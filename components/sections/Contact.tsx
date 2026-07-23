@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, Mail, MapPin, Send } from "lucide-react";
@@ -34,7 +34,7 @@ export function Contact() {
       eyebrow="Contact"
       title="Got a data challenge worth talking through?"
       lead="Consulting engagements, training programs, or a conversation about switching into data science — all welcome."
-      className="border-t border-border/60 bg-surface/30"
+      tone="tint"
     >
       <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         <Reveal className="space-y-4">

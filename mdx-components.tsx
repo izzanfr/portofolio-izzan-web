@@ -7,12 +7,12 @@ import type { MDXComponents } from "mdx/types";
 export const mdxComponents: MDXComponents = {
   h2: (props) => (
     <h2
-      className="mt-12 mb-4 text-xl font-semibold tracking-tight first:mt-0 md:text-2xl"
+      className="mt-12 mb-4 text-xl tracking-[-0.024em] first:mt-0 md:text-2xl"
       {...props}
     />
   ),
   h3: (props) => (
-    <h3 className="mt-8 mb-3 text-base font-semibold tracking-tight md:text-lg" {...props} />
+    <h3 className="mt-8 mb-3 text-base tracking-[-0.018em] md:text-lg" {...props} />
   ),
   p: (props) => <p className="mb-5 leading-[1.8] text-muted" {...props} />,
   ul: (props) => <ul className="mb-6 space-y-2.5" {...props} />,

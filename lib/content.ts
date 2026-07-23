@@ -6,10 +6,13 @@ export type Profile = typeof profileJson;
 export const profile: Profile = profileJson;
 
 export const navLinks = [
-  { href: "/#about", label: "About" },
-  { href: "/#experience", label: "Experience" },
-  { href: "/#skills", label: "Skills" },
-  { href: "/#projects", label: "Projects" },
-  { href: "/#credentials", label: "Credentials" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/#about", id: "about", label: "About" },
+  { href: "/#experience", id: "experience", label: "Experience" },
+  { href: "/#skills", id: "skills", label: "Skills" },
+  { href: "/#projects", id: "projects", label: "Projects" },
+  { href: "/#credentials", id: "credentials", label: "Credentials" },
+  { href: "/#contact", id: "contact", label: "Contact" },
 ] as const;
+
+/** Stable array identity — the scroll-spy observer keys off this. */
+export const sectionIds = navLinks.map((link) => link.id);
