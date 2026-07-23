@@ -42,13 +42,14 @@ export function About() {
               aria-hidden
               className="absolute -bottom-3 -right-3 h-full w-full rounded-card border border-accent/50"
             />
-            <div className="relative overflow-hidden rounded-card border border-border bg-surface">
+            {/* Square frame matches the source portrait, so `cover` never crops a face */}
+            <div className="relative aspect-square overflow-hidden rounded-card border border-border bg-surface">
               <Image
                 src={profile.avatar}
                 alt={profile.name}
-                width={420}
-                height={520}
-                className="h-auto w-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 20rem, 20rem"
+                className="object-cover object-center"
                 priority={false}
               />
             </div>
