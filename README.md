@@ -57,9 +57,10 @@ automatically; no code changes needed.
 
 ### Assets to replace
 
-- `public/avatar-placeholder.svg` — swap for a real portrait (rendered at 420×520)
 - `public/cv-izzan-faikar-ramadhy.pdf` — the "Download CV" button points here (path set in
-  `profile.json`)
+  `profile.json`). Still missing; the button 404s until it is added.
+- The About portrait reads from `profile.json` → `avatar` (currently `/Foto Profile.jpg`). It is
+  rendered in a square frame with `object-cover`, so a square source crops cleanly.
 
 ## Uploading images
 
@@ -99,8 +100,7 @@ Drop files in, then list them in the role's `photos` array:
 - **Format:** JPG or WebP. Keep each file under ~400 KB.
 - **`alt` is required** — it is the accessible description, and it is the fallback caption.
 - **No photos yet?** Leave `"photos": []`. The role card renders normally without a gallery.
-- Two roles currently point at `/experience/_placeholder.svg` to demonstrate the layout. Replace
-  those entries when your real photos are ready.
+- Only `ai-instructor` has photos so far; the other seven roles are empty and render no gallery.
 
 ### Certificate images → `public/certificates/`
 
@@ -136,7 +136,8 @@ Then fill in the entry in `content/certifications.json`:
   only CAPM® is flagged.
 - **`covers`:** short chips listed under "What it covers" in the modal. An empty array hides the
   block.
-- All four entries currently point at `/certificates/_placeholder.svg`.
+- Every entry currently points at a real scan. `_placeholder.svg` is kept in the folder for when a
+  new certification is added before its scan is ready.
 
 ## Project structure
 

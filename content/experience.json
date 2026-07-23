@@ -11,21 +11,7 @@
         "title": "Information Technology Consultant",
         "slug": "it-consultant",
         "icon": "Compass",
-        "photos": [
-          {
-            "src": "/experience/_placeholder.svg",
-            "alt": "Placeholder — replace with a photo from a consulting engagement",
-            "caption": "Placeholder: drop files in public/experience/it-consultant/ and update these paths"
-          },
-          {
-            "src": "/experience/_placeholder.svg",
-            "alt": "Placeholder — second photo slot"
-          },
-          {
-            "src": "/experience/_placeholder.svg",
-            "alt": "Placeholder — third photo slot"
-          }
-        ],
+        "photos": [],
         "points": [
           "Expert consultant for SPBE (National Digital Government Architecture) documentation projects serving government clients",
           "Data Management consulting applying the DMBOK framework",
@@ -37,17 +23,7 @@
         "title": "Data Science Instructor",
         "slug": "data-science-instructor",
         "icon": "LineChart",
-        "photos": [
-          {
-            "src": "/experience/_placeholder.svg",
-            "alt": "Placeholder — replace with a photo from a Data Science training session",
-            "caption": "Placeholder: drop files in public/experience/data-science-instructor/"
-          },
-          {
-            "src": "/experience/_placeholder.svg",
-            "alt": "Placeholder — second photo slot"
-          }
-        ],
+        "photos": [],
         "points": [
           "Python for Data Science training, from data wrangling through model deployment",
           "Hands-on Machine Learning model building (supervised & unsupervised)",
@@ -57,10 +33,26 @@
         ]
       },
       {
-        "title": "Artificial Intelligence Instructor",
+        "title": "Data Science / AI Instructor",
         "slug": "ai-instructor",
         "icon": "BrainCircuit",
-        "photos": [],
+        "photos": [
+          {
+            "src": "/experience/ai-instructor/Data Analytic with Excel & PowerBI with GenBI.jpg",
+            "alt": "Data Analytics with Excel & Power BI training session for Gen BI",
+            "caption": "Data Analytics with Excel & Power BI — Gen BI"
+          },
+          {
+            "src": "/experience/ai-instructor/Data Visualization with PowerBI with PT. Pupuk Sriwidjaja Palembang (PUSRI).jpg",
+            "alt": "Data Visualization with Power BI training for PT Pupuk Sriwidjaja Palembang",
+            "caption": "Data Visualization with Power BI — PT Pupuk Sriwidjaja Palembang (PUSRI)"
+          },
+          {
+            "src": "/experience/ai-instructor/Python Programming for Data Science & Data Visualization with PowerBI with AirNav Indonesia.jpg",
+            "alt": "Python Programming for Data Science and Power BI visualization training for AirNav Indonesia",
+            "caption": "Python for Data Science & Power BI — AirNav Indonesia"
+          }
+        ],
         "points": [
           "AI Governance training grounded in the NIST AI Risk Management Framework (AI RMF 1.0)",
           "Bias mitigation techniques covering 3+ debiasing methods",

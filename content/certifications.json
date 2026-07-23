@@ -5,7 +5,7 @@
       "issuer": "Project Management Institute (PMI)",
       "date": "",
       "featured": true,
-      "image": "/certificates/_placeholder.svg",
+      "image": "/certificates/PMI CAPM.jpg",
       "description": "PMI's foundational project management credential, covering predictive, agile, and hybrid approaches across the full project lifecycle: scope, schedule, cost, quality, resources, communication, risk, procurement, and stakeholder management, grounded in PMBOK 6th and 7th Edition.",
       "covers": [
         "Project lifecycle & process groups",
@@ -15,31 +15,32 @@
       ]
     },
     {
-      "name": "Machine Learning with Python — Level 1",
+      "name": "Certified Data Science Specialist (CDSS)",
       "issuer": "Professional certification",
       "date": "",
-      "featured": false,
-      "image": "/certificates/_placeholder.svg",
-      "description": "Supervised and unsupervised machine learning implemented in Python — from data preparation and feature handling through model training and evaluation.",
-      "covers": ["Supervised learning", "Unsupervised learning", "Model evaluation"]
+      "featured": true,
+      "image": "/certificates/CDSS.jpg",
+      "description": "Specialist-level data science credential covering the end-to-end analytics workflow: data preparation and wrangling, exploratory and diagnostic analysis, machine learning model development, and translating results into decisions stakeholders can act on.",
+      "covers": [
+        "Data wrangling & preparation",
+        "Exploratory & diagnostic analysis",
+        "Machine learning modelling",
+        "Insight communication"
+      ]
     },
     {
-      "name": "Python",
-      "issuer": "Professional certification",
+      "name": "Power BI Data Analyst",
+      "issuer": "Microsoft (PL-300)",
       "date": "",
       "featured": false,
-      "image": "/certificates/_placeholder.svg",
-      "description": "Core Python programming: data structures, control flow, functions, and working with external libraries.",
-      "covers": ["Language fundamentals", "Data structures", "Libraries & tooling"]
-    },
-    {
-      "name": "Python for Data Science",
-      "issuer": "Professional certification",
-      "date": "",
-      "featured": false,
-      "image": "/certificates/_placeholder.svg",
-      "description": "The Python data stack applied to analysis work: data wrangling, exploratory data analysis, and visualization.",
-      "covers": ["Data wrangling", "Exploratory data analysis", "Visualization"]
+      "image": "/certificates/PowerBI Data Analyst.png",
+      "description": "Microsoft's data analyst credential for Power BI: preparing and modelling data, writing DAX measures, designing report visuals, and managing deployment and workspace access.",
+      "covers": [
+        "Data preparation & modelling",
+        "DAX measures",
+        "Report & dashboard design",
+        "Workspace management"
+      ]
     }
   ],
   "publications": [
