@@ -2,7 +2,7 @@
   {
     "company": "Inixindo Jogja",
     "location": "Yogyakarta Special Region, Indonesia",
-    "period": "Aug 2022 — Present",
+    "period": "Aug 2022 to Present",
     "duration": "4 yrs",
     "current": true,
     "summary": "Seven parallel roles spanning consulting delivery and professional training.",
@@ -23,7 +23,48 @@
         "title": "Data Science Instructor",
         "slug": "data-science-instructor",
         "icon": "LineChart",
-        "photos": [],
+        "photos": [
+          {
+            "src": "/experience/data-science-instructor/Data Analytic with Excel & PowerBI with GenBI.jpeg",
+            "alt": "Data Analytics with Excel and Power BI training session for Gen BI",
+            "caption": "Data Analytics with Excel & Power BI for Gen BI"
+          },
+          {
+            "src": "/experience/data-science-instructor/Data Scientist & Analyst Class with Central Bank Indonesia & Garudafood.jpeg",
+            "alt": "Data Scientist and Analyst class for Bank Indonesia and Garudafood participants",
+            "caption": "Data Scientist & Analyst class for Bank Indonesia and Garudafood"
+          },
+          {
+            "src": "/experience/data-science-instructor/Data Scientist PT. Kaltim Prima Coal, Paiton Operation & Maintenance Indonesia (POMI), and PT. Pertamina Gas.jpeg",
+            "alt": "Data Scientist training for PT Kaltim Prima Coal, POMI, and PT Pertamina Gas",
+            "caption": "Data Scientist training for PT Kaltim Prima Coal, POMI, and PT Pertamina Gas"
+          },
+          {
+            "src": "/experience/data-science-instructor/Data Scientist with Politeknik Negeri Ambon, Politeknik Caltex Riau, Politeknik Negeri Semarang, and Universitas Brawijaya..jpeg",
+            "alt": "Data Scientist class for lecturers from Politeknik Negeri Ambon, Politeknik Caltex Riau, Politeknik Negeri Semarang, and Universitas Brawijaya",
+            "caption": "Data Scientist class for Politeknik Negeri Ambon, Politeknik Caltex Riau, Politeknik Negeri Semarang, and Universitas Brawijaya"
+          },
+          {
+            "src": "/experience/data-science-instructor/Data Science using Machine Learning & Visualization with PowerBI with AirNAV.jpeg",
+            "alt": "Data Science session covering machine learning and Power BI visualization for AirNav Indonesia",
+            "caption": "Data Science with Machine Learning & Power BI for AirNav Indonesia"
+          },
+          {
+            "src": "/experience/data-science-instructor/Python Programming for Data Science & Data Visualization with PowerBI with AirNav Indonesia.jpg",
+            "alt": "Python Programming for Data Science and Power BI visualization training for AirNav Indonesia",
+            "caption": "Python for Data Science & Power BI for AirNav Indonesia"
+          },
+          {
+            "src": "/experience/data-science-instructor/Data Science with Diskominfo Provinsi Kaltim.jpeg",
+            "alt": "Data Science training for Diskominfo of East Kalimantan Province",
+            "caption": "Data Science for Diskominfo Provinsi Kalimantan Timur"
+          },
+          {
+            "src": "/experience/data-science-instructor/Data Visualization with PowerBI with PT. Pupuk Sriwidjaja Palembang (PUSRI).jpg",
+            "alt": "Data Visualization with Power BI training for PT Pupuk Sriwidjaja Palembang",
+            "caption": "Data Visualization with Power BI for PT Pupuk Sriwidjaja Palembang (PUSRI)"
+          }
+        ],
         "points": [
           "Python for Data Science training, from data wrangling through model deployment",
           "Hands-on Machine Learning model building (supervised & unsupervised)",
@@ -33,24 +74,29 @@
         ]
       },
       {
-        "title": "Data Science / AI Instructor",
+        "title": "AI Instructor",
         "slug": "ai-instructor",
         "icon": "BrainCircuit",
         "photos": [
           {
-            "src": "/experience/ai-instructor/Data Analytic with Excel & PowerBI with GenBI.jpg",
-            "alt": "Data Analytics with Excel & Power BI training session for Gen BI",
-            "caption": "Data Analytics with Excel & Power BI — Gen BI"
+            "src": "/experience/ai-instructor/Artificial Intelligence Foundation, Governance, Risk & Compliance Class with UNNES.jpeg",
+            "alt": "AI Foundation, Governance, Risk and Compliance class for Universitas Negeri Semarang",
+            "caption": "AI Foundation, Governance, Risk & Compliance for UNNES"
           },
           {
-            "src": "/experience/ai-instructor/Data Visualization with PowerBI with PT. Pupuk Sriwidjaja Palembang (PUSRI).jpg",
-            "alt": "Data Visualization with Power BI training for PT Pupuk Sriwidjaja Palembang",
-            "caption": "Data Visualization with Power BI — PT Pupuk Sriwidjaja Palembang (PUSRI)"
+            "src": "/experience/ai-instructor/Mastering AI Tools Prompt Engineering with BPK RI.jpeg",
+            "alt": "Mastering AI Tools and Prompt Engineering training for BPK RI",
+            "caption": "Mastering AI Tools & Prompt Engineering for BPK RI"
           },
           {
-            "src": "/experience/ai-instructor/Python Programming for Data Science & Data Visualization with PowerBI with AirNav Indonesia.jpg",
-            "alt": "Python Programming for Data Science and Power BI visualization training for AirNav Indonesia",
-            "caption": "Python for Data Science & Power BI — AirNav Indonesia"
+            "src": "/experience/ai-instructor/Machine Learning & AI Implementation with BIDICS (Big Data Analytics) division at BPK RI.jpeg",
+            "alt": "Machine Learning and AI implementation training for the BIDICS big data analytics division at BPK RI",
+            "caption": "Machine Learning & AI Implementation for the BIDICS division at BPK RI"
+          },
+          {
+            "src": "/experience/ai-instructor/Mastering AI Tools Prompt Engineering with PT Praisindo Teknologi.jpeg",
+            "alt": "Mastering AI Tools and Prompt Engineering training for PT Praisindo Teknologi",
+            "caption": "Mastering AI Tools & Prompt Engineering for PT Praisindo Teknologi"
           }
         ],
         "points": [
@@ -65,7 +111,18 @@
         "title": "Big Data Specialist Instructor",
         "slug": "big-data-instructor",
         "icon": "Database",
-        "photos": [],
+        "photos": [
+          {
+            "src": "/experience/big-data-instructor/Big Data Specialist & Administrator Class with Pertamina Geothermal Energy & BPD Jawa Timur.jpeg",
+            "alt": "Big Data Specialist and Administrator class for Pertamina Geothermal Energy and BPD Jawa Timur",
+            "caption": "Big Data Specialist & Administrator class for Pertamina Geothermal Energy and BPD Jawa Timur"
+          },
+          {
+            "src": "/experience/big-data-instructor/Big Data Specialist Class with PERBAMIDA JATENG & DIY.jpeg",
+            "alt": "Big Data Specialist class for PERBAMIDA Central Java and Yogyakarta",
+            "caption": "Big Data Specialist class for PERBAMIDA Jateng & DIY"
+          }
+        ],
         "points": [
           "Hadoop ecosystem training (HDFS, YARN, MapReduce)",
           "Hadoop cluster configuration and administration",
@@ -77,7 +134,28 @@
         "title": "Project Management Instructor",
         "slug": "project-management-instructor",
         "icon": "ClipboardCheck",
-        "photos": [],
+        "photos": [
+          {
+            "src": "/experience/project-management-instructor/Project Management Body of Knowledge 7 with Peruri.jpeg",
+            "alt": "PMBOK 7 project management training for Peruri",
+            "caption": "PMBOK 7 training for Peruri"
+          },
+          {
+            "src": "/experience/project-management-instructor/Project Management Body of Knowledge 7 with PT. Pupuk Indonesia..jpeg",
+            "alt": "PMBOK 7 project management training for PT Pupuk Indonesia",
+            "caption": "PMBOK 7 training for PT Pupuk Indonesia"
+          },
+          {
+            "src": "/experience/project-management-instructor/Project Management Process and Knowledge using PMBOK 6 & 7 with PT. Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne.jpeg",
+            "alt": "Project management process and knowledge training using PMBOK 6 and 7 for PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne",
+            "caption": "PMBOK 6 & 7 training for PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne"
+          },
+          {
+            "src": "/experience/project-management-instructor/Implementation of Microsoft Project 2019 with Paiton Operation & Maintenance Indonesia (POMI).jpeg",
+            "alt": "Microsoft Project 2019 implementation training for Paiton Operation and Maintenance Indonesia",
+            "caption": "Microsoft Project 2019 implementation for POMI"
+          }
+        ],
         "points": [
           "Project management training grounded in real field delivery experience",
           "Guided 100+ participants to passing the PMI CAPM® certification",
@@ -90,7 +168,23 @@
         "title": "Data Management Instructor",
         "slug": "data-management-instructor",
         "icon": "Layers",
-        "photos": [],
+        "photos": [
+          {
+            "src": "/experience/data-management-instructor/Executive Class Data Management with DMBOK.jpeg",
+            "alt": "Executive class on Data Management using the DMBOK framework",
+            "caption": "Executive Class on Data Management with DMBOK"
+          },
+          {
+            "src": "/experience/data-management-instructor/Executive Class Data Management with DMBOK & AI Data Governance.jpeg",
+            "alt": "Executive class on Data Management with DMBOK and AI data governance",
+            "caption": "Executive Class on Data Management with DMBOK & AI Data Governance"
+          },
+          {
+            "src": "/experience/data-management-instructor/DMBOK Class with Tadulako University, UTDI, Barito Pacific Group, and Telkom Indonesia.jpeg",
+            "alt": "DMBOK class with participants from Tadulako University, UTDI, Barito Pacific Group, and Telkom Indonesia",
+            "caption": "DMBOK class for Tadulako University, UTDI, Barito Pacific Group, and Telkom Indonesia"
+          }
+        ],
         "points": [
           "DMBOK-based Data Management training across all 11 knowledge areas",
           "Hybrid COBIT 2019 + DMBOK assessment methodology",
@@ -102,7 +196,18 @@
         "title": "Digital Skills Instructor",
         "slug": "digital-skills-instructor",
         "icon": "Sparkles",
-        "photos": [],
+        "photos": [
+          {
+            "src": "/experience/digital-skills-instructor/Data Analytics with Excel with PT. Global Dairi Alami.jpeg",
+            "alt": "Data Analytics with Excel training for PT Global Dairi Alami",
+            "caption": "Data Analytics with Excel for PT Global Dairi Alami"
+          },
+          {
+            "src": "/experience/digital-skills-instructor/IT Ethics & Leadership with PGN Solution.jpeg",
+            "alt": "IT Ethics and Leadership training for PGN Solution",
+            "caption": "IT Ethics & Leadership for PGN Solution"
+          }
+        ],
         "points": [
           "Microsoft Excel training for Gen BI (Generasi Baru Indonesia) across regional branches, 300+ participants",
           "Design Thinking training (human-centered problem solving, 10+ innovation idea types)",
@@ -115,10 +220,10 @@
   {
     "company": "PT. Media Telekomunikasi Mandiri",
     "location": "South Jakarta, Indonesia",
-    "period": "Jun 2021 — Aug 2021",
+    "period": "Jun 2021 to Aug 2021",
     "duration": "3 mos",
     "current": false,
-    "summary": "Strategic Marketing — competitive and product analysis for security offerings.",
+    "summary": "Strategic Marketing focused on competitive and product analysis for security offerings.",
     "roles": [
       {
         "title": "Strategic Marketing",

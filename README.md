@@ -21,10 +21,9 @@ All copy lives in `content/` — no text is hardcoded in components.
 
 | File | Drives |
 | --- | --- |
-| `content/profile.json` | Name, tagline, rotating hero roles, about paragraphs, stats, contact links, CV path |
+| `content/profile.json` | Name, tagline, rotating hero roles, about paragraphs, stats, contact links |
 | `content/experience.json` | Work history and the role accordions in the Experience timeline |
-| `content/skills.json` | The four skill groups and their chips |
-| `content/certifications.json` | Certifications, publications, honors, education |
+| `content/certifications.json` | Certifications |
 | `content/projects/*.mdx` | One file per project — frontmatter feeds the cards, the body becomes the detail page |
 
 ### Adding a project
@@ -57,8 +56,6 @@ automatically; no code changes needed.
 
 ### Assets to replace
 
-- `public/cv-izzan-faikar-ramadhy.pdf` — the "Download CV" button points here (path set in
-  `profile.json`). Still missing; the button 404s until it is added.
 - The About portrait reads from `profile.json` → `avatar` (currently `/Foto Profile.jpg`). It is
   rendered in a square frame with `object-cover`, so a square source crops cleanly.
 
@@ -100,7 +97,8 @@ Drop files in, then list them in the role's `photos` array:
 - **Format:** JPG or WebP. Keep each file under ~400 KB.
 - **`alt` is required** — it is the accessible description, and it is the fallback caption.
 - **No photos yet?** Leave `"photos": []`. The role card renders normally without a gallery.
-- Only `ai-instructor` has photos so far; the other seven roles are empty and render no gallery.
+- Only `data-science-instructor` has photos so far; the other seven roles are empty and render no
+  gallery.
 
 ### Certificate images → `public/certificates/`
 

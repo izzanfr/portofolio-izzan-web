@@ -13,8 +13,8 @@ export function Projects() {
       id="projects"
       eyebrow="Projects"
       title="Consulting engagements, documented."
-      lead="Nine engagements across provincial and regency governments, national agencies, and state enterprises — SPBE architecture, data management, information security, and AI strategy."
-      tone="tint"
+      lead="Nine engagements across provincial and regency governments, national agencies, and state enterprises, covering SPBE architecture, data management, information security, and AI strategy."
+      tone="base"
     >
       <Reveal>
         <ProjectCarousel projects={projects} />

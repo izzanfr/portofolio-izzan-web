@@ -28,7 +28,11 @@ export function Section({
     <section
       id={id}
       className={cn(
-        "relative scroll-mt-24 py-20 md:py-28",
+        // overflow-x-clip, not hidden: a horizontally-offset <Reveal> sits
+        // translated sideways until it scrolls into view, which pushed the page
+        // 8px wider than the viewport on mobile. `clip` contains that without
+        // making the section a scroll container the way `hidden` would.
+        "relative scroll-mt-24 overflow-x-clip py-20 md:py-28",
         tone === "tint" && "bg-tint",
         className,
       )}

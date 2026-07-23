@@ -30,7 +30,7 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.15 }}
-        className="grid gap-4 sm:grid-cols-2"
+        className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
       >
         {certificates.map((certificate, index) => (
           <motion.li key={certificate.name} variants={staggerChild}>
@@ -51,7 +51,7 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
                   src={certificate.image}
                   alt={certificate.name}
                   fill
-                  sizes="(max-width: 640px) 90vw, 320px"
+                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                 />
                 <span className="absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full bg-background/85 text-muted opacity-0 backdrop-blur transition-all duration-300 group-hover:opacity-100 group-hover:text-accent-strong dark:group-hover:text-accent">

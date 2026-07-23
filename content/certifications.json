@@ -41,31 +41,48 @@
         "Report & dashboard design",
         "Workspace management"
       ]
-    }
-  ],
-  "publications": [
-    {
-      "title": "Twitter Topic Trending Analysis with the FastText Expansion Feature Using the Logistic Regression Method",
-      "authors": "Izzan Faikar Ramadhy",
-      "note": "Research on topic trend detection combining FastText feature expansion with logistic regression classification."
-    }
-  ],
-  "honors": [
-    {
-      "title": "Speaker — IRON FIRE Workshop and Public Presentation",
-      "year": "2023"
-    }
-  ],
-  "education": [
-    {
-      "school": "Universitas Telkom",
-      "degree": "Bachelor of Informatics (S1 Informatika)",
-      "period": "2018 — 2022"
     },
     {
-      "school": "SMAN 1 Tasikmalaya",
-      "degree": "Natural Sciences (IPA)",
-      "period": "2015 — 2018"
+      "name": "Salesforce Certified Tableau Data Analyst",
+      "issuer": "Salesforce (Tableau)",
+      "date": "Issued Jan 2026",
+      "featured": false,
+      "image": "/certificates/Tableau Data Analyst.jpg",
+      "description": "Salesforce's analyst credential for Tableau, covering connecting and preparing data, building calculations, designing dashboards that hold up under real questions, and sharing work through Tableau Cloud and Server.",
+      "covers": [
+        "Data connection & preparation",
+        "Calculations & analytics",
+        "Dashboard design",
+        "Sharing & permissions"
+      ]
+    },
+    {
+      "name": "Machine Learning Professional Certification",
+      "issuer": "RapidMiner (an Altair company)",
+      "date": "",
+      "featured": false,
+      "image": "/certificates/Altair Rapid Miner - Machine Learning Professional.jpeg",
+      "description": "Professional-level examination covering applied machine learning in RapidMiner: building and scoring predictive models, validating them honestly, and reading what the results actually say about the data.",
+      "covers": [
+        "Classification & regression",
+        "Scoring & hold-out validation",
+        "Correlations & feature importance",
+        "Clustering & association rules"
+      ]
+    },
+    {
+      "name": "Data Engineering Professional Certification",
+      "issuer": "RapidMiner (an Altair company)",
+      "date": "",
+      "featured": false,
+      "image": "/certificates/Altair Rapid Miner - Data Engineering.jpeg",
+      "description": "Professional-level examination covering the data preparation work that precedes modelling: accessing sources, reshaping and combining data sets, and handling the routine transformations analysis depends on.",
+      "covers": [
+        "Data access",
+        "Basic transformations",
+        "Working with multiple data sets",
+        "Pivot tables, routines & text processing"
+      ]
     }
   ]
 }
