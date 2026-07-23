@@ -8,7 +8,6 @@ export const profile: Profile = profileJson;
 export const navLinks = [
   { href: "/#about", id: "about", label: "About" },
   { href: "/#experience", id: "experience", label: "Experience" },
-  { href: "/#skills", id: "skills", label: "Skills" },
   { href: "/#projects", id: "projects", label: "Projects" },
   { href: "/#credentials", id: "credentials", label: "Credentials" },
   { href: "/#contact", id: "contact", label: "Contact" },

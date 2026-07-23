@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowUpRight, Download, MapPin } from "lucide-react";
+import { ArrowDown, ArrowUpRight, MapPin } from "lucide-react";
 import { RotatingText } from "@/components/ui/RotatingText";
+import { useIntroDone } from "@/components/Preloader";
 import { profile } from "@/lib/content";
 
 const rise = {
@@ -15,6 +17,11 @@ const rise = {
 };
 
 export function Hero() {
+  // Hold the entrance until the intro curtain is rising, so the two read as one
+  // movement instead of the hero having already played behind the overlay.
+  const introDone = useIntroDone();
+  const enter = introDone ? "visible" : "hidden";
+
   return (
     <section
       id="home"
@@ -35,98 +42,105 @@ export function Hero() {
       />
 
       <div className="container-page relative">
-        <div className="max-w-4xl">
-          <motion.p
-            custom={0}
-            variants={rise}
-            initial="hidden"
-            animate="visible"
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3.5 py-1.5 text-xs text-muted backdrop-blur"
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-            </span>
-            Available for consulting &amp; training engagements
-          </motion.p>
+        {/* Photo leads on mobile, then swaps into the right-hand column at lg so
+            the text keeps the natural reading position on wide screens. */}
+        <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+          <div className="order-2 lg:order-1">
+            <motion.h1
+              custom={0}
+              variants={rise}
+              initial="hidden"
+              animate={enter}
+              className="text-balance text-4xl leading-[1.03] tracking-display sm:text-5xl md:text-6xl"
+            >
+              {profile.name}
+            </motion.h1>
 
-          <motion.h1
+            <motion.p
+              custom={1}
+              variants={rise}
+              initial="hidden"
+              animate={enter}
+              className="mt-5 text-xl font-medium tracking-[-0.015em] sm:text-2xl md:text-3xl"
+            >
+              <span className="text-muted">I work as an </span>
+              <RotatingText items={profile.roles} />
+            </motion.p>
+
+            <motion.p
+              custom={2}
+              variants={rise}
+              initial="hidden"
+              animate={enter}
+              className="mt-6 max-w-2xl text-base leading-relaxed text-muted md:text-lg"
+            >
+              {profile.heroIntro}
+            </motion.p>
+
+            <motion.div
+              custom={3}
+              variants={rise}
+              initial="hidden"
+              animate={enter}
+              className="mt-9 flex flex-wrap items-center gap-3"
+            >
+              <motion.a
+                href="#contact"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white shadow-lg shadow-navy/15 transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:shadow-accent/20 dark:hover:bg-accent-strong"
+              >
+                Let&apos;s work together
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </motion.a>
+            </motion.div>
+
+            <motion.p
+              custom={4}
+              variants={rise}
+              initial="hidden"
+              animate={enter}
+              className="mt-8 flex items-start gap-2 text-sm text-muted"
+            >
+              <MapPin size={15} className="mt-0.5 shrink-0 text-accent-strong dark:text-accent" />
+              <span>
+                {profile.location}
+                <span className="block text-xs opacity-80">{profile.locationNote}</span>
+              </span>
+            </motion.p>
+          </div>
+
+          <motion.div
             custom={1}
             variants={rise}
             initial="hidden"
-            animate="visible"
-            className="text-balance text-4xl leading-[1.03] tracking-display sm:text-5xl md:text-6xl lg:text-7xl"
+            animate={enter}
+            className="order-1 lg:order-2"
           >
-            {profile.name}
-            <span className="ml-2 align-super font-mono text-base text-accent-strong dark:text-accent md:text-xl">
-              {profile.credential}
-            </span>
-          </motion.h1>
-
-          <motion.p
-            custom={2}
-            variants={rise}
-            initial="hidden"
-            animate="visible"
-            className="mt-5 text-xl font-medium tracking-[-0.015em] sm:text-2xl md:text-3xl"
-          >
-            <span className="text-muted">I work as an </span>
-            <RotatingText items={profile.roles} />
-          </motion.p>
-
-          <motion.p
-            custom={3}
-            variants={rise}
-            initial="hidden"
-            animate="visible"
-            className="mt-6 max-w-2xl text-base leading-relaxed text-muted md:text-lg"
-          >
-            {profile.heroIntro}
-          </motion.p>
-
-          <motion.div
-            custom={4}
-            variants={rise}
-            initial="hidden"
-            animate="visible"
-            className="mt-9 flex flex-wrap items-center gap-3"
-          >
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white shadow-lg shadow-navy/15 transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:shadow-accent/20 dark:hover:bg-accent-strong"
-            >
-              Let&apos;s work together
-              <ArrowUpRight
-                size={16}
-                className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            {/* Capped on mobile so the photo stays a companion to the text
+                rather than filling the first screen on its own. */}
+            <div className="relative mx-auto w-full max-w-[15rem] sm:max-w-[17rem] lg:max-w-none">
+              {/* Offset amber frame, carried over from the old About portrait */}
+              <div
+                aria-hidden
+                className="absolute -bottom-3 -right-3 h-full w-full rounded-card border border-accent/50"
               />
-            </motion.a>
-            <motion.a
-              href={profile.cvUrl}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-6 py-3.5 text-sm font-medium transition-colors hover:border-accent hover:text-accent-strong dark:hover:text-accent"
-            >
-              <Download size={16} />
-              Download CV
-            </motion.a>
+              {/* Square frame matches the source portrait, so `cover` never crops a face */}
+              <div className="relative aspect-square overflow-hidden rounded-card border border-border bg-surface">
+                <Image
+                  src={profile.avatar}
+                  alt={profile.name}
+                  fill
+                  sizes="(max-width: 640px) 15rem, (max-width: 1024px) 17rem, 30rem"
+                  className="object-cover object-center"
+                  priority
+                />
+              </div>
+            </div>
           </motion.div>
-
-          <motion.p
-            custom={5}
-            variants={rise}
-            initial="hidden"
-            animate="visible"
-            className="mt-8 flex items-start gap-2 text-sm text-muted"
-          >
-            <MapPin size={15} className="mt-0.5 shrink-0 text-accent-strong dark:text-accent" />
-            <span>
-              {profile.location}
-              <span className="block text-xs opacity-80">{profile.locationNote}</span>
-            </span>
-          </motion.p>
         </div>
       </div>
 
@@ -134,7 +148,7 @@ export function Hero() {
         href="#about"
         aria-label="Scroll to about section"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: introDone ? 1 : 0 }}
         transition={{ delay: 1.1 }}
         className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 text-muted transition-colors hover:text-accent-strong md:block dark:hover:text-accent"
       >

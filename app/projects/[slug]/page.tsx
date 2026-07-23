@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!project) return { title: "Project not found" };
 
   return {
-    title: `${project.title} — ${project.client}`,
+    title: `${project.title} · ${project.client}`,
     description: project.summary,
   };
 }

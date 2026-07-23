@@ -22,6 +22,17 @@
   --grain-opacity: 0.035;
   /* Alternating section wash — navy at ~4% over the page background */
   --tint: #f3f5f9;
+
+  /* Hero role rotation. Deep, desaturated shades: on white the dark end of each
+     hue is what carries contrast, so these are not the same hex as their dark
+     counterparts. */
+  /* role-1 is a shade below --accent-strong on purpose: the accent itself only
+     reaches 2.89:1 on white, under the 3:1 floor for large text, and it looked
+     washed out next to the other three at ~5:1. */
+  --role-1: #a86104;
+  --role-2: #0f766e;
+  --role-3: #b04a5a;
+  --role-4: #4f7a52;
 }
 
 .dark {
@@ -38,6 +49,13 @@
   --accent-contrast: #1a1205;
   --grain-opacity: 0.05;
   --tint: #0a1524;
+
+  /* Same hues lifted to their light end: against the navy background the deep
+     shades above would sink into it. */
+  --role-1: #f5a524;
+  --role-2: #5eccc0;
+  --role-3: #f0a0ac;
+  --role-4: #a3c9a8;
 }
 
 @theme inline {
@@ -99,6 +117,16 @@
     background-color: var(--accent);
     color: var(--accent-contrast);
   }
+
+  /* Companion to <ImageGuard>: kills drag-to-desktop and the iOS long-press
+     "Save Image" sheet. A deterrent only — the file is already on the device by
+     the time this applies. */
+  img {
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
 
   :focus-visible {
     outline: 2px solid var(--accent);
@@ -168,5 +196,81 @@
   /* Large hero-scale type wants tighter tracking than the h1 default */
   .tracking-display {
     letter-spacing: -0.038em;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Intro overlay
+
+   Deliberately unlayered. Unlayered rules outrank every cascade
+   layer, so this beats the `grid` utility on the panel itself; in
+   @layer base it lost to Tailwind's utilities and the overlay stayed
+   visible for returning visitors, which is the exact flash it exists
+   to prevent.
+
+   The panel is server-rendered so it paints with the first frame.
+   The inline head script sets [data-preload] only on the visit that
+   should play the intro, so every other visit never paints it at all.
+   React unmounts the panel when the sequence ends, so this must not
+   key off anything that changes mid-animation.
+--------------------------------------------------------------- */
+html:not([data-preload]) .preloader-root {
+  display: none;
+}
+
+/* Scroll stays locked for the run, then `.intro-done` releases it. */
+html[data-preload]:not(.intro-done) body {
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------
+   Tech skills marquee
+
+   The track holds four identical strips, so shifting it by 25% lands
+   the next strip exactly where the previous began and the loop point
+   is invisible. Two rows run in opposite directions.
+
+   13s covers one strip. Each strip is roughly half the width of the
+   old single row, so holding the previous duration would have halved
+   the apparent speed — this is the pixels-per-second that reads as
+   ~45% quicker than before.
+--------------------------------------------------------------- */
+@keyframes marquee-ltr {
+  from {
+    transform: translate3d(-25%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes marquee-rtl {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-25%, 0, 0);
+  }
+}
+
+.marquee-ltr,
+.marquee-rtl {
+  will-change: transform;
+}
+
+.marquee-ltr {
+  animation: marquee-ltr 13s linear infinite;
+}
+
+.marquee-rtl {
+  animation: marquee-rtl 13s linear infinite;
+}
+
+/* The global reduced-motion rule only clamps duration, which would leave these
+   looping at 0.001ms. Dropping the animation name is what actually stops it. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-ltr,
+  .marquee-rtl {
+    animation-name: none;
   }
 }

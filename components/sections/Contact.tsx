@@ -23,7 +23,7 @@ export function Contact() {
     const message = String(form.get("message") ?? "");
 
     const subject = encodeURIComponent(`Portfolio enquiry from ${name}`);
-    const body = encodeURIComponent(`${message}\n\n—\n${name}\n${email}`);
+    const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
     window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
     setSent(true);
   }
@@ -33,8 +33,8 @@ export function Contact() {
       id="contact"
       eyebrow="Contact"
       title="Got a data challenge worth talking through?"
-      lead="Consulting engagements, training programs, or a conversation about switching into data science — all welcome."
-      tone="tint"
+      lead="Consulting engagements, training programs, or a conversation about switching into data science are all welcome."
+      tone="base"
     >
       <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         <Reveal className="space-y-4">
@@ -139,11 +139,17 @@ export function Contact() {
             <p className="mt-4 text-center text-xs leading-relaxed text-muted">
               {sent
                 ? "Your email client should have opened with the message ready to send."
-                : "This opens your own email client with the message pre-filled — nothing is stored here."}
+                : "This opens your own email client with the message pre-filled. Nothing is stored here."}
             </p>
           </form>
         </Reveal>
       </div>
+
+      {/* Carried over from the deleted footer: the copyright was the only thing
+          there not already covered by this section. */}
+      <p className="mt-16 border-t border-border pt-6 text-xs text-muted">
+        © {new Date().getFullYear()} {profile.name}. All rights reserved.
+      </p>
     </Section>
   );
 }

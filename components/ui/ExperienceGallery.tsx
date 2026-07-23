@@ -65,7 +65,7 @@ export function ExperienceGallery({
       <Modal
         open={active !== null}
         onClose={close}
-        label={`${roleTitle} — photo viewer`}
+        label={`${roleTitle} photo viewer`}
         className="max-w-5xl"
       >
         {active && (

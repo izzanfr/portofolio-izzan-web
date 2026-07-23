@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider, themeInitScript } from "@/components/providers/ThemeProvider";
+import { Preloader, preloaderInitScript } from "@/components/Preloader";
+import { ImageGuard } from "@/components/ImageGuard";
 import { profile } from "@/lib/content";
 
 // Display serif — SOFT/WONK axes are what keep large headings from reading generic
@@ -28,8 +29,8 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${profile.name}, ${profile.credential} — IT Consultant & AI/Data Science Instructor`,
-    template: `%s — ${profile.name}`,
+    default: `${profile.name} · IT Consultant, AI & Data Science Instructor`,
+    template: `%s · ${profile.name}`,
   },
   description:
     "IT Consultant and Professional AI, Data Science, and Project Management Instructor. SPBE architecture, data management (DMBOK), IT governance (COBIT 2019), and AI governance (NIST AI RMF).",
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: profile.name, url: profile.linkedin }],
   openGraph: {
-    title: `${profile.name}, ${profile.credential}`,
+    title: profile.name,
     description: profile.heroIntro,
     type: "website",
     locale: "en_US",
@@ -65,12 +66,14 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: preloaderInitScript }} />
       </head>
       <body className="grain flex min-h-full flex-col">
+        <Preloader />
+        <ImageGuard />
         <ThemeProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

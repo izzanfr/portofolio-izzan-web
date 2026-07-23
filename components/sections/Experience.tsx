@@ -98,7 +98,7 @@ export function Experience() {
       id="experience"
       eyebrow="Experience"
       title="Four years of delivery, taught back to the room."
-      lead="Seven parallel roles at Inixindo Jogja — consulting engagements feeding the training curriculum, and the classroom sharpening how the consulting gets explained."
+      lead="Seven parallel roles at Inixindo Jogja, where consulting engagements feed the training curriculum and the classroom sharpens how the consulting gets explained."
       tone="tint"
     >
       <div ref={trackRef} className="relative">
