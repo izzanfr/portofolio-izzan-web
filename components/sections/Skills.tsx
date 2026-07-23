@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
@@ -12,7 +12,7 @@ export function Skills() {
       id="skills"
       eyebrow="Skills"
       title="What I build with, assess against, and teach."
-      className="border-t border-border/60"
+      tone="base"
     >
       <motion.div
         variants={staggerParent}
@@ -39,7 +39,7 @@ export function Skills() {
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-navy text-white transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-contrast dark:bg-surface-2 dark:text-accent">
                   <DynamicIcon name={group.icon} size={18} />
                 </span>
-                <h3 className="text-base font-semibold tracking-tight">{group.group}</h3>
+                <h3 className="text-lg tracking-[-0.018em]">{group.group}</h3>
               </div>
               <p className="mb-5 text-sm leading-relaxed text-muted">{group.description}</p>
               <ul className="flex flex-wrap gap-2">

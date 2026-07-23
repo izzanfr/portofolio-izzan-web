@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Award, BookOpen, GraduationCap, Mic } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { staggerChild, staggerParent } from "@/components/ui/Reveal";
+import { CertificateCards } from "@/components/ui/CertificateCards";
 import credentials from "@/content/certifications.json";
-import { cn } from "@/lib/utils";
 
 export function Certifications() {
   return (
@@ -13,7 +13,7 @@ export function Certifications() {
       id="credentials"
       eyebrow="Credentials"
       title="Certifications, publications & education."
-      className="border-t border-border/60"
+      tone="base"
     >
       <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
@@ -21,31 +21,8 @@ export function Certifications() {
             <Award size={14} className="text-accent-strong dark:text-accent" />
             Certifications
           </h3>
-          <motion.ul
-            variants={staggerParent}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="space-y-3"
-          >
-            {credentials.certifications.map((cert) => (
-              <motion.li
-                key={cert.name}
-                variants={staggerChild}
-                whileHover={{ x: 4 }}
-                transition={{ type: "spring", stiffness: 320, damping: 24 }}
-                className={cn(
-                  "rounded-card border p-5 transition-colors duration-300",
-                  cert.featured
-                    ? "border-accent/45 bg-accent/[0.06]"
-                    : "border-border bg-surface/50 hover:border-accent/35",
-                )}
-              >
-                <p className="text-sm font-medium leading-snug">{cert.name}</p>
-                <p className="mt-1.5 text-xs text-muted">{cert.issuer}</p>
-              </motion.li>
-            ))}
-          </motion.ul>
+          <CertificateCards certificates={credentials.certifications} />
+          <p className="mt-3 font-mono text-[11px] text-muted">Click a card to view the certificate</p>
 
           <h3 className="mb-5 mt-12 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-muted">
             <Mic size={14} className="text-accent-strong dark:text-accent" />

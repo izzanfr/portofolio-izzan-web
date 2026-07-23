@@ -3,18 +3,43 @@
     {
       "name": "Certified Associate in Project Management (CAPM)®",
       "issuer": "Project Management Institute (PMI)",
-      "featured": true
+      "date": "",
+      "featured": true,
+      "image": "/certificates/_placeholder.svg",
+      "description": "PMI's foundational project management credential, covering predictive, agile, and hybrid approaches across the full project lifecycle: scope, schedule, cost, quality, resources, communication, risk, procurement, and stakeholder management, grounded in PMBOK 6th and 7th Edition.",
+      "covers": [
+        "Project lifecycle & process groups",
+        "Predictive, agile & hybrid methodologies",
+        "Schedule and cost management",
+        "Risk & stakeholder management"
+      ]
     },
     {
       "name": "Machine Learning with Python — Level 1",
       "issuer": "Professional certification",
-      "featured": false
+      "date": "",
+      "featured": false,
+      "image": "/certificates/_placeholder.svg",
+      "description": "Supervised and unsupervised machine learning implemented in Python — from data preparation and feature handling through model training and evaluation.",
+      "covers": ["Supervised learning", "Unsupervised learning", "Model evaluation"]
     },
-    { "name": "Python", "issuer": "Professional certification", "featured": false },
+    {
+      "name": "Python",
+      "issuer": "Professional certification",
+      "date": "",
+      "featured": false,
+      "image": "/certificates/_placeholder.svg",
+      "description": "Core Python programming: data structures, control flow, functions, and working with external libraries.",
+      "covers": ["Language fundamentals", "Data structures", "Libraries & tooling"]
+    },
     {
       "name": "Python for Data Science",
       "issuer": "Professional certification",
-      "featured": false
+      "date": "",
+      "featured": false,
+      "image": "/certificates/_placeholder.svg",
+      "description": "The Python data stack applied to analysis work: data wrangling, exploratory data analysis, and visualization.",
+      "covers": ["Data wrangling", "Exploratory data analysis", "Visualization"]
     }
   ],
   "publications": [

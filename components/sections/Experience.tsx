@@ -1,14 +1,24 @@
-"use client";
+﻿"use client";
 
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
 import { Section } from "@/components/ui/Section";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
+import {
+  ExperienceGallery,
+  type ExperiencePhoto,
+} from "@/components/ui/ExperienceGallery";
 import { cn } from "@/lib/utils";
 import experience from "@/content/experience.json";
 
-type Role = { title: string; icon: string; points: string[] };
+type Role = {
+  title: string;
+  slug: string;
+  icon: string;
+  points: string[];
+  photos: ExperiencePhoto[];
+};
 
 function RoleAccordion({ role, index }: { role: Role; index: number }) {
   const [open, setOpen] = useState(index === 0);
@@ -66,6 +76,8 @@ function RoleAccordion({ role, index }: { role: Role; index: number }) {
             </li>
           ))}
         </ul>
+
+        <ExperienceGallery photos={role.photos} roleTitle={role.title} />
       </motion.div>
     </motion.li>
   );
@@ -87,7 +99,7 @@ export function Experience() {
       eyebrow="Experience"
       title="Four years of delivery, taught back to the room."
       lead="Seven parallel roles at Inixindo Jogja — consulting engagements feeding the training curriculum, and the classroom sharpening how the consulting gets explained."
-      className="border-t border-border/60 bg-surface/30"
+      tone="tint"
     >
       <div ref={trackRef} className="relative">
         {/* Scroll-linked timeline spine */}
@@ -113,7 +125,7 @@ export function Experience() {
                 className="mb-6"
               >
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <h3 className="text-xl font-semibold tracking-tight md:text-2xl">
+                  <h3 className="text-xl tracking-[-0.024em] md:text-2xl">
                     {job.company}
                   </h3>
                   {job.current && (

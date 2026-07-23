@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" fill="#eceff3"/>
+  <path d="M0 0h800v600H0z" fill="none" stroke="#c3ccd8" stroke-width="4" stroke-dasharray="18 14"/>
+  <g stroke="#94a3b4" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="300" y="215" width="200" height="150" rx="12"/>
+    <circle cx="352" cy="262" r="18"/>
+    <path d="M300 330l58-52 46 42 40-30 56 45"/>
+  </g>
+  <text x="400" y="425" text-anchor="middle" font-family="ui-monospace, monospace" font-size="24" letter-spacing="3" fill="#5a6b80">PHOTO PLACEHOLDER</text>
+  <text x="400" y="460" text-anchor="middle" font-family="ui-monospace, monospace" font-size="16" fill="#7d8b9c">replace via content/experience.json</text>
+  <text x="400" y="490" text-anchor="middle" font-family="ui-monospace, monospace" font-size="14" fill="#94a3b4">recommended 1600×1200 (4:3), JPG or WebP</text>
+</svg>

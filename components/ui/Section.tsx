@@ -8,6 +8,8 @@ type SectionProps = {
   title?: string;
   lead?: string;
   children: ReactNode;
+  /** `tint` sections carry a faint navy wash; alternating them sets the page rhythm. */
+  tone?: "base" | "tint";
   className?: string;
   contentClassName?: string;
 };
@@ -18,11 +20,25 @@ export function Section({
   title,
   lead,
   children,
+  tone = "base",
   className,
   contentClassName,
 }: SectionProps) {
   return (
-    <section id={id} className={cn("scroll-mt-24 py-20 md:py-28", className)}>
+    <section
+      id={id}
+      className={cn(
+        "relative scroll-mt-24 py-20 md:py-28",
+        tone === "tint" && "bg-tint",
+        className,
+      )}
+    >
+      {/* Hairline divider, brightest at the centre so it reads as a seam not a box */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"
+      />
+
       <div className="container-page">
         {(eyebrow || title || lead) && (
           <Reveal className="mb-12 max-w-2xl md:mb-16">
@@ -33,7 +49,7 @@ export function Section({
               </p>
             )}
             {title && (
-              <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+              <h2 className="text-balance text-3xl tracking-[-0.028em] md:text-[2.6rem] md:leading-[1.1]">
                 {title}
               </h2>
             )}

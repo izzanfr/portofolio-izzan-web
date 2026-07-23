@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1131" viewBox="0 0 1600 1131" fill="none">
+  <rect width="1600" height="1131" fill="#f6f7f9"/>
+  <rect x="40" y="40" width="1520" height="1051" fill="none" stroke="#c3ccd8" stroke-width="6" stroke-dasharray="24 18"/>
+  <rect x="120" y="120" width="1360" height="891" fill="#ffffff" stroke="#dfe4ea" stroke-width="3"/>
+  <g stroke="#94a3b4" stroke-width="10" fill="none" stroke-linecap="round">
+    <circle cx="800" cy="430" r="90"/>
+    <path d="M760 430l30 30 55-60"/>
+    <path d="M745 515l-30 120 85-45 85 45-30-120"/>
+  </g>
+  <text x="800" y="740" text-anchor="middle" font-family="ui-monospace, monospace" font-size="46" letter-spacing="6" fill="#5a6b80">CERTIFICATE PLACEHOLDER</text>
+  <text x="800" y="800" text-anchor="middle" font-family="ui-monospace, monospace" font-size="30" fill="#7d8b9c">replace via content/certifications.json</text>
+  <text x="800" y="850" text-anchor="middle" font-family="ui-monospace, monospace" font-size="26" fill="#94a3b4">any orientation · long edge ≥ 1600px · JPG, PNG or WebP</text>
+</svg>

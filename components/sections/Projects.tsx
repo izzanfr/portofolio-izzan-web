@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -14,7 +14,7 @@ export function Projects() {
       eyebrow="Projects"
       title="Consulting engagements, documented."
       lead="Nine engagements across provincial and regency governments, national agencies, and state enterprises — SPBE architecture, data management, information security, and AI strategy."
-      className="border-t border-border/60 bg-surface/30"
+      tone="tint"
     >
       <Reveal>
         <ProjectCarousel projects={projects} />
