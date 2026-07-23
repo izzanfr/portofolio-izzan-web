@@ -31,9 +31,8 @@ export function Contact() {
   return (
     <Section
       id="contact"
-      eyebrow="Contact"
-      title="Got a data challenge worth talking through?"
-      lead="Consulting engagements, training programs, or a conversation about switching into data science are all welcome."
+      title="Contact"
+      lead="Got a data challenge worth talking through? Consulting engagements, training programs, or a conversation about switching into data science are all welcome."
       tone="base"
     >
       <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">

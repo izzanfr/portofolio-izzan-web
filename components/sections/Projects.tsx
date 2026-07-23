@@ -9,13 +9,7 @@ export function Projects() {
   const projects = getProjectMeta();
 
   return (
-    <Section
-      id="projects"
-      eyebrow="Projects"
-      title="Consulting engagements, documented."
-      lead="Nine engagements across provincial and regency governments, national agencies, and state enterprises, covering SPBE architecture, data management, information security, and AI strategy."
-      tone="base"
-    >
+    <Section id="projects" title="Projects" tone="base">
       <Reveal>
         <ProjectCarousel projects={projects} />
       </Reveal>
