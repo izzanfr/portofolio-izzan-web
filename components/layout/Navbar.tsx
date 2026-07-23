@@ -31,43 +31,20 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
-          ? "border-b border-border/80 bg-background/72 shadow-[0_10px_30px_-24px_rgba(10,26,47,0.55)] backdrop-blur-xl backdrop-saturate-150"
-          : "border-b border-transparent bg-transparent",
-      )}
-    >
-      {/* Texture: a faint navy-to-transparent wash plus grain, so the scrolled bar
-          reads as a surface rather than flat white */}
-      <div
-        aria-hidden
-        className={cn(
-          "pointer-events-none absolute inset-0 -z-10 transition-opacity duration-300",
-          scrolled ? "opacity-100" : "opacity-0",
-        )}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/[0.055] to-transparent dark:from-white/[0.045]" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/35 to-transparent" />
-      </div>
-
-      <nav className="container-page flex h-16 items-center justify-between md:h-20">
-        <Link
-          href="/"
-          className="group flex items-center gap-2.5 font-display text-base tracking-[-0.02em]"
-          onClick={() => setOpen(false)}
+    <header className="fixed inset-x-0 top-0 z-50">
+      <nav className="container-page flex h-20 items-center justify-center md:h-24">
+        {/* Floating capsule: the links, the primary CTA and the theme toggle
+            read as one grouped control rather than a flat bar. It carries its
+            own glass surface, so the header stays transparent and the pill
+            appears to hover, firming up a touch once the page is scrolled. */}
+        <ul
+          className={cn(
+            "hidden items-center gap-2 rounded-full border p-2 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 md:flex",
+            scrolled
+              ? "border-border/80 bg-surface/85 shadow-[0_16px_44px_-20px_rgba(10,26,47,0.5)] dark:bg-surface/60"
+              : "border-border/60 bg-surface/55 shadow-[0_12px_40px_-24px_rgba(10,26,47,0.4)] dark:bg-surface/40",
+          )}
         >
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-navy font-mono text-[13px] text-white transition-transform duration-300 group-hover:-rotate-6 dark:bg-accent dark:text-accent-contrast">
-            IF
-          </span>
-          <span className="hidden sm:inline">
-            {profile.shortName} Faikar
-            <span className="text-accent-strong dark:text-accent">.</span>
-          </span>
-        </Link>
-
-        <ul className="hidden items-center gap-0.5 md:flex">
           {navLinks.map((link) => {
             const isActive = active === link.id;
             return (
@@ -76,7 +53,7 @@ export function Navbar() {
                   href={link.href}
                   aria-current={isActive ? "true" : undefined}
                   className={cn(
-                    "group relative block px-3.5 py-2 text-sm transition-colors duration-200",
+                    "relative block rounded-full px-5 py-2.5 text-sm transition-colors duration-200",
                     isActive
                       ? "text-accent-strong dark:text-accent"
                       : "text-muted hover:text-foreground",
@@ -90,27 +67,29 @@ export function Navbar() {
                     />
                   )}
                   <span className="relative">{link.label}</span>
-                  {/* Hover underline stays available for inactive items */}
-                  <span
-                    className={cn(
-                      "absolute inset-x-3.5 bottom-1 h-px origin-left scale-x-0 bg-border transition-transform duration-300",
-                      !isActive && "group-hover:scale-x-100",
-                    )}
-                  />
                 </Link>
               </li>
             );
           })}
+
+          {/* Divider, then the actions: CTA plus the theme toggle */}
+          <li aria-hidden className="mx-0.5 h-6 w-px shrink-0 bg-border/70" />
+          <li>
+            <a
+              href={`mailto:${profile.email}`}
+              className="block rounded-full bg-navy px-5 py-2.5 text-sm font-medium text-white transition-colors duration-300 hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:hover:bg-accent-strong"
+            >
+              Let&apos;s talk
+            </a>
+          </li>
+          <li>
+            <ThemeToggle className="h-9 w-9 text-muted hover:bg-accent/10 hover:text-accent-strong dark:hover:text-accent" />
+          </li>
         </ul>
 
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <a
-            href={`mailto:${profile.email}`}
-            className="hidden rounded-full bg-navy px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-navy-soft hover:shadow-lg hover:shadow-navy/20 md:inline-block dark:bg-accent dark:text-accent-contrast dark:hover:bg-accent-strong"
-          >
-            Get in touch
-          </a>
+        {/* Mobile controls, pushed to the right since the logo is gone */}
+        <div className="ml-auto flex items-center gap-2 md:hidden">
+          <ThemeToggle className="h-10 w-10 border border-border bg-surface/70 hover:border-accent hover:text-accent-strong dark:hover:text-accent" />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -177,7 +156,7 @@ export function Navbar() {
                 onClick={() => setOpen(false)}
                 className="mt-5 rounded-full bg-navy px-5 py-3 text-center text-sm font-medium text-white dark:bg-accent dark:text-accent-contrast"
               >
-                Get in touch
+                Let&apos;s talk
               </motion.a>
             </ul>
           </motion.div>

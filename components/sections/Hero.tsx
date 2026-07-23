@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import { RotatingText } from "@/components/ui/RotatingText";
+import { Reveal } from "@/components/ui/Reveal";
+import { TechMarquee } from "@/components/ui/TechMarquee";
 import { useIntroDone } from "@/components/Preloader";
 import { profile } from "@/lib/content";
 
@@ -23,14 +25,11 @@ export function Hero() {
   const enter = introDone ? "visible" : "hidden";
 
   return (
-    <section
-      id="home"
-      className="relative flex min-h-[92svh] items-center overflow-hidden pt-24 md:pt-28"
-    >
+    <section id="home" className="relative overflow-hidden pt-24 pb-20 md:pt-28 md:pb-28">
       {/* Ambient background: dotted grid fading out, plus one warm amber bloom */}
       <div
         aria-hidden
-        className="dot-grid pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(70%_60%_at_50%_35%,black,transparent)]"
+        className="dot-grid pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(70%_50%_at_50%_25%,black,transparent)]"
       />
       <div
         aria-hidden
@@ -42,124 +41,143 @@ export function Hero() {
       />
 
       <div className="container-page relative">
-        {/* Photo leads on mobile, then swaps into the right-hand column at lg so
-            the text keeps the natural reading position on wide screens. */}
-        <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
-          <div className="order-2 lg:order-1">
-            <motion.h1
-              custom={0}
-              variants={rise}
-              initial="hidden"
-              animate={enter}
-              className="text-balance text-4xl leading-[1.03] tracking-display sm:text-5xl md:text-6xl"
-            >
-              {profile.name}
-            </motion.h1>
+        {/* Top row: two-column intro, sitting over a faint drifting wordmark. */}
+        <div className="relative">
+          {/* Decorative backdrop, broken out to full-viewport width and clipped
+              back to it, so the wordmark spans edge to edge behind the content.
+              Faint enough to read as texture, only drawn on lg where there is
+              room for it behind the two-column layout. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-screen -translate-x-1/2 select-none items-center overflow-hidden lg:flex"
+          >
+            {/* Two identical halves feed the seamless -50% drift. The separator
+                gap is padding, not a trailing space, so neither half loses width
+                to whitespace collapsing and the loop never jumps. */}
+            <div className="marquee-wordmark w-max whitespace-nowrap font-sans text-[8.5vw] font-black uppercase leading-none tracking-[-0.01em] text-navy/[0.045] dark:text-white/[0.05]">
+              <span className="pe-[0.32em]">Data Science • Artificial Intelligence •</span>
+              <span className="pe-[0.32em]">Data Science • Artificial Intelligence •</span>
+            </div>
+          </div>
 
-            <motion.p
+          <div className="relative grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+            <div className="order-2 lg:order-1">
+              <motion.h1
+                custom={0}
+                variants={rise}
+                initial="hidden"
+                animate={enter}
+                className="text-balance text-4xl leading-[1.03] tracking-display sm:text-5xl md:text-6xl"
+              >
+                {profile.name}
+              </motion.h1>
+
+              <motion.p
+                custom={1}
+                variants={rise}
+                initial="hidden"
+                animate={enter}
+                className="mt-5 text-xl font-medium tracking-[-0.015em] sm:text-2xl md:text-3xl"
+              >
+                <span className="text-muted">I work as an </span>
+                <RotatingText items={profile.roles} />
+              </motion.p>
+
+              <motion.p
+                custom={2}
+                variants={rise}
+                initial="hidden"
+                animate={enter}
+                className="mt-6 max-w-2xl text-base leading-[1.75] text-muted md:text-[1.0625rem]"
+              >
+                {profile.introBody}
+              </motion.p>
+
+              <motion.div
+                custom={3}
+                variants={rise}
+                initial="hidden"
+                animate={enter}
+                className="mt-9 flex flex-wrap items-center gap-3"
+              >
+                <motion.a
+                  href="#contact"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white shadow-lg shadow-navy/15 transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:shadow-accent/20 dark:hover:bg-accent-strong"
+                >
+                  Let&apos;s work together
+                  <ArrowUpRight
+                    size={16}
+                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  />
+                </motion.a>
+              </motion.div>
+
+              <motion.p
+                custom={4}
+                variants={rise}
+                initial="hidden"
+                animate={enter}
+                className="mt-8 flex items-start gap-2 text-sm text-muted"
+              >
+                <MapPin size={15} className="mt-0.5 shrink-0 text-accent-strong dark:text-accent" />
+                <span>
+                  {profile.location}
+                  <span className="block text-xs opacity-80">{profile.locationNote}</span>
+                </span>
+              </motion.p>
+            </div>
+
+            <motion.div
               custom={1}
               variants={rise}
               initial="hidden"
               animate={enter}
-              className="mt-5 text-xl font-medium tracking-[-0.015em] sm:text-2xl md:text-3xl"
+              className="order-1 lg:order-2"
             >
-              <span className="text-muted">I work as an </span>
-              <RotatingText items={profile.roles} />
-            </motion.p>
-
-            <motion.p
-              custom={2}
-              variants={rise}
-              initial="hidden"
-              animate={enter}
-              className="mt-6 max-w-2xl text-base leading-relaxed text-muted md:text-lg"
-            >
-              {profile.heroIntro}
-            </motion.p>
-
-            <motion.div
-              custom={3}
-              variants={rise}
-              initial="hidden"
-              animate={enter}
-              className="mt-9 flex flex-wrap items-center gap-3"
-            >
-              <motion.a
-                href="#contact"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white shadow-lg shadow-navy/15 transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:shadow-accent/20 dark:hover:bg-accent-strong"
-              >
-                Let&apos;s work together
-                <ArrowUpRight
-                  size={16}
-                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              {/* Capped on mobile so the photo stays a companion to the text
+                  rather than filling the first screen on its own. */}
+              <div className="relative mx-auto w-full max-w-[15rem] sm:max-w-[17rem] lg:max-w-none">
+                {/* Offset amber frame, carried over from the old About portrait */}
+                <div
+                  aria-hidden
+                  className="absolute -bottom-3 -right-3 h-full w-full rounded-card border border-accent/50"
                 />
-              </motion.a>
-            </motion.div>
-
-            <motion.p
-              custom={4}
-              variants={rise}
-              initial="hidden"
-              animate={enter}
-              className="mt-8 flex items-start gap-2 text-sm text-muted"
-            >
-              <MapPin size={15} className="mt-0.5 shrink-0 text-accent-strong dark:text-accent" />
-              <span>
-                {profile.location}
-                <span className="block text-xs opacity-80">{profile.locationNote}</span>
-              </span>
-            </motion.p>
-          </div>
-
-          <motion.div
-            custom={1}
-            variants={rise}
-            initial="hidden"
-            animate={enter}
-            className="order-1 lg:order-2"
-          >
-            {/* Capped on mobile so the photo stays a companion to the text
-                rather than filling the first screen on its own. */}
-            <div className="relative mx-auto w-full max-w-[15rem] sm:max-w-[17rem] lg:max-w-none">
-              {/* Offset amber frame, carried over from the old About portrait */}
-              <div
-                aria-hidden
-                className="absolute -bottom-3 -right-3 h-full w-full rounded-card border border-accent/50"
-              />
-              {/* Square frame matches the source portrait, so `cover` never crops a face */}
-              <div className="relative aspect-square overflow-hidden rounded-card border border-border bg-surface">
-                <Image
-                  src={profile.avatar}
-                  alt={profile.name}
-                  fill
-                  sizes="(max-width: 640px) 15rem, (max-width: 1024px) 17rem, 30rem"
-                  className="object-cover object-center"
-                  priority
-                />
+                {/* Square frame matches the source portrait, so `cover` never crops a face */}
+                <div className="relative aspect-square overflow-hidden rounded-card border border-border bg-surface">
+                  <Image
+                    src={profile.avatar}
+                    alt={profile.name}
+                    fill
+                    sizes="(max-width: 640px) 15rem, (max-width: 1024px) 17rem, 30rem"
+                    className="object-cover object-center"
+                    priority
+                  />
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
 
-      <motion.a
-        href="#about"
-        aria-label="Scroll to about section"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: introDone ? 1 : 0 }}
-        transition={{ delay: 1.1 }}
-        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 text-muted transition-colors hover:text-accent-strong md:block dark:hover:text-accent"
-      >
-        <motion.span
-          animate={{ y: [0, 7, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="block"
-        >
-          <ArrowDown size={18} />
-        </motion.span>
-      </motion.a>
+        {/* Stat pills, sitting on a rule that separates them from the intro. */}
+        <Reveal delay={0.1}>
+          <dl className="mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-border pt-8 sm:grid-cols-4 md:mt-20">
+            {profile.stats.map((stat) => (
+              <div key={stat.label}>
+                <dt className="font-mono text-2xl font-semibold text-accent-strong dark:text-accent md:text-3xl">
+                  {stat.value}
+                </dt>
+                <dd className="mt-1.5 text-xs leading-snug text-muted">{stat.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
+
+        <Reveal delay={0.1} className="mt-14">
+          <TechMarquee />
+        </Reveal>
+      </div>
     </section>
   );
 }

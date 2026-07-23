@@ -15,11 +15,7 @@
   "linkedin": "https://linkedin.com/in/izzanfaikar",
   "linkedinLabel": "linkedin.com/in/izzanfaikar",
   "avatar": "/Foto Profile.jpg",
-  "about": [
-    "An experienced professional working at the intersection of project management, artificial intelligence, and information technology. I hold the CAPM® certification from PMI and currently serve as a Professional AI, Data Science, and Project Management Instructor at Inixindo Jogja.",
-    "Alongside teaching, I work as an IT Consultant on Data Management and SPBE (National Digital Government Architecture) projects, where I translate regulation and framework theory into documentation that public sector institutions can actually operate.",
-    "Open to conversations about data challenges, governance assessments, or a career switch into Data Science."
-  ],
+  "introBody": "I work at the intersection of project management, artificial intelligence, and information technology, teaching, consulting, and occasionally doing both at once. At Inixindo Jogja, I train teams in AI and Data Science while consulting on SPBE and Data Management projects for public sector institutions. If you're wrestling with data challenges, or thinking about a career switch into Data Science, I'd love to talk.",
   "stats": [
     { "value": "10+", "label": "Consulting Projects Delivered" },
     {

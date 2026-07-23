@@ -3,11 +3,15 @@
 import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { cn } from "@/lib/utils";
 
 /**
  * Both icons are always mounted and crossfaded with `dark:` variants, so the
  * button renders identically on server and client — no hydration mismatch and
  * no theme flash.
+ *
+ * Chrome (size, border, background) is left to the caller so the same button can
+ * be a bordered pill on its own or a bare icon nested inside the nav capsule.
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { toggleTheme } = useTheme();
@@ -19,7 +23,10 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label="Toggle color theme"
       whileHover={{ scale: 1.06 }}
       whileTap={{ scale: 0.92 }}
-      className={`relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border border-border bg-surface/70 text-foreground transition-colors hover:border-accent hover:text-accent-strong dark:hover:text-accent ${className ?? ""}`}
+      className={cn(
+        "relative grid place-items-center overflow-hidden rounded-full text-foreground transition-colors",
+        className,
+      )}
     >
       <span className="col-start-1 row-start-1 grid place-items-center transition-all duration-300 dark:-translate-y-3 dark:rotate-45 dark:opacity-0">
         <Sun size={17} />

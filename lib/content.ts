@@ -6,7 +6,6 @@ export type Profile = typeof profileJson;
 export const profile: Profile = profileJson;
 
 export const navLinks = [
-  { href: "/#about", id: "about", label: "About" },
   { href: "/#experience", id: "experience", label: "Experience" },
   { href: "/#projects", id: "projects", label: "Projects" },
   { href: "/#credentials", id: "credentials", label: "Credentials" },

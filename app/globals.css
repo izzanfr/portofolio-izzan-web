@@ -274,3 +274,30 @@ html[data-preload]:not(.intro-done) body {
     animation-name: none;
   }
 }
+
+/* ---------------------------------------------------------------
+   Hero backdrop wordmark
+
+   The track holds two identical halves, so a -50% shift lands the
+   second where the first began and the drift never seams. Slow on
+   purpose: it is a background texture, not something to watch.
+--------------------------------------------------------------- */
+@keyframes wordmark-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-wordmark {
+  animation: wordmark-drift 60s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-wordmark {
+    animation-name: none;
+  }
+}

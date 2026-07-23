@@ -10,18 +10,19 @@ import {
   SiPython,
 } from "react-icons/si";
 
-type Tool = { name: string; Icon: IconType; color: string };
-
 /**
- * Brand colours are hardcoded rather than themed: a logo in the wrong colour
- * stops reading as that logo. Everything around them stays on the site palette.
- *
- * Power BI and Microsoft Project are absent on purpose. Simple Icons dropped
- * the Microsoft marks over trademark policy and no other react-icons set
- * carries them, and a generic bar-chart stand-in would misrepresent the brand.
+ * A tool is drawn either from a react-icons glyph (tinted to its brand colour)
+ * or from a real SVG logo in /public/logos for brands react-icons doesn't carry
+ * — Power BI and Microsoft Project, which Simple Icons dropped over trademark
+ * policy. The logo files already carry their own colours, so no tint applies.
  */
+type Tool =
+  | { name: string; Icon: IconType; color: string }
+  | { name: string; src: string };
+
 const ANALYSIS: Tool[] = [
   { name: "Excel", Icon: PiMicrosoftExcelLogoFill, color: "#217346" },
+  { name: "Power BI", src: "/logos/Power%20BI.svg" },
   { name: "Tableau", Icon: IoLogoTableau, color: "#E97627" },
   { name: "Google Colab", Icon: SiGooglecolab, color: "#F9AB00" },
   { name: "Jupyter", Icon: SiJupyter, color: "#F37626" },
@@ -32,15 +33,26 @@ const ENGINEERING: Tool[] = [
   { name: "PySpark", Icon: SiApachespark, color: "#E25A1C" },
   { name: "Hadoop", Icon: SiApachehadoop, color: "#66CCFF" },
   { name: "n8n", Icon: SiN8N, color: "#EA4B71" },
+  { name: "Microsoft Project", src: "/logos/Microsoft%20Project.svg" },
 ];
 
 /**
- * Four rows' worth of duplication. Two would be enough for a seamless loop, but
- * a four-tool strip doubled is still narrower than a desktop viewport, which
- * would leave a visible gap mid-cycle. The keyframes shift by 25%, exactly one
- * copy, so the loop point stays invisible.
+ * Enough copies that a doubled strip still overflows the widest viewport, or a
+ * gap would show mid-cycle. The keyframes shift by one copy's width so the loop
+ * point stays invisible; COPIES and that percentage must agree.
  */
 const COPIES = 4;
+
+function ToolMark({ tool }: { tool: Tool }) {
+  if ("src" in tool) {
+    // Plain img, not next/image: these are tiny inline SVGs that Next passes
+    // through unoptimised anyway. height fixed, width auto keeps each logo's
+    // own aspect ratio.
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={tool.src} alt="" aria-hidden className="h-[18px] w-auto" />;
+  }
+  return <tool.Icon size={18} style={{ color: tool.color }} aria-hidden />;
+}
 
 function ToolStrip({ tools, hidden }: { tools: Tool[]; hidden: boolean }) {
   return (
@@ -48,7 +60,7 @@ function ToolStrip({ tools, hidden }: { tools: Tool[]; hidden: boolean }) {
       {tools.map((tool) => (
         <li key={tool.name} className="me-3 shrink-0">
           <span className="flex items-center gap-2.5 rounded-full border border-border bg-surface px-5 py-3">
-            <tool.Icon size={18} style={{ color: tool.color }} aria-hidden />
+            <ToolMark tool={tool} />
             <span className="whitespace-nowrap text-sm font-medium">{tool.name}</span>
           </span>
         </li>
