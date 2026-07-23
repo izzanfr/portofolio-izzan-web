@@ -94,13 +94,7 @@ export function Experience() {
   const scaleY = useTransform(progress, (v) => Math.max(v, 0.02));
 
   return (
-    <Section
-      id="experience"
-      eyebrow="Experience"
-      title="Four years of delivery, taught back to the room."
-      lead="Seven parallel roles at Inixindo Jogja, where consulting engagements feed the training curriculum and the classroom sharpens how the consulting gets explained."
-      tone="tint"
-    >
+    <Section id="experience" title="Experience" tone="tint">
       <div ref={trackRef} className="relative">
         {/* Scroll-linked timeline spine */}
         <div className="absolute left-[7px] top-2 hidden h-[calc(100%-1rem)] w-px bg-border md:block">
