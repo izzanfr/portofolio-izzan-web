@@ -45,7 +45,3 @@ export const mdxComponents: MDXComponents = {
   ),
   hr: () => <hr className="my-10 border-border" />,
 };
-
-export function useMDXComponents(components: MDXComponents): MDXComponents {
-  return { ...mdxComponents, ...components };
-}

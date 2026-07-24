@@ -257,33 +257,6 @@
     }
   }
 
-  /* Faint dotted grid used behind the hero */
-  .dot-grid {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      color-mix(in srgb, var(--foreground) 18%, transparent) 1px,
-      transparent 0
-    );
-    background-size: 26px 26px;
-  }
-
-  /* Blueprint ruling — the line counterpart to .dot-grid, for sections where a
-     drafting-table feel suits the content better than dots. */
-  .line-grid {
-    background-image:
-      linear-gradient(
-        to right,
-        color-mix(in srgb, var(--foreground) 11%, transparent) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        to bottom,
-        color-mix(in srgb, var(--foreground) 11%, transparent) 1px,
-        transparent 1px
-      );
-    background-size: 76px 76px;
-  }
-
   /* Floating card: elevation from a shadow rather than a border, lifting on
      hover. A real class, not `shadow-[var(--shadow-card)]` — Tailwind splits an
      arbitrary shadow into value and colour, and a two-layer var() gives it

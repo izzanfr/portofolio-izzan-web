@@ -1,14 +1,10 @@
-import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
+// Project case studies are compiled at request time by next-mdx-remote, not as
+// file-based .mdx pages, so no @next/mdx setup is needed here.
 const nextConfig: NextConfig = {
-  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   // A stray lockfile in the home directory otherwise wins root inference
   turbopack: { root: import.meta.dirname },
 };
 
-const withMDX = createMDX({
-  extension: /\.mdx?$/,
-});
-
-export default withMDX(nextConfig);
+export default nextConfig;
