@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./Reveal";
+import { SectionBackdrop, SectionSeam } from "./SectionBackdrop";
 
 type SectionProps = {
   id: string;
@@ -10,6 +11,11 @@ type SectionProps = {
   children: ReactNode;
   /** `tint` sections carry a faint navy wash; alternating them sets the page rhythm. */
   tone?: "base" | "tint";
+  /**
+   * Position on the page, counting the hero as 0. Shifts the ambient wash so no
+   * two sections in a row are composed the same way.
+   */
+  index?: number;
   className?: string;
   contentClassName?: string;
 };
@@ -21,6 +27,7 @@ export function Section({
   lead,
   children,
   tone = "base",
+  index = 0,
   className,
   contentClassName,
 }: SectionProps) {
@@ -37,13 +44,12 @@ export function Section({
         className,
       )}
     >
-      {/* Hairline divider, brightest at the centre so it reads as a seam not a box */}
-      <span
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"
-      />
+      {/* Soft band instead of a hairline: against a drifting wash a 1px rule
+          reads as a hard edge cutting through it. */}
+      <SectionSeam kind="fade" />
+      <SectionBackdrop variant="mesh" index={index} />
 
-      <div className="container-page">
+      <div className="container-page relative">
         {(eyebrow || title || lead) && (
           <Reveal className="mb-12 max-w-2xl md:mb-16">
             {eyebrow && (

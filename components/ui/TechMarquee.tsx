@@ -89,7 +89,11 @@ function MarqueeRow({ tools, reverse }: { tools: Tool[]; reverse?: boolean }) {
 export function TechMarquee() {
   return (
     <div>
-      <h3 className="mb-5 font-mono text-xs uppercase tracking-[0.18em] text-muted">Tech skills</h3>
+      {/* Centred and enlarged so the marquee reads as its own titled block
+          rather than a caption trailing the stats above it. */}
+      <h3 className="mb-7 text-center font-mono text-sm uppercase tracking-[0.32em] text-accent-strong dark:text-accent md:text-base">
+        Tech skills
+      </h3>
       <div className="flex flex-col gap-4">
         <MarqueeRow tools={ANALYSIS} />
         <MarqueeRow tools={ENGINEERING} reverse />

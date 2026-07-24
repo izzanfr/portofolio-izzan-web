@@ -15,13 +15,11 @@
   "linkedin": "https://linkedin.com/in/izzanfaikar",
   "linkedinLabel": "linkedin.com/in/izzanfaikar",
   "avatar": "/Foto Profile.jpg",
+  "avatarBack": "/hero/profile-back.jpeg",
   "introBody": "I work at the intersection of project management, artificial intelligence, and information technology, teaching, consulting, and occasionally doing both at once. At Inixindo Jogja, I train teams in AI and Data Science while consulting on SPBE and Data Management projects for public sector institutions. If you're wrestling with data challenges, or thinking about a career switch into Data Science, I'd love to talk.",
   "stats": [
     { "value": "10+", "label": "Consulting Projects Delivered" },
-    {
-      "value": "1000+",
-      "label": "Participants Trained Across AI, Data Science & IT Programs"
-    },
+    { "value": "1000+", "label": "Participants Trained in AI & Data Science" },
     { "value": "7", "label": "Instructor Specializations Mastered" },
     { "value": "4 yrs", "label": "Professional Experience at Inixindo Jogja" }
   ]

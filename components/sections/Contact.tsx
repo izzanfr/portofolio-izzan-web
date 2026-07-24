@@ -34,6 +34,7 @@ export function Contact() {
       title="Contact"
       lead="Got a data challenge worth talking through? Consulting engagements, training programs, or a conversation about switching into data science are all welcome."
       tone="base"
+      index={4}
     >
       <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         <Reveal className="space-y-4">

@@ -94,13 +94,16 @@ export function Experience() {
   const scaleY = useTransform(progress, (v) => Math.max(v, 0.02));
 
   return (
-    <Section id="experience" title="Experience" tone="tint">
+    <Section id="experience" title="Experience" tone="tint" index={1}>
       <div ref={trackRef} className="relative">
         {/* Scroll-linked timeline spine */}
         <div className="absolute left-[7px] top-2 hidden h-[calc(100%-1rem)] w-px bg-border md:block">
+          {/* Navy in light mode, amber in dark: the amber fill was near
+              invisible against the light tint, and navy would sink into the
+              dark background the same way. */}
           <motion.div
             style={{ scaleY, originY: 0 }}
-            className="h-full w-full bg-gradient-to-b from-accent to-accent/30"
+            className="h-full w-full bg-gradient-to-b from-navy to-navy/30 dark:from-accent dark:to-accent/30"
           />
         </div>
 
@@ -109,7 +112,7 @@ export function Experience() {
             <div key={job.company} className="relative">
               <span
                 aria-hidden
-                className="absolute -left-10 top-2 hidden h-[15px] w-[15px] rounded-full border-2 border-background bg-accent md:block"
+                className="absolute -left-10 top-2 hidden h-[15px] w-[15px] rounded-full border-2 border-background bg-navy dark:bg-accent md:block"
               />
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -122,8 +125,11 @@ export function Experience() {
                   <h3 className="text-xl tracking-[-0.024em] md:text-2xl">
                     {job.company}
                   </h3>
+                  {/* Tint is 10%, not 15%: the gold text on this pill is 10px,
+                      and the heavier fill dragged it to 4.45:1 — just under AA
+                      for text that small. */}
                   {job.current && (
-                    <span className="rounded-full bg-accent/15 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
+                    <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
                       Current
                     </span>
                   )}

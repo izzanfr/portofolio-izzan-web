@@ -9,7 +9,7 @@ export function Projects() {
   const projects = getProjectMeta();
 
   return (
-    <Section id="projects" title="Projects" tone="base">
+    <Section id="projects" title="Projects" tone="base" index={2}>
       <Reveal>
         <ProjectCarousel projects={projects} />
       </Reveal>

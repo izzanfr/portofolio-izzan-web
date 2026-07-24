@@ -6,6 +6,9 @@ const PROJECTS_DIR = path.join(process.cwd(), "content", "projects");
 
 export type ProjectMetric = { value: string; label: string };
 
+/** One supporting image on a project's Documentation section. */
+export type DocumentationImage = { src: string; alt: string; cover: boolean };
+
 export type ProjectMeta = {
   slug: string;
   title: string;
@@ -20,16 +23,49 @@ export type ProjectMeta = {
   metrics: ProjectMetric[];
 };
 
-export type Project = ProjectMeta & { content: string };
+// Documentation images live only on the full Project, never on ProjectMeta, so
+// the card list on the homepage keeps them out of its client bundle.
+export type Project = ProjectMeta & {
+  content: string;
+  documentationImages: DocumentationImage[];
+};
+
+/**
+ * Accepts either a bare path string or an object `{ src, alt?, cover? }` per
+ * entry, so authoring a simple list stays terse while a marked cover is still
+ * possible. Entries without a src are dropped, which is what keeps the section
+ * from rendering for projects whose folder is still empty.
+ */
+function parseDocumentation(raw: unknown, title: string): DocumentationImage[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((item, index): DocumentationImage => {
+      const fallbackAlt = `${title} — documentation ${index + 1}`;
+      if (typeof item === "string") {
+        return { src: item, alt: fallbackAlt, cover: false };
+      }
+      if (item && typeof item === "object") {
+        const record = item as Record<string, unknown>;
+        return {
+          src: String(record.src ?? ""),
+          alt: String(record.alt ?? fallbackAlt),
+          cover: Boolean(record.cover),
+        };
+      }
+      return { src: "", alt: fallbackAlt, cover: false };
+    })
+    .filter((image) => image.src.length > 0);
+}
 
 function parse(filename: string): Project {
   const slug = filename.replace(/\.mdx?$/, "");
   const raw = fs.readFileSync(path.join(PROJECTS_DIR, filename), "utf8");
   const { data, content } = matter(raw);
+  const title = String(data.title ?? slug);
 
   return {
     slug,
-    title: String(data.title ?? slug),
+    title,
     client: String(data.client ?? ""),
     role: String(data.role ?? ""),
     period: String(data.period ?? ""),
@@ -39,6 +75,7 @@ function parse(filename: string): Project {
     summary: String(data.summary ?? ""),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
     metrics: Array.isArray(data.metrics) ? (data.metrics as ProjectMetric[]) : [],
+    documentationImages: parseDocumentation(data.documentationImages, title),
     content,
   };
 }
