@@ -230,6 +230,97 @@
       transition-duration: 0.001ms !important;
     }
   }
+
+  /* ---------------------------------------------------------------
+     Custom scrollbar — amber gradient thumb, invisible track
+
+     Applied globally so the page scrollbar and any internal scroll
+     container (modal panels, dropdowns) share the same treatment
+     instead of falling back to the grey OS default.
+
+     WebKit can't animate a thumb wider than the gutter it lives in,
+     so the gutter is a fixed 10px and the visible thumb is carved out
+     of it with a transparent border + background-clip. At rest the 2px
+     border leaves a ~6px thumb; on hover the border collapses to 0 and
+     the thumb fills the full 10px — the "widen on hover" the spec asks
+     for, done without resizing the track. The gradient runs accent-400
+     (lighter) → accent-600 (darker), the amber shades from the palette.
+  --------------------------------------------------------------- */
+
+  /* Firefox fallback: no gradient available, but a solid amber thumb on
+     a transparent track keeps it on-theme rather than OS grey. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-500) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    background-color: var(--accent-500);
+    background-image: linear-gradient(
+      180deg,
+      var(--accent-400),
+      var(--accent-600)
+    );
+    transition: border-width 160ms ease, background-color 160ms ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    border-width: 0;
+    background-color: var(--accent-400);
+    background-image: linear-gradient(
+      180deg,
+      var(--accent-400),
+      var(--accent-500)
+    );
+  }
+
+  /* Horizontal scrollers get the gradient running along their axis. */
+  ::-webkit-scrollbar-thumb:horizontal {
+    background-image: linear-gradient(
+      90deg,
+      var(--accent-400),
+      var(--accent-600)
+    );
+  }
+
+  ::-webkit-scrollbar-thumb:horizontal:hover {
+    background-image: linear-gradient(
+      90deg,
+      var(--accent-400),
+      var(--accent-500)
+    );
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* ---------------------------------------------------------------
+     Language switch — dual-rendered content, CSS decides which shows
+
+     Every translatable string is rendered twice, tagged data-lc="en"
+     and data-lc="id". The active language lives on <html lang> (set by
+     the locale init script before paint, flipped by LocaleProvider), so
+     switching hides one set and reveals the other with no React
+     re-render and no flash — the same model the theme uses. The hidden
+     side is fully removed from layout so it never affects spacing.
+  --------------------------------------------------------------- */
+  html[lang="en"] [data-lc="id"],
+  html[lang="id"] [data-lc="en"] {
+    display: none !important;
+  }
 }
 
 @layer utilities {
@@ -295,6 +386,31 @@
   /* Large hero-scale type wants tighter tracking than the h1 default */
   .tracking-display {
     letter-spacing: -0.038em;
+  }
+
+  /* Language switch options. The active one is driven purely by <html lang>
+     rather than React state, so it lights up in step with the dual-rendered
+     content and carries no hydration flash. Both themes covered: amber reads on
+     the light page and on navy alike. */
+  .lang-opt {
+    color: var(--muted);
+    transition: color 200ms ease, background-color 200ms ease;
+  }
+
+  .lang-opt:hover {
+    color: var(--foreground);
+  }
+
+  html[lang="en"] .lang-opt[data-set-locale="en"],
+  html[lang="id"] .lang-opt[data-set-locale="id"] {
+    color: var(--accent-strong);
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+
+  html.dark[lang="en"] .lang-opt[data-set-locale="en"],
+  html.dark[lang="id"] .lang-opt[data-set-locale="id"] {
+    color: var(--accent);
   }
 }
 

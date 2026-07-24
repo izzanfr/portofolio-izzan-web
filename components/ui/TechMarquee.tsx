@@ -6,8 +6,11 @@ import {
   SiApachespark,
   SiGooglecolab,
   SiJupyter,
+  SiLooker,
+  SiMysql,
   SiN8N,
   SiPython,
+  SiTensorflow,
 } from "react-icons/si";
 
 /**
@@ -24,6 +27,7 @@ const ANALYSIS: Tool[] = [
   { name: "Excel", Icon: PiMicrosoftExcelLogoFill, color: "#217346" },
   { name: "Power BI", src: "/logos/Power%20BI.svg" },
   { name: "Tableau", Icon: IoLogoTableau, color: "#E97627" },
+  { name: "Looker Studio", Icon: SiLooker, color: "#4285F4" },
   { name: "Google Colab", Icon: SiGooglecolab, color: "#F9AB00" },
   { name: "Jupyter", Icon: SiJupyter, color: "#F37626" },
 ];
@@ -32,6 +36,8 @@ const ENGINEERING: Tool[] = [
   { name: "Python", Icon: SiPython, color: "#3776AB" },
   { name: "PySpark", Icon: SiApachespark, color: "#E25A1C" },
   { name: "Hadoop", Icon: SiApachehadoop, color: "#66CCFF" },
+  { name: "MySQL", Icon: SiMysql, color: "#4479A1" },
+  { name: "TensorFlow", Icon: SiTensorflow, color: "#FF6F00" },
   { name: "n8n", Icon: SiN8N, color: "#EA4B71" },
   { name: "Microsoft Project", src: "/logos/Microsoft%20Project.svg" },
 ];

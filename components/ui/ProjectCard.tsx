@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Building2, CalendarDays } from "lucide-react";
+import { T } from "./T";
 import type { ProjectMeta } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,7 @@ export function ProjectCard({
         <div className="flex flex-1 flex-col p-6">
           <div className="mb-4 flex items-start justify-between gap-3">
             <span className="rounded-full bg-navy/8 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:bg-accent/12 dark:text-accent">
-              {project.role}
+              <T en={project.role.en} id={project.role.id} />
             </span>
             <ArrowUpRight
               size={17}
@@ -40,37 +41,52 @@ export function ProjectCard({
           </div>
 
           <h3 className="text-balance text-lg leading-snug tracking-[-0.018em]">
-            {project.title}
+            <T en={project.title.en} id={project.title.id} />
           </h3>
 
           <p className="mt-2.5 flex items-center gap-1.5 text-sm text-muted">
             <Building2 size={13} className="shrink-0" />
-            {project.client}
+            <T en={project.client.en} id={project.client.id} />
           </p>
           <p className="mt-1 flex items-center gap-1.5 font-mono text-xs text-muted">
             <CalendarDays size={13} className="shrink-0" />
-            {project.period} · {project.duration}
+            <T en={project.period.en} id={project.period.id} /> ·{" "}
+            <T en={project.duration.en} id={project.duration.id} />
           </p>
 
-          <p className="mt-4 flex-1 text-sm leading-relaxed text-muted">{project.summary}</p>
+          <p className="mt-4 flex-1 text-sm leading-relaxed text-muted">
+            <T en={project.summary.en} id={project.summary.id} />
+          </p>
 
           {project.metrics.length > 0 && (
             <dl className="mt-5 grid grid-cols-3 gap-3 border-t border-border pt-4">
-              {project.metrics.slice(0, 3).map((metric) => (
-                <div key={metric.label}>
+              {project.metrics.slice(0, 3).map((metric, i) => (
+                <div key={i}>
                   <dt className="font-mono text-sm font-semibold text-accent-strong dark:text-accent">
                     {metric.value}
                   </dt>
-                  <dd className="mt-0.5 text-[11px] leading-tight text-muted">{metric.label}</dd>
+                  <dd className="mt-0.5 text-[11px] leading-tight text-muted">
+                    <T en={metric.label.en} id={metric.label.id} />
+                  </dd>
                 </div>
               ))}
             </dl>
           )}
 
-          <ul className="mt-5 flex flex-wrap gap-1.5">
-            {project.tags.map((tag) => (
+          <ul className="mt-5 flex flex-wrap gap-1.5" data-lc="en">
+            {project.tags.en.map((tag) => (
               <li
                 key={tag}
+                className="rounded-md border border-border px-2 py-1 text-[11px] text-muted"
+              >
+                {tag}
+              </li>
+            ))}
+          </ul>
+          <ul className="mt-5 flex flex-wrap gap-1.5" data-lc="id">
+            {project.tags.id.map((tag, i) => (
+              <li
+                key={`${tag}-${i}`}
                 className="rounded-md border border-border px-2 py-1 text-[11px] text-muted"
               >
                 {tag}

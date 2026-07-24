@@ -1,0 +1,87 @@
+import experienceEn from "@/content/experience.json";
+import experienceId from "@/content/experience.id.json";
+import type { BiText } from "@/lib/i18n";
+
+/**
+ * Experience content is bilingual. The English file (`experience.json`) is the
+ * structural source of truth — it carries every language-neutral field (image
+ * `src`, `icon`, `slug`, `current`) plus the English text. The Indonesian file
+ * mirrors only the translatable text, position for position, and is merged onto
+ * it here. Keeping image paths in one file is what stops the two drifting.
+ *
+ * The result pairs each translatable field as `{ en, id }` so the section can
+ * dual-render through <T>. Missing Indonesian entries fall back to English.
+ */
+
+export type BiPhoto = { src: string; alt: BiText; caption?: BiText };
+
+export type BiRole = {
+  title: BiText;
+  slug: string;
+  icon: string;
+  points: BiText[];
+  photos: BiPhoto[];
+};
+
+export type BiJob = {
+  company: string;
+  current: boolean;
+  location: BiText;
+  period: BiText;
+  duration: BiText;
+  summary: BiText;
+  roles: BiRole[];
+};
+
+type EnJob = (typeof experienceEn)[number];
+type EnRole = EnJob["roles"][number];
+type EnPhoto = { src: string; alt: string; caption?: string };
+
+type IdPhoto = { alt?: string; caption?: string };
+type IdRole = { title?: string; points?: string[]; photos?: IdPhoto[] };
+type IdJob = {
+  location?: string;
+  period?: string;
+  duration?: string;
+  summary?: string;
+  roles?: IdRole[];
+};
+
+const bi = (en: string, id: string | undefined): BiText => ({ en, id: id ?? en });
+
+function mergePhoto(en: EnPhoto, id: IdPhoto | undefined): BiPhoto {
+  const caption = en.caption !== undefined ? bi(en.caption, id?.caption) : undefined;
+  return {
+    src: en.src,
+    alt: bi(en.alt, id?.alt),
+    caption,
+  };
+}
+
+function mergeRole(en: EnRole, id: IdRole | undefined): BiRole {
+  const idPhotos = id?.photos ?? [];
+  const idPoints = id?.points ?? [];
+  return {
+    slug: en.slug,
+    icon: en.icon,
+    title: bi(en.title, id?.title),
+    points: en.points.map((point, i) => bi(point, idPoints[i])),
+    photos: (en.photos as EnPhoto[]).map((photo, i) => mergePhoto(photo, idPhotos[i])),
+  };
+}
+
+export function getExperience(): BiJob[] {
+  return (experienceEn as EnJob[]).map((job, jobIndex) => {
+    const id = (experienceId as IdJob[])[jobIndex] ?? {};
+    const idRoles = id.roles ?? [];
+    return {
+      company: job.company,
+      current: job.current,
+      location: bi(job.location, id.location),
+      period: bi(job.period, id.period),
+      duration: bi(job.duration, id.duration),
+      summary: bi(job.summary, id.summary),
+      roles: job.roles.map((role, i) => mergeRole(role, idRoles[i])),
+    };
+  });
+}

@@ -1,0 +1,199 @@
+[
+  {
+    "location": "Daerah Istimewa Yogyakarta, Indonesia",
+    "period": "Agu 2022 – Sekarang",
+    "duration": "4 thn",
+    "summary": "Tujuh peran paralel yang mencakup pelaksanaan konsultasi dan pelatihan profesional.",
+    "roles": [
+      {
+        "title": "Konsultan Teknologi Informasi",
+        "points": [
+          "Konsultan ahli untuk proyek dokumentasi SPBE (Sistem Pemerintahan Berbasis Elektronik) yang melayani klien pemerintah",
+          "Konsultasi Manajemen Data dengan menerapkan kerangka DMBOK",
+          "Menerapkan kerangka COBIT 2019 untuk asesmen tata kelola TI",
+          "10+ proyek konsultasi rampung di bidang arsitektur SPBE, Manajemen Data, dan Tata Kelola TI untuk institusi sektor publik"
+        ],
+        "photos": []
+      },
+      {
+        "title": "Instruktur Data Science",
+        "points": [
+          "Pelatihan Python untuk Data Science, dari pengolahan data hingga deployment model",
+          "Pembangunan model Machine Learning secara langsung (supervised & unsupervised)",
+          "Fundamental Deep Learning dan implementasi praktisnya",
+          "Memfasilitasi pelatihan Power BI dan Tableau untuk dashboard dan visualisasi data",
+          "Merancang dan menyampaikan program analitik data menyeluruh untuk klien sektor keuangan: EDA, korelasi diagnostik, peramalan deret waktu ARIMA, dan pelaporan rekomendasi strategis menggunakan data nilai tukar multi-tahun"
+        ],
+        "photos": [
+          {
+            "alt": "Sesi pelatihan Data Analytics dengan Excel dan Power BI untuk Gen BI",
+            "caption": "Data Analytics dengan Excel & Power BI untuk Gen BI"
+          },
+          {
+            "alt": "Kelas Data Scientist & Analyst untuk peserta Bank Indonesia dan Garudafood",
+            "caption": "Kelas Data Scientist & Analyst untuk Bank Indonesia dan Garudafood"
+          },
+          {
+            "alt": "Pelatihan Data Scientist untuk PT Kaltim Prima Coal, POMI, dan PT Pertamina Gas",
+            "caption": "Pelatihan Data Scientist untuk PT Kaltim Prima Coal, POMI, dan PT Pertamina Gas"
+          },
+          {
+            "alt": "Kelas Data Scientist untuk dosen dari Politeknik Negeri Ambon, Politeknik Caltex Riau, Politeknik Negeri Semarang, dan Universitas Brawijaya",
+            "caption": "Kelas Data Scientist untuk Politeknik Negeri Ambon, Politeknik Caltex Riau, Politeknik Negeri Semarang, dan Universitas Brawijaya"
+          },
+          {
+            "alt": "Sesi Data Science yang mencakup machine learning dan visualisasi Power BI untuk AirNav Indonesia",
+            "caption": "Data Science dengan Machine Learning & Power BI untuk AirNav Indonesia"
+          },
+          {
+            "alt": "Pelatihan Python Programming untuk Data Science dan visualisasi Power BI untuk AirNav Indonesia",
+            "caption": "Python untuk Data Science & Power BI untuk AirNav Indonesia"
+          },
+          {
+            "alt": "Pelatihan Data Science untuk Diskominfo Provinsi Kalimantan Timur",
+            "caption": "Data Science untuk Diskominfo Provinsi Kalimantan Timur"
+          },
+          {
+            "alt": "Pelatihan Data Visualization dengan Power BI untuk PT Pupuk Sriwidjaja Palembang",
+            "caption": "Data Visualization dengan Power BI untuk PT Pupuk Sriwidjaja Palembang (PUSRI)"
+          }
+        ]
+      },
+      {
+        "title": "Instruktur AI",
+        "points": [
+          "Pelatihan AI Governance yang berlandaskan NIST AI Risk Management Framework (AI RMF 1.0)",
+          "Teknik mitigasi bias yang mencakup 3+ metode debiasing",
+          "Pelatihan alur kerja AI Engineer yang selaras dengan prinsip tata kelola UNESCO & ASEAN",
+          "Penguasaan dan pengajaran 7+ teknik prompt engineering untuk Generative AI",
+          "Kurikulum Generative AI terapan: Retrieval-Augmented Generation (RAG) untuk sistem basis pengetahuan dan otomatisasi alur kerja dengan n8n"
+        ],
+        "photos": [
+          {
+            "alt": "Kelas AI Foundation, Governance, Risk & Compliance untuk Universitas Negeri Semarang",
+            "caption": "AI Foundation, Governance, Risk & Compliance untuk UNNES"
+          },
+          {
+            "alt": "Pelatihan Mastering AI Tools & Prompt Engineering untuk BPK RI",
+            "caption": "Mastering AI Tools & Prompt Engineering untuk BPK RI"
+          },
+          {
+            "alt": "Pelatihan implementasi Machine Learning & AI untuk divisi big data analytics BIDICS di BPK RI",
+            "caption": "Implementasi Machine Learning & AI untuk divisi BIDICS di BPK RI"
+          },
+          {
+            "alt": "Pelatihan Mastering AI Tools & Prompt Engineering untuk PT Praisindo Teknologi",
+            "caption": "Mastering AI Tools & Prompt Engineering untuk PT Praisindo Teknologi"
+          }
+        ]
+      },
+      {
+        "title": "Instruktur Big Data Specialist",
+        "points": [
+          "Pelatihan ekosistem Hadoop (HDFS, YARN, MapReduce)",
+          "Konfigurasi dan administrasi cluster Hadoop",
+          "Big Data Analytics dengan Apache Spark (PySpark)",
+          "Pelatihan data ingestion (Sqoop) dan ekosistem perkakas Big Data yang lebih luas (Hive, Sqoop, dan lainnya)"
+        ],
+        "photos": [
+          {
+            "alt": "Kelas Big Data Specialist & Administrator untuk Pertamina Geothermal Energy dan BPD Jawa Timur",
+            "caption": "Kelas Big Data Specialist & Administrator untuk Pertamina Geothermal Energy dan BPD Jawa Timur"
+          },
+          {
+            "alt": "Kelas Big Data Specialist untuk PERBAMIDA Jateng & DIY",
+            "caption": "Kelas Big Data Specialist untuk PERBAMIDA Jateng & DIY"
+          }
+        ]
+      },
+      {
+        "title": "Instruktur Manajemen Proyek",
+        "points": [
+          "Pelatihan manajemen proyek yang berlandaskan pengalaman pelaksanaan lapangan nyata",
+          "Membimbing 100+ peserta hingga lulus sertifikasi PMI CAPM®",
+          "Studi kasus Agile & Waterfall",
+          "Pelatihan Microsoft Project (penjadwalan, alokasi sumber daya)",
+          "Pelatihan mendalam PMBOK Edisi 6 & 7"
+        ],
+        "photos": [
+          {
+            "alt": "Pelatihan manajemen proyek PMBOK 7 untuk Peruri",
+            "caption": "Pelatihan PMBOK 7 untuk Peruri"
+          },
+          {
+            "alt": "Pelatihan manajemen proyek PMBOK 7 untuk PT Pupuk Indonesia",
+            "caption": "Pelatihan PMBOK 7 untuk PT Pupuk Indonesia"
+          },
+          {
+            "alt": "Pelatihan proses dan pengetahuan manajemen proyek menggunakan PMBOK 6 dan 7 untuk PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, dan BuanterOne",
+            "caption": "Pelatihan PMBOK 6 & 7 untuk PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, dan BuanterOne"
+          },
+          {
+            "alt": "Pelatihan implementasi Microsoft Project 2019 untuk Paiton Operation & Maintenance Indonesia",
+            "caption": "Implementasi Microsoft Project 2019 untuk POMI"
+          }
+        ]
+      },
+      {
+        "title": "Instruktur Manajemen Data",
+        "points": [
+          "Pelatihan Manajemen Data berbasis DMBOK mencakup seluruh 11 knowledge area",
+          "Metodologi asesmen hibrida COBIT 2019 + DMBOK",
+          "Data Science Management dan Big Data Analytics Management sebagai strategi data perusahaan",
+          "Menerapkan model 6 Core Values of Hexagonal Environmental Factors"
+        ],
+        "photos": [
+          {
+            "alt": "Kelas eksekutif Manajemen Data menggunakan kerangka DMBOK",
+            "caption": "Kelas Eksekutif Manajemen Data dengan DMBOK"
+          },
+          {
+            "alt": "Kelas eksekutif Manajemen Data dengan DMBOK dan tata kelola data AI",
+            "caption": "Kelas Eksekutif Manajemen Data dengan DMBOK & AI Data Governance"
+          },
+          {
+            "alt": "Kelas DMBOK dengan peserta dari Universitas Tadulako, UTDI, Barito Pacific Group, dan Telkom Indonesia",
+            "caption": "Kelas DMBOK untuk Universitas Tadulako, UTDI, Barito Pacific Group, dan Telkom Indonesia"
+          }
+        ]
+      },
+      {
+        "title": "Instruktur Digital Skills",
+        "points": [
+          "Pelatihan Microsoft Excel untuk Gen BI (Generasi Baru Indonesia) di berbagai kantor cabang, 300+ peserta",
+          "Pelatihan Design Thinking (pemecahan masalah berpusat pada manusia, 10+ jenis ide inovasi)",
+          "Pelatihan Innovation Management (Design Thinking → Business Model Canvas)",
+          "Pelatihan Digital Transformation dan Digital Leadership"
+        ],
+        "photos": [
+          {
+            "alt": "Pelatihan Data Analytics dengan Excel untuk PT Global Dairi Alami",
+            "caption": "Data Analytics dengan Excel untuk PT Global Dairi Alami"
+          },
+          {
+            "alt": "Pelatihan IT Ethics & Leadership untuk PGN Solution",
+            "caption": "IT Ethics & Leadership untuk PGN Solution"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "location": "Jakarta Selatan, Indonesia",
+    "period": "Jun 2021 – Agu 2021",
+    "duration": "3 bln",
+    "summary": "Strategic Marketing yang berfokus pada analisis kompetitif dan produk untuk penawaran keamanan.",
+    "roles": [
+      {
+        "title": "Pemasaran Strategis",
+        "points": [
+          "Analisis bisnis & produk internal dan eksternal untuk mendukung keputusan strategis pada produk keamanan",
+          "Analisis kompetitor produk keamanan, positioning pasar, dan diferensiasi",
+          "Riset tren produk TI melalui Google Analytics",
+          "Berkoordinasi dengan kepala proyek dalam perencanaan strategis"
+        ],
+        "photos": []
+      }
+    ]
+  }
+]

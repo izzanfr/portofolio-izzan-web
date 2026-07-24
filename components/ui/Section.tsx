@@ -5,9 +5,9 @@ import { SectionBackdrop, SectionSeam } from "./SectionBackdrop";
 
 type SectionProps = {
   id: string;
-  eyebrow?: string;
-  title?: string;
-  lead?: string;
+  eyebrow?: ReactNode;
+  title?: ReactNode;
+  lead?: ReactNode;
   children: ReactNode;
   /** `tint` sections carry a faint navy wash; alternating them sets the page rhythm. */
   tone?: "base" | "tint";
