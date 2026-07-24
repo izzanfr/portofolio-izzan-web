@@ -6,7 +6,9 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
-import { navLinks, profile, sectionIds } from "@/lib/content";
+import { LanguageToggle } from "./LanguageToggle";
+import { T } from "@/components/ui/T";
+import { navLinks, sectionIds } from "@/lib/content";
 import { useActiveSection } from "@/lib/useActiveSection";
 import { cn } from "@/lib/utils";
 
@@ -72,21 +74,20 @@ export function Navbar() {
                       className="absolute inset-0 -z-10 rounded-full"
                     />
                   )}
-                  <span className="relative">{link.label}</span>
+                  <span className="relative">
+                    <T en={link.label.en} id={link.label.id} />
+                  </span>
                 </Link>
               </li>
             );
           })}
 
-          {/* Divider, then the actions: CTA plus the theme toggle */}
+          {/* Divider, then the utility controls: language switch and theme toggle.
+              The talk CTA lived here but was dropped — the Contact section below
+              already carries it, so the nav stays purely navigational. */}
           <li aria-hidden className="mx-0.5 h-6 w-px shrink-0 bg-border/70" />
           <li>
-            <a
-              href={`mailto:${profile.email}`}
-              className="block rounded-full bg-navy px-5 py-2.5 text-sm font-medium text-white transition-colors duration-300 hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:hover:bg-accent-strong"
-            >
-              Let&apos;s talk
-            </a>
+            <LanguageToggle />
           </li>
           <li>
             <ThemeToggle className="h-9 w-9 text-muted hover:bg-accent/10 hover:text-accent-strong dark:hover:text-accent" />
@@ -95,6 +96,7 @@ export function Navbar() {
 
         {/* Mobile controls, pushed to the right since the logo is gone */}
         <div className="ml-auto flex items-center gap-2 md:hidden">
+          <LanguageToggle />
           <ThemeToggle className="h-10 w-10 border border-border bg-surface/70 hover:border-accent hover:text-accent-strong dark:hover:text-accent" />
           <button
             type="button"
@@ -148,7 +150,7 @@ export function Navbar() {
                       active === link.id ? "" : "text-foreground",
                     )}
                   >
-                    {link.label}
+                    <T en={link.label.en} id={link.label.id} />
                     {active === link.id && (
                       <span
                         style={{ backgroundColor: `var(${link.tone})` }}
@@ -158,16 +160,6 @@ export function Navbar() {
                   </Link>
                 </motion.li>
               ))}
-              <motion.a
-                href={`mailto:${profile.email}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
-                onClick={() => setOpen(false)}
-                className="mt-5 rounded-full bg-navy px-5 py-3 text-center text-sm font-medium text-white dark:bg-accent dark:text-accent-contrast"
-              >
-                Let&apos;s talk
-              </motion.a>
             </ul>
           </motion.div>
         )}

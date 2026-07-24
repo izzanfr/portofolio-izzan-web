@@ -5,6 +5,9 @@ import type { EmblaCarouselType } from "embla-carousel";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { ProjectCard } from "./ProjectCard";
+import { T } from "./T";
+import { useCurrentLocale } from "@/components/providers/LocaleProvider";
+import { pick } from "@/lib/i18n";
 import type { ProjectMeta } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
@@ -56,6 +59,7 @@ export function ProjectCarousel({ projects }: { projects: ProjectMeta[] }) {
   const canNext = useEmblaValue(emblaApi, readCanNext, false);
 
   const snaps = useMemo(() => Array.from({ length: snapCount }), [snapCount]);
+  const locale = useCurrentLocale();
 
   return (
     <div>
@@ -78,14 +82,18 @@ export function ProjectCarousel({ projects }: { projects: ProjectMeta[] }) {
       </div>
 
       <div className="mt-8 flex items-center justify-between gap-6">
-        <div className="flex items-center gap-1.5" role="tablist" aria-label="Project slides">
+        <div
+          className="flex items-center gap-1.5"
+          role="tablist"
+          aria-label={pick({ en: "Project slides", id: "Slide proyek" }, locale)}
+        >
           {snaps.map((_, index) => (
             <button
               key={index}
               type="button"
               role="tab"
               aria-selected={index === selected}
-              aria-label={`Go to slide ${index + 1}`}
+              aria-label={`${pick({ en: "Go to slide", id: "Ke slide" }, locale)} ${index + 1}`}
               onClick={() => emblaApi?.scrollTo(index)}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
@@ -105,7 +113,7 @@ export function ProjectCarousel({ projects }: { projects: ProjectMeta[] }) {
             type="button"
             onClick={() => emblaApi?.scrollPrev()}
             disabled={!canPrev}
-            aria-label="Previous projects"
+            aria-label={pick({ en: "Previous projects", id: "Proyek sebelumnya" }, locale)}
             className="grid h-11 w-11 place-items-center rounded-full border border-border bg-surface/60 transition-all duration-200 hover:border-accent hover:text-accent-strong disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-border disabled:hover:text-foreground dark:hover:text-accent"
           >
             <ArrowLeft size={17} />
@@ -114,7 +122,7 @@ export function ProjectCarousel({ projects }: { projects: ProjectMeta[] }) {
             type="button"
             onClick={() => emblaApi?.scrollNext()}
             disabled={!canNext}
-            aria-label="Next projects"
+            aria-label={pick({ en: "Next projects", id: "Proyek berikutnya" }, locale)}
             className="grid h-11 w-11 place-items-center rounded-full border border-border bg-surface/60 transition-all duration-200 hover:border-accent hover:text-accent-strong disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-border disabled:hover:text-foreground dark:hover:text-accent"
           >
             <ArrowRight size={17} />
@@ -122,7 +130,9 @@ export function ProjectCarousel({ projects }: { projects: ProjectMeta[] }) {
         </div>
       </div>
 
-      <p className="mt-4 font-mono text-[11px] text-muted sm:hidden">Swipe to browse →</p>
+      <p className="mt-4 font-mono text-[11px] text-muted sm:hidden">
+        <T en="Swipe to browse →" id="Geser untuk menelusuri →" />
+      </p>
     </div>
   );
 }

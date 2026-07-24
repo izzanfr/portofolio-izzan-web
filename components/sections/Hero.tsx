@@ -9,7 +9,8 @@ import { SectionBackdrop } from "@/components/ui/SectionBackdrop";
 import { StatCard } from "@/components/ui/StatCard";
 import { TechMarquee } from "@/components/ui/TechMarquee";
 import { useIntroDone } from "@/components/Preloader";
-import { profile } from "@/lib/content";
+import { T } from "@/components/ui/T";
+import { profile, profileId } from "@/lib/content";
 
 const rise = {
   hidden: { opacity: 0, y: 24 },
@@ -72,8 +73,20 @@ export function Hero() {
                 animate={enter}
                 className="mt-5 text-xl font-medium tracking-[-0.015em] sm:text-2xl md:text-3xl"
               >
-                <span className="text-muted">I work as </span>
-                <RotatingText items={profile.roles} article />
+                <T
+                  en={
+                    <>
+                      <span className="text-muted">I work as </span>
+                      <RotatingText items={profile.roles} article />
+                    </>
+                  }
+                  id={
+                    <>
+                      <span className="text-muted">Saya bekerja sebagai </span>
+                      <RotatingText items={profileId.roles} />
+                    </>
+                  }
+                />
               </motion.p>
 
               <motion.p
@@ -83,7 +96,7 @@ export function Hero() {
                 animate={enter}
                 className="mt-6 max-w-2xl text-base leading-[1.75] text-muted md:text-[1.0625rem]"
               >
-                {profile.introBody}
+                <T en={profile.introBody} id={profileId.introBody} />
               </motion.p>
 
               <motion.div
@@ -99,7 +112,7 @@ export function Hero() {
                   whileTap={{ scale: 0.97 }}
                   className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white shadow-lg shadow-navy/15 transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:shadow-accent/20 dark:hover:bg-accent-strong"
                 >
-                  Let&apos;s work together
+                  <T en="Let's work together" id="Mari bekerja sama" />
                   <ArrowUpRight
                     size={16}
                     className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -116,8 +129,10 @@ export function Hero() {
               >
                 <MapPin size={15} className="mt-0.5 shrink-0 text-accent-strong dark:text-accent" />
                 <span>
-                  {profile.location}
-                  <span className="block text-xs opacity-80">{profile.locationNote}</span>
+                  <T en={profile.location} id={profileId.location} />
+                  <span className="block text-xs opacity-80">
+                    <T en={profile.locationNote} id={profileId.locationNote} />
+                  </span>
                 </span>
               </motion.p>
             </div>
@@ -143,8 +158,12 @@ export function Hero() {
             leave their card floating half-empty. */}
         <Reveal delay={0.1}>
           <dl className="mt-16 grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 md:mt-20 md:gap-5 lg:grid-cols-4">
-            {profile.stats.map((stat) => (
-              <StatCard key={stat.label} value={stat.value} label={stat.label} />
+            {profile.stats.map((stat, index) => (
+              <StatCard
+                key={stat.label}
+                value={<T en={stat.value} id={profileId.stats[index]?.value ?? stat.value} />}
+                label={<T en={stat.label} id={profileId.stats[index]?.label ?? stat.label} />}
+              />
             ))}
           </dl>
         </Reveal>

@@ -1,0 +1,64 @@
+{
+  "certifications": [
+    {
+      "date": "",
+      "description": "Kredensial manajemen proyek fundamental dari PMI, mencakup pendekatan prediktif, agile, dan hibrida di sepanjang siklus hidup proyek: ruang lingkup, jadwal, biaya, kualitas, sumber daya, komunikasi, risiko, pengadaan, dan manajemen pemangku kepentingan, berlandaskan PMBOK Edisi 6 dan 7.",
+      "covers": [
+        "Siklus hidup proyek & process group",
+        "Metodologi prediktif, agile & hibrida",
+        "Manajemen jadwal dan biaya",
+        "Manajemen risiko & pemangku kepentingan"
+      ]
+    },
+    {
+      "date": "",
+      "description": "Kredensial data science tingkat spesialis yang mencakup alur analitik menyeluruh: persiapan dan pengolahan data, analisis eksploratif dan diagnostik, pengembangan model machine learning, serta menerjemahkan hasil menjadi keputusan yang dapat ditindaklanjuti pemangku kepentingan.",
+      "covers": [
+        "Pengolahan & persiapan data",
+        "Analisis eksploratif & diagnostik",
+        "Pemodelan machine learning",
+        "Komunikasi wawasan"
+      ]
+    },
+    {
+      "date": "",
+      "description": "Kredensial data analyst Microsoft untuk Power BI: menyiapkan dan memodelkan data, menulis measure DAX, merancang visual laporan, serta mengelola deployment dan akses workspace.",
+      "covers": [
+        "Persiapan & pemodelan data",
+        "Measure DAX",
+        "Desain laporan & dashboard",
+        "Manajemen workspace"
+      ]
+    },
+    {
+      "date": "Terbit Jan 2026",
+      "description": "Kredensial analyst Salesforce untuk Tableau, mencakup koneksi dan persiapan data, membangun kalkulasi, merancang dashboard yang tahan uji terhadap pertanyaan nyata, serta berbagi hasil melalui Tableau Cloud dan Server.",
+      "covers": [
+        "Koneksi & persiapan data",
+        "Kalkulasi & analitik",
+        "Desain dashboard",
+        "Berbagi & perizinan"
+      ]
+    },
+    {
+      "date": "",
+      "description": "Ujian tingkat profesional yang mencakup machine learning terapan di RapidMiner: membangun dan menilai model prediktif, memvalidasinya secara jujur, serta membaca apa yang sebenarnya dikatakan hasil tentang data.",
+      "covers": [
+        "Klasifikasi & regresi",
+        "Scoring & validasi hold-out",
+        "Korelasi & feature importance",
+        "Clustering & association rule"
+      ]
+    },
+    {
+      "date": "",
+      "description": "Ujian tingkat profesional yang mencakup pekerjaan persiapan data sebelum pemodelan: mengakses sumber, membentuk ulang dan menggabungkan set data, serta menangani transformasi rutin yang menjadi sandaran analisis.",
+      "covers": [
+        "Akses data",
+        "Transformasi dasar",
+        "Bekerja dengan banyak set data",
+        "Pivot table, rutin & pemrosesan teks"
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { Reveal } from "@/components/ui/Reveal";
 import { ProjectCard } from "@/components/ui/ProjectCard";
+import { T } from "@/components/ui/T";
 import { getProjectMeta } from "@/lib/projects";
 
 export const metadata: Metadata = {
@@ -26,14 +27,16 @@ export default function ProjectsIndexPage() {
               size={15}
               className="transition-transform duration-300 group-hover:-translate-x-1"
             />
-            Back home
+            <T en="Back home" id="Kembali ke beranda" />
           </Link>
           <h1 className="mt-8 text-balance text-4xl tracking-display md:text-5xl">
-            Projects
+            <T en="Projects" id="Proyek" />
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
-            {projects.length} consulting engagements across provincial and regency governments,
-            national agencies, and state enterprises.
+            <T
+              en={`${projects.length} consulting engagements across provincial and regency governments, national agencies, and state enterprises.`}
+              id={`${projects.length} penugasan konsultasi di lingkungan pemerintah provinsi dan kabupaten, lembaga nasional, serta badan usaha milik negara.`}
+            />
           </p>
         </Reveal>
 

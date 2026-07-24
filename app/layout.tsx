@@ -3,8 +3,10 @@ import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { ThemeProvider, themeInitScript } from "@/components/providers/ThemeProvider";
+import { LocaleProvider, localeInitScript } from "@/components/providers/LocaleProvider";
 import { Preloader, preloaderInitScript } from "@/components/Preloader";
 import { ImageGuard } from "@/components/ImageGuard";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { profile } from "@/lib/content";
 
 // Display serif — SOFT/WONK axes are what keep large headings from reading generic
@@ -66,14 +68,18 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: localeInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: preloaderInitScript }} />
       </head>
       <body className="grain flex min-h-full flex-col">
         <Preloader />
         <ImageGuard />
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
+          <LocaleProvider>
+            <ScrollProgress />
+            <Navbar />
+            <main className="flex-1">{children}</main>
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>

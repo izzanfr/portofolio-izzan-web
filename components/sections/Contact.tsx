@@ -6,13 +6,17 @@ import { useState, type FormEvent } from "react";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { LinkedInIcon } from "@/components/ui/icons";
-import { profile } from "@/lib/content";
+import { T } from "@/components/ui/T";
+import { useCurrentLocale } from "@/components/providers/LocaleProvider";
+import { profile, profileId } from "@/lib/content";
+import { pick } from "@/lib/i18n";
 
 const inputClass =
   "w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-sm outline-none transition-colors duration-200 placeholder:text-muted/70 focus:border-accent";
 
 export function Contact() {
   const [sent, setSent] = useState(false);
+  const locale = useCurrentLocale();
 
   // No backend yet — compose a mailto: so the message lands in the visitor's own client
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -22,7 +26,11 @@ export function Contact() {
     const email = String(form.get("email") ?? "");
     const message = String(form.get("message") ?? "");
 
-    const subject = encodeURIComponent(`Portfolio enquiry from ${name}`);
+    const subjectText = pick(
+      { en: `Portfolio enquiry from ${name}`, id: `Pertanyaan portofolio dari ${name}` },
+      locale,
+    );
+    const subject = encodeURIComponent(subjectText);
     const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
     window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
     setSent(true);
@@ -31,8 +39,13 @@ export function Contact() {
   return (
     <Section
       id="contact"
-      title="Contact"
-      lead="Got a data challenge worth talking through? Consulting engagements, training programs, or a conversation about switching into data science are all welcome."
+      title={<T en="Contact" id="Kontak" />}
+      lead={
+        <T
+          en="Got a data challenge worth talking through? Consulting engagements, training programs, or a conversation about switching into data science are all welcome."
+          id="Punya tantangan data yang layak didiskusikan? Penugasan konsultasi, program pelatihan, atau sekadar obrolan tentang alih karier ke data science, semuanya saya sambut."
+        />
+      }
       tone="base"
       index={4}
     >
@@ -84,11 +97,13 @@ export function Contact() {
             </span>
             <span>
               <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                Based in
+                <T en="Based in" id="Berbasis di" />
               </span>
-              <span className="block text-sm font-medium">{profile.location}</span>
+              <span className="block text-sm font-medium">
+                <T en={profile.location} id={profileId.location} />
+              </span>
               <span className="mt-1 block text-xs leading-relaxed text-muted">
-                {profile.locationNote}
+                <T en={profile.locationNote} id={profileId.locationNote} />
               </span>
             </span>
           </div>
@@ -101,8 +116,16 @@ export function Contact() {
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block">
-                <span className="mb-2 block text-xs font-medium text-muted">Name</span>
-                <input required name="name" type="text" placeholder="Your name" className={inputClass} />
+                <span className="mb-2 block text-xs font-medium text-muted">
+                  <T en="Name" id="Nama" />
+                </span>
+                <input
+                  required
+                  name="name"
+                  type="text"
+                  placeholder={pick({ en: "Your name", id: "Nama Anda" }, locale)}
+                  className={inputClass}
+                />
               </label>
               <label className="block">
                 <span className="mb-2 block text-xs font-medium text-muted">Email</span>
@@ -116,12 +139,20 @@ export function Contact() {
               </label>
             </div>
             <label className="mt-4 block">
-              <span className="mb-2 block text-xs font-medium text-muted">Message</span>
+              <span className="mb-2 block text-xs font-medium text-muted">
+                <T en="Message" id="Pesan" />
+              </span>
               <textarea
                 required
                 name="message"
                 rows={5}
-                placeholder="Tell me about the project, training need, or question."
+                placeholder={pick(
+                  {
+                    en: "Tell me about the project, training need, or question.",
+                    id: "Ceritakan tentang proyek, kebutuhan pelatihan, atau pertanyaan Anda.",
+                  },
+                  locale,
+                )}
                 className={`${inputClass} resize-y`}
               />
             </label>
@@ -133,13 +164,21 @@ export function Contact() {
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:hover:bg-accent-strong"
             >
               <Send size={15} />
-              Send message
+              <T en="Send message" id="Kirim pesan" />
             </motion.button>
 
             <p className="mt-4 text-center text-xs leading-relaxed text-muted">
-              {sent
-                ? "Your email client should have opened with the message ready to send."
-                : "This opens your own email client with the message pre-filled. Nothing is stored here."}
+              {sent ? (
+                <T
+                  en="Your email client should have opened with the message ready to send."
+                  id="Aplikasi email Anda semestinya terbuka dengan pesan siap dikirim."
+                />
+              ) : (
+                <T
+                  en="This opens your own email client with the message pre-filled. Nothing is stored here."
+                  id="Ini membuka aplikasi email Anda sendiri dengan pesan yang sudah terisi. Tidak ada data yang disimpan di sini."
+                />
+              )}
             </p>
           </form>
         </Reveal>
@@ -148,7 +187,8 @@ export function Contact() {
       {/* Carried over from the deleted footer: the copyright was the only thing
           there not already covered by this section. */}
       <p className="mt-16 border-t border-border pt-6 text-xs text-muted">
-        © {new Date().getFullYear()} {profile.name}. All rights reserved.
+        © {new Date().getFullYear()} {profile.name}.{" "}
+        <T en="All rights reserved." id="Hak cipta dilindungi." />
       </p>
     </Section>
   );

@@ -5,22 +5,14 @@ import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
 import { Section } from "@/components/ui/Section";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
-import {
-  ExperienceGallery,
-  type ExperiencePhoto,
-} from "@/components/ui/ExperienceGallery";
+import { ExperienceGallery } from "@/components/ui/ExperienceGallery";
+import { T } from "@/components/ui/T";
 import { cn } from "@/lib/utils";
-import experience from "@/content/experience.json";
+import { getExperience, type BiRole } from "@/lib/experience";
 
-type Role = {
-  title: string;
-  slug: string;
-  icon: string;
-  points: string[];
-  photos: ExperiencePhoto[];
-};
+const experience = getExperience();
 
-function RoleAccordion({ role, index }: { role: Role; index: number }) {
+function RoleAccordion({ role, index }: { role: BiRole; index: number }) {
   const [open, setOpen] = useState(index === 0);
 
   return (
@@ -52,7 +44,9 @@ function RoleAccordion({ role, index }: { role: Role; index: number }) {
         >
           <DynamicIcon name={role.icon} size={17} />
         </span>
-        <span className="flex-1 text-sm font-medium md:text-base">{role.title}</span>
+        <span className="flex-1 text-sm font-medium md:text-base">
+          <T en={role.title.en} id={role.title.id} />
+        </span>
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.25 }}
@@ -69,10 +63,10 @@ function RoleAccordion({ role, index }: { role: Role; index: number }) {
         className="overflow-hidden"
       >
         <ul className="space-y-2.5 px-5 pb-5 pl-[4.25rem] text-sm leading-relaxed text-muted">
-          {role.points.map((point) => (
-            <li key={point} className="relative pl-4">
+          {role.points.map((point, i) => (
+            <li key={i} className="relative pl-4">
               <span className="absolute left-0 top-[0.6em] h-1 w-1 rounded-full bg-accent" />
-              {point}
+              <T en={point.en} id={point.id} />
             </li>
           ))}
         </ul>
@@ -94,7 +88,12 @@ export function Experience() {
   const scaleY = useTransform(progress, (v) => Math.max(v, 0.02));
 
   return (
-    <Section id="experience" title="Experience" tone="tint" index={1}>
+    <Section
+      id="experience"
+      title={<T en="Experience" id="Pengalaman" />}
+      tone="tint"
+      index={1}
+    >
       <div ref={trackRef} className="relative">
         {/* Scroll-linked timeline spine */}
         <div className="absolute left-[7px] top-2 hidden h-[calc(100%-1rem)] w-px bg-border md:block">
@@ -130,19 +129,23 @@ export function Experience() {
                       for text that small. */}
                   {job.current && (
                     <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
-                      Current
+                      <T en="Current" id="Saat ini" />
                     </span>
                   )}
                 </div>
                 <p className="mt-1.5 font-mono text-xs text-muted">
-                  {job.period} · {job.duration} · {job.location}
+                  <T en={job.period.en} id={job.period.id} /> ·{" "}
+                  <T en={job.duration.en} id={job.duration.id} /> ·{" "}
+                  <T en={job.location.en} id={job.location.id} />
                 </p>
-                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">{job.summary}</p>
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
+                  <T en={job.summary.en} id={job.summary.id} />
+                </p>
               </motion.div>
 
               <ul className="space-y-2.5">
                 {job.roles.map((role, index) => (
-                  <RoleAccordion key={role.title} role={role} index={index} />
+                  <RoleAccordion key={role.slug} role={role} index={index} />
                 ))}
               </ul>
             </div>

@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 import { BadgeCheck, Expand } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Modal } from "./Modal";
+import { T } from "./T";
 import { staggerChild, staggerParent } from "./Reveal";
+import { useCurrentLocale } from "@/components/providers/LocaleProvider";
+import { pick } from "@/lib/i18n";
 import type { Certificate } from "@/lib/certifications";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +16,7 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const close = useCallback(() => setOpenIndex(null), []);
   const active = openIndex === null ? null : certificates[openIndex];
+  const locale = useCurrentLocale();
 
   return (
     <>
@@ -54,14 +58,14 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
                 {certificate.featured && (
                   <span className="mb-2 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
                     <BadgeCheck size={12} />
-                    Flagship credential
+                    <T en="Flagship credential" id="Kredensial unggulan" />
                   </span>
                 )}
                 <span className="block text-sm font-medium leading-snug">{certificate.name}</span>
                 <span className="mt-1.5 block text-xs text-muted">{certificate.issuer}</span>
-                {certificate.date && (
+                {certificate.date.en && (
                   <span className="mt-1 block font-mono text-[11px] text-muted">
-                    {certificate.date}
+                    <T en={certificate.date.en} id={certificate.date.id} />
                   </span>
                 )}
               </span>
@@ -73,7 +77,11 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
       <Modal
         open={active !== null}
         onClose={close}
-        label={active ? `${active.name} certificate` : "Certificate"}
+        label={
+          active
+            ? `${active.name} ${pick({ en: "certificate", id: "sertifikat" }, locale)}`
+            : pick({ en: "Certificate", id: "Sertifikat" }, locale)
+        }
         className="max-w-4xl"
       >
         {active && (
@@ -82,7 +90,7 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
             <div className="grid place-items-center bg-navy p-4 md:p-6">
               <Image
                 src={active.image}
-                alt={`${active.name} certificate`}
+                alt={`${active.name} ${pick({ en: "certificate", id: "sertifikat" }, locale)}`}
                 width={1600}
                 height={1131}
                 sizes="90vw"
@@ -94,23 +102,30 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
               <h3 className="text-xl tracking-[-0.022em] md:text-2xl">{active.name}</h3>
               <p className="mt-2 text-sm text-muted">
                 {active.issuer}
-                {active.date && <span className="font-mono"> · {active.date}</span>}
+                {active.date.en && (
+                  <span className="font-mono">
+                    {" "}
+                    · <T en={active.date.en} id={active.date.id} />
+                  </span>
+                )}
               </p>
 
-              <p className="mt-5 text-sm leading-[1.75] text-muted">{active.description}</p>
+              <p className="mt-5 text-sm leading-[1.75] text-muted">
+                <T en={active.description.en} id={active.description.id} />
+              </p>
 
               {active.covers.length > 0 && (
                 <div className="mt-6">
                   <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                    What it covers
+                    <T en="What it covers" id="Yang dicakup" />
                   </p>
                   <ul className="flex flex-wrap gap-2">
-                    {active.covers.map((item) => (
+                    {active.covers.map((item, i) => (
                       <li
-                        key={item}
+                        key={i}
                         className="rounded-full border border-border bg-surface/60 px-3 py-1.5 text-xs"
                       >
-                        {item}
+                        <T en={item.en} id={item.id} />
                       </li>
                     ))}
                   </ul>

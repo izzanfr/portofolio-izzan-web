@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -13,8 +14,8 @@ export function StatCard({
   label,
   className,
 }: {
-  value: string;
-  label: string;
+  value: ReactNode;
+  label: ReactNode;
   className?: string;
 }) {
   return (
