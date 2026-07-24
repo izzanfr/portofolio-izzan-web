@@ -58,26 +58,3 @@ export const staggerChild: Variants = {
     transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
   },
 };
-
-/** Wrap a list to stagger its children into view. */
-export function RevealGroup({
-  children,
-  className,
-  amount = 0.2,
-}: {
-  children: ReactNode;
-  className?: string;
-  amount?: number;
-}) {
-  return (
-    <motion.div
-      className={className}
-      variants={staggerParent}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount }}
-    >
-      {children}
-    </motion.div>
-  );
-}

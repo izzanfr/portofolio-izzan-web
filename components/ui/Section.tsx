@@ -46,8 +46,8 @@ export function Section({
     >
       {/* Soft band instead of a hairline: against a drifting wash a 1px rule
           reads as a hard edge cutting through it. */}
-      <SectionSeam kind="fade" />
-      <SectionBackdrop variant="mesh" index={index} />
+      <SectionSeam />
+      <SectionBackdrop index={index} />
 
       <div className="container-page relative">
         {(eyebrow || title || lead) && (

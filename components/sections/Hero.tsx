@@ -31,7 +31,7 @@ export function Hero() {
       {/* Ambient wash, shared with every other section. It replaces the dotted
           grid that used to sit here: with the wash, the portrait bloom and the
           drifting wordmark all in play, the grid was one texture too many. */}
-      <SectionBackdrop variant="mesh" index={0} />
+      <SectionBackdrop index={0} />
 
       <div className="container-page relative">
         {/* Top row: two-column intro, sitting over a faint drifting wordmark. */}
