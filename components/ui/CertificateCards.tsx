@@ -6,17 +6,8 @@ import { BadgeCheck, Expand } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Modal } from "./Modal";
 import { staggerChild, staggerParent } from "./Reveal";
+import type { Certificate } from "@/lib/certifications";
 import { cn } from "@/lib/utils";
-
-export type Certificate = {
-  name: string;
-  issuer: string;
-  date: string;
-  featured: boolean;
-  image: string;
-  description: string;
-  covers: string[];
-};
 
 export function CertificateCards({ certificates }: { certificates: Certificate[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { indefiniteArticle } from "@/lib/utils";
 
 /** Number of `--role-N` tokens defined in globals.css. */
 const ROLE_COLORS = 4;
@@ -10,10 +11,17 @@ export function RotatingText({
   items,
   interval = 2600,
   className,
+  article = false,
 }: {
   items: readonly string[];
   interval?: number;
   className?: string;
+  /**
+   * Prefix each role with a grammatically-correct "a"/"an" that swaps in step
+   * with it, so the lead-in reads "I work as a/an …" rather than a fixed word.
+   * The article is muted, matching the lead-in; only the role carries colour.
+   */
+  article?: boolean;
 }) {
   const [index, setIndex] = useState(0);
 
@@ -22,27 +30,32 @@ export function RotatingText({
     return () => clearInterval(id);
   }, [items.length, interval]);
 
+  const current = items[index];
+  // Reserve the width of the longest article+role pairing so the line never
+  // reflows as they swap.
+  const compose = (role: string) => (article ? `${indefiniteArticle(role)} ${role}` : role);
+  const widest = items.reduce((a, b) => (compose(b).length > compose(a).length ? b : a), items[0] ?? "");
+
   return (
     <span className={className}>
-      {/* Reserve the width of the longest role so the line never reflows */}
       <span className="relative inline-grid align-bottom">
         <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-nowrap">
-          {items.reduce((a, b) => (b.length > a.length ? b : a), "")}
+          {compose(widest)}
         </span>
         <AnimatePresence mode="wait">
           <motion.span
-            key={items[index]}
+            key={current}
             initial={{ y: "0.6em", opacity: 0, filter: "blur(6px)" }}
             animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
             exit={{ y: "-0.6em", opacity: 0, filter: "blur(6px)" }}
             transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-            // Colour rides the same keyed swap as the text, so the two change
-            // together rather than the hue crossfading on its own. Each token
-            // resolves to a different hex in light vs dark.
-            style={{ color: `var(--role-${(index % ROLE_COLORS) + 1})` }}
             className="col-start-1 row-start-1 whitespace-nowrap"
           >
-            {items[index]}
+            {article && <span className="text-muted">{indefiniteArticle(current)} </span>}
+            {/* Colour rides the same keyed swap as the text, so the two change
+                together rather than the hue crossfading on its own. Each token
+                resolves to a different hex in light vs dark. */}
+            <span style={{ color: `var(--role-${(index % ROLE_COLORS) + 1})` }}>{current}</span>
           </motion.span>
         </AnimatePresence>
       </span>

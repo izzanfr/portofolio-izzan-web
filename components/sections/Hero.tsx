@@ -1,10 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { RotatingText } from "@/components/ui/RotatingText";
 import { Reveal } from "@/components/ui/Reveal";
+import { HeroPortrait } from "@/components/ui/HeroPortrait";
+import { SectionBackdrop } from "@/components/ui/SectionBackdrop";
+import { StatCard } from "@/components/ui/StatCard";
 import { TechMarquee } from "@/components/ui/TechMarquee";
 import { useIntroDone } from "@/components/Preloader";
 import { profile } from "@/lib/content";
@@ -26,19 +28,10 @@ export function Hero() {
 
   return (
     <section id="home" className="relative overflow-hidden pt-24 pb-20 md:pt-28 md:pb-28">
-      {/* Ambient background: dotted grid fading out, plus one warm amber bloom */}
-      <div
-        aria-hidden
-        className="dot-grid pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(70%_50%_at_50%_25%,black,transparent)]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-32 -top-24 h-[32rem] w-[32rem] rounded-full bg-accent/12 blur-[120px] dark:bg-accent/10"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -left-24 h-[26rem] w-[26rem] rounded-full bg-navy/10 blur-[110px] dark:bg-navy-soft/40"
-      />
+      {/* Ambient wash, shared with every other section. It replaces the dotted
+          grid that used to sit here: with the wash, the portrait bloom and the
+          drifting wordmark all in play, the grid was one texture too many. */}
+      <SectionBackdrop variant="mesh" index={0} />
 
       <div className="container-page relative">
         {/* Top row: two-column intro, sitting over a faint drifting wordmark. */}
@@ -54,7 +47,7 @@ export function Hero() {
             {/* Two identical halves feed the seamless -50% drift. The separator
                 gap is padding, not a trailing space, so neither half loses width
                 to whitespace collapsing and the loop never jumps. */}
-            <div className="marquee-wordmark w-max whitespace-nowrap font-sans text-[8.5vw] font-black uppercase leading-none tracking-[-0.01em] text-navy/[0.045] dark:text-white/[0.05]">
+            <div className="marquee-wordmark w-max whitespace-nowrap font-sans text-[13vw] font-black uppercase leading-none tracking-[-0.015em] text-navy/[0.05] dark:text-white/[0.055]">
               <span className="pe-[0.32em]">Data Science • Artificial Intelligence •</span>
               <span className="pe-[0.32em]">Data Science • Artificial Intelligence •</span>
             </div>
@@ -79,8 +72,8 @@ export function Hero() {
                 animate={enter}
                 className="mt-5 text-xl font-medium tracking-[-0.015em] sm:text-2xl md:text-3xl"
               >
-                <span className="text-muted">I work as an </span>
-                <RotatingText items={profile.roles} />
+                <span className="text-muted">I work as </span>
+                <RotatingText items={profile.roles} article />
               </motion.p>
 
               <motion.p
@@ -139,42 +132,34 @@ export function Hero() {
               {/* Capped on mobile so the photo stays a companion to the text
                   rather than filling the first screen on its own. */}
               <div className="relative mx-auto w-full max-w-[15rem] sm:max-w-[17rem] lg:max-w-none">
-                {/* Offset amber frame, carried over from the old About portrait */}
-                <div
-                  aria-hidden
-                  className="absolute -bottom-3 -right-3 h-full w-full rounded-card border border-accent/50"
-                />
-                {/* Square frame matches the source portrait, so `cover` never crops a face */}
-                <div className="relative aspect-square overflow-hidden rounded-card border border-border bg-surface">
-                  <Image
-                    src={profile.avatar}
-                    alt={profile.name}
-                    fill
-                    sizes="(max-width: 640px) 15rem, (max-width: 1024px) 17rem, 30rem"
-                    className="object-cover object-center"
-                    priority
-                  />
-                </div>
+                <HeroPortrait />
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* Stat pills, sitting on a rule that separates them from the intro. */}
+        {/* Four separate cards rather than one divided box. Grid rows stretch by
+            default, so every card matches the tallest — the short labels don't
+            leave their card floating half-empty. */}
         <Reveal delay={0.1}>
-          <dl className="mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-border pt-8 sm:grid-cols-4 md:mt-20">
+          <dl className="mt-16 grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 md:mt-20 md:gap-5 lg:grid-cols-4">
             {profile.stats.map((stat) => (
-              <div key={stat.label}>
-                <dt className="font-mono text-2xl font-semibold text-accent-strong dark:text-accent md:text-3xl">
-                  {stat.value}
-                </dt>
-                <dd className="mt-1.5 text-xs leading-snug text-muted">{stat.label}</dd>
-              </div>
+              <StatCard key={stat.label} value={stat.value} label={stat.label} />
             ))}
           </dl>
         </Reveal>
 
+        {/* Closes off the stats before the marquee starts, so the two blocks
+            don't read as one continuous run of chrome. */}
         <Reveal delay={0.1} className="mt-14">
+          <div aria-hidden className="flex items-center gap-4">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-border" />
+            <span className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-border" />
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.1} className="mt-12">
           <TechMarquee />
         </Reveal>
       </div>

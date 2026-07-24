@@ -3,33 +3,83 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------
-   Design tokens — navy base, amber accent
+   Design tokens — navy base, raw-gold accent
    Light and dark values live on :root / .dark so the theme toggle
    can crossfade every surface at once.
+
+   Contrast ratios quoted below are against that theme's --background
+   and were measured, not estimated. The floor is 4.5:1 for anything
+   that carries text and 3:1 for marks that carry state on their own.
 --------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --surface: #f6f7f9;
-  --surface-2: #eceff3;
+  /* The page is off-white, not #fff. Every neutral moved down with it so the
+     order between them — page, surface, tint, surface-2, border — is the same
+     spacing it always was, just no longer anchored to pure white. */
+  --background: #f8f9fa;
+  --surface: #eff1f4;
+  --surface-2: #e5e8ed;
+  /* The one neutral that steps *up* from the page, for cards that float on a
+     shadow instead of sitting inside a border. */
+  --surface-raised: #fdfdfe;
   --foreground: #0a1a2f;
   --muted: #5a6b80;
-  --border: #dfe4ea;
+  --border: #d8dee5;
   --navy: #0a1a2f;
   --navy-soft: #12294a;
-  --accent: #f5a524;
-  --accent-strong: #d98407;
+
+  /* Raw gold, four stops. Muted on purpose — the amber it replaces was bright
+     enough to read as a warning colour rather than an accent.
+
+     Contrast on --background: 400 1.9:1 · 500 2.8:1 · 600 4.0:1 · 700 5.5:1.
+     Only 700 clears AA for small text, which is why --accent-strong points at
+     it and not at the brand value; 500 stays the fill and 600 covers marks
+     that must read as state (see the carousel dots). */
+  --accent-400: #dda968;
+  --accent-500: #c68a3b;
+  --accent-600: #a6702c;
+  --accent-700: #8a5b22;
+
+  --accent: var(--accent-500);
+  --accent-strong: var(--accent-700);
   --accent-contrast: #1a1205;
   --grain-opacity: 0.035;
   /* Alternating section wash — navy at ~4% over the page background */
-  --tint: #f3f5f9;
+  --tint: #eceff4;
 
-  /* Hero role rotation. Deep, desaturated shades: on white the dark end of each
-     hue is what carries contrast, so these are not the same hex as their dark
-     counterparts. */
-  /* role-1 is a shade below --accent-strong on purpose: the accent itself only
-     reaches 2.89:1 on white, under the 3:1 floor for large text, and it looked
-     washed out next to the other three at ~5:1. */
-  --role-1: #a86104;
+  /* Card elevation. Tinted navy rather than neutral black: a grey shadow over a
+     cool off-white page reads muddy. Two layers — a wide diffuse one for the
+     float and a tight one for contact. */
+  --shadow-card: 0 10px 30px rgba(10, 26, 47, 0.05), 0 2px 6px rgba(10, 26, 47, 0.035);
+  --shadow-card-hover: 0 18px 42px rgba(10, 26, 47, 0.1), 0 4px 10px rgba(10, 26, 47, 0.05);
+
+  /* Hero portrait glow. No border on the photo — the exclusivity comes from a
+     soft halo hugging the card, two layers: a deep navy drop for the float and
+     a warm amber bleed. On the light page navy leads (it reads as premium lift)
+     with just a touch of amber warmth. 198,138,59 is accent-500 in rgb, kept
+     literal so the shadow can carry its own alpha. */
+  --portrait-glow:
+    0 26px 60px -22px rgba(10, 26, 47, 0.33),
+    0 0 74px 2px rgba(198, 138, 59, 0.32);
+  --portrait-glow-hover:
+    0 30px 70px -20px rgba(10, 26, 47, 0.4),
+    0 0 90px 6px rgba(198, 138, 59, 0.44);
+
+  /* Ambient backdrop washes (see components/ui/SectionBackdrop).
+     Kept as tokens rather than fixed rgba because the cool wash cannot be the
+     same colour in both themes: on the light page it has to be the navy itself,
+     but over the dark navy page navy-on-navy is invisible — see .dark below. */
+  --wash-warm: var(--accent-500);
+  --wash-cool: #12294a;
+  --wash-warm-strength: 11%;
+  --wash-cool-strength: 9%;
+
+  /* Shared four-hue palette: the hero role rotation and the navbar's active
+     link both draw from it. Deep, desaturated shades — on the light page the
+     dark end of each hue is what carries contrast, so these are not the same
+     hex as their dark counterparts. All four land near 5:1.
+     role-1 is the gold slot, tuned to sit between accent-600 and accent-700 so
+     it reads as the same family as the accent without matching it exactly. */
+  --role-1: #96622a;
   --role-2: #0f766e;
   --role-3: #b04a5a;
   --role-4: #4f7a52;
@@ -39,20 +89,48 @@
   --background: #070f1c;
   --surface: #0c1a2e;
   --surface-2: #12253f;
+  --surface-raised: #0f2036;
   --foreground: #e8eef6;
   --muted: #93a4b8;
   --border: #1c3350;
   --navy: #0a1a2f;
   --navy-soft: #12294a;
-  --accent: #f5a524;
-  --accent-strong: #ffc05c;
+
+  /* The ramp stops themselves carry over from :root — a colour ramp is the
+     same ramp in both themes. What flips is which stop each role points at:
+     against navy the brand 500 already clears AA (6.5:1), so it stays the text
+     colour, and --accent-strong moves *up* the ramp for hover fills. */
+  --accent: var(--accent-500);
+  --accent-strong: var(--accent-400);
   --accent-contrast: #1a1205;
   --grain-opacity: 0.05;
   --tint: #0a1524;
 
+  /* Over navy a soft shadow does almost nothing, so the separation here comes
+     from --surface-raised sitting above the page. The shadow only deepens the
+     seam; it is near-black and stronger than its light counterpart. */
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.32), 0 2px 6px rgba(0, 0, 0, 0.24);
+  --shadow-card-hover: 0 18px 42px rgba(0, 0, 0, 0.42), 0 4px 10px rgba(0, 0, 0, 0.3);
+
+  /* On navy the roles flip: amber leads the glow (it pops against the dark) over
+     a near-black drop that carries the lift a soft shadow can't. */
+  --portrait-glow:
+    0 26px 60px -20px rgba(0, 0, 0, 0.6),
+    0 0 66px -4px rgba(198, 138, 59, 0.34);
+  --portrait-glow-hover:
+    0 30px 70px -18px rgba(0, 0, 0, 0.68),
+    0 0 82px -2px rgba(198, 138, 59, 0.46);
+
+  /* Cool wash lifted to a mid blue: the light-mode navy would sink into the
+     dark page. Warm side is nudged down instead — gold reads hotter on navy. */
+  --wash-warm: var(--accent-500);
+  --wash-cool: #4d8fd6;
+  --wash-warm-strength: 9%;
+  --wash-cool-strength: 12%;
+
   /* Same hues lifted to their light end: against the navy background the deep
      shades above would sink into it. */
-  --role-1: #f5a524;
+  --role-1: #dda968;
   --role-2: #5eccc0;
   --role-3: #f0a0ac;
   --role-4: #a3c9a8;
@@ -62,6 +140,7 @@
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-raised: var(--surface-raised);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
@@ -70,6 +149,12 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-contrast: var(--accent-contrast);
+  /* The ramp exposed as utilities, so a component that needs a specific stop
+     for contrast can name it instead of overriding the semantic token. */
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
   --color-tint: var(--tint);
 
   --font-sans: var(--font-sans-stack);
@@ -180,6 +265,47 @@
       transparent 0
     );
     background-size: 26px 26px;
+  }
+
+  /* Blueprint ruling — the line counterpart to .dot-grid, for sections where a
+     drafting-table feel suits the content better than dots. */
+  .line-grid {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--foreground) 11%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--foreground) 11%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 76px 76px;
+  }
+
+  /* Floating card: elevation from a shadow rather than a border, lifting on
+     hover. A real class, not `shadow-[var(--shadow-card)]` — Tailwind splits an
+     arbitrary shadow into value and colour, and a two-layer var() gives it
+     nothing to split, so the utility resolves to a transparent shadow. */
+  .card-raise {
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 200ms ease-out,
+      box-shadow 200ms ease-out;
+  }
+
+  .card-raise:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* The global reduced-motion rule only collapses the duration, which would
+     make the lift snap rather than not happen. */
+  @media (prefers-reduced-motion: reduce) {
+    .card-raise:hover {
+      transform: none;
+    }
   }
 
   .text-balance {
@@ -299,5 +425,95 @@ html[data-preload]:not(.intro-done) body {
 @media (prefers-reduced-motion: reduce) {
   .marquee-wordmark {
     animation-name: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Ambient wash drift
+
+   Transform-only, on elements painted with a radial-gradient rather
+   than a blurred solid: a `filter: blur(120px)` layer this size has
+   to be re-blurred every frame, a gradient just gets composited. Two
+   curves at different periods so paired blobs never move in lockstep.
+--------------------------------------------------------------- */
+@keyframes wash-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, -3%, 0) scale(1.1);
+  }
+}
+
+@keyframes wash-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-5%, 4%, 0) scale(1);
+  }
+}
+
+.wash-drift-a,
+.wash-drift-b {
+  will-change: transform;
+}
+
+.wash-drift-a {
+  animation: wash-drift-a 26s ease-in-out infinite alternate;
+}
+
+.wash-drift-b {
+  animation: wash-drift-b 34s ease-in-out infinite alternate;
+}
+
+/* As with the marquees: the global rule only clamps duration, which would leave
+   these ping-ponging at 0.001ms. Dropping the name is what stops them. */
+@media (prefers-reduced-motion: reduce) {
+  .wash-drift-a,
+  .wash-drift-b {
+    animation-name: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Hero portrait — borderless card with an ambient glow
+
+   No frame on the photo itself; the exclusivity is a soft two-tone
+   halo behind the card (see --portrait-glow). The glow lives on its
+   own static layer rather than on the flipping card, so it stays put
+   while the card turns instead of rotating with it.
+--------------------------------------------------------------- */
+.portrait-glow-layer {
+  box-shadow: var(--portrait-glow);
+  transition: box-shadow 300ms ease;
+}
+
+.portrait-img {
+  /* A hair over 100% so the image overfills its rounded, 3D-transformed frame.
+     Without it a sub-pixel gap at one edge reveals the face's light background
+     as a thin white seam — most visible on the mirrored back face's right edge. */
+  transform: scale(1.02);
+  transition: transform 300ms ease;
+}
+
+.portrait-stage:hover .portrait-glow-layer {
+  box-shadow: var(--portrait-glow-hover);
+}
+
+.portrait-stage:hover .portrait-img {
+  transform: scale(1.05);
+}
+
+/* The affordance chip firms up when the photo is hovered, hinting it is live. */
+.portrait-stage:hover .portrait-chip {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Hold the overfill so the seam stays covered; just drop the hover zoom. */
+  .portrait-stage:hover .portrait-img {
+    transform: scale(1.02);
   }
 }

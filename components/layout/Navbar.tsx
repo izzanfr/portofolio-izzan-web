@@ -52,18 +52,24 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   aria-current={isActive ? "true" : undefined}
+                  style={isActive ? { color: `var(${link.tone})` } : undefined}
                   className={cn(
                     "relative block rounded-full px-5 py-2.5 text-sm transition-colors duration-200",
-                    isActive
-                      ? "text-accent-strong dark:text-accent"
-                      : "text-muted hover:text-foreground",
+                    isActive ? "" : "text-muted hover:text-foreground",
                   )}
                 >
                   {isActive && (
+                    // Fill and ring are inline rather than utility classes: the
+                    // pill is one shared element that slides between links, so
+                    // its colour has to follow whichever link it landed on.
                     <motion.span
                       layoutId="nav-pill"
                       transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                      className="absolute inset-0 -z-10 rounded-full bg-accent/12 ring-1 ring-inset ring-accent/25"
+                      style={{
+                        backgroundColor: `color-mix(in srgb, var(${link.tone}) 14%, transparent)`,
+                        boxShadow: `inset 0 0 0 1px color-mix(in srgb, var(${link.tone}) 32%, transparent)`,
+                      }}
+                      className="absolute inset-0 -z-10 rounded-full"
                     />
                   )}
                   <span className="relative">{link.label}</span>
@@ -134,16 +140,20 @@ export function Navbar() {
                     href={link.href}
                     onClick={() => setOpen(false)}
                     aria-current={active === link.id ? "true" : undefined}
+                    style={
+                      active === link.id ? { color: `var(${link.tone})` } : undefined
+                    }
                     className={cn(
                       "flex items-center justify-between border-b border-border/60 py-3.5 text-base transition-colors",
-                      active === link.id
-                        ? "text-accent-strong dark:text-accent"
-                        : "text-foreground",
+                      active === link.id ? "" : "text-foreground",
                     )}
                   >
                     {link.label}
                     {active === link.id && (
-                      <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                      <span
+                        style={{ backgroundColor: `var(${link.tone})` }}
+                        className="h-1.5 w-1.5 rounded-full"
+                      />
                     )}
                   </Link>
                 </motion.li>

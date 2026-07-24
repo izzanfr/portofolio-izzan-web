@@ -59,7 +59,11 @@ export function ProjectCarousel({ projects }: { projects: ProjectMeta[] }) {
 
   return (
     <div>
-      <div className="overflow-hidden" ref={emblaRef}>
+      {/* Embla needs overflow hidden to hide the off-screen slides, which also
+          clipped the top of a card while it was lifted on hover. The padding
+          gives the lift somewhere to go inside the clip; the matching negative
+          margin keeps the carousel sitting where it did in the layout. */}
+      <div className="-my-3 overflow-hidden py-3" ref={emblaRef}>
         {/* Negative margin + per-slide padding is Embla's gap idiom */}
         <div className="-ml-5 flex touch-pan-y">
           {projects.map((project) => (
@@ -85,8 +89,11 @@ export function ProjectCarousel({ projects }: { projects: ProjectMeta[] }) {
               onClick={() => emblaApi?.scrollTo(index)}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
+                // accent-600, not the brand 500: this dot is the only thing
+                // saying which slide you are on, so it has to clear 3:1 against
+                // the light page — 500 manages 2.8:1.
                 index === selected
-                  ? "w-7 bg-accent"
+                  ? "w-7 bg-accent-600 dark:bg-accent"
                   : "w-1.5 bg-border hover:bg-muted",
               )}
             />

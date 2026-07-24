@@ -5,7 +5,11 @@ import { ArrowLeft, ArrowRight, Building2, CalendarDays, UserRound } from "lucid
 import type { Metadata } from "next";
 import { mdxComponents } from "@/mdx-components";
 import { Reveal } from "@/components/ui/Reveal";
+import { HairRule } from "@/components/ui/HairRule";
+import { StatCard } from "@/components/ui/StatCard";
+import { ProjectDocumentation } from "@/components/ui/ProjectDocumentation";
 import { getAllProjects, getProject } from "@/lib/projects";
+import { cn } from "@/lib/utils";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -50,66 +54,68 @@ export default async function ProjectPage({ params }: Params) {
         </Reveal>
 
         <Reveal delay={0.06}>
-          <ul className="mt-8 flex flex-wrap gap-1.5">
-            {project.tags.map((tag) => (
-              <li
-                key={tag}
-                className="rounded-md border border-border bg-surface/60 px-2.5 py-1 text-[11px] text-muted"
-              >
-                {tag}
-              </li>
-            ))}
-          </ul>
-
-          <h1 className="mt-5 text-balance text-3xl leading-[1.06] tracking-display md:text-5xl">
+          <h1 className="mt-8 text-balance text-center text-3xl leading-[1.06] tracking-display md:text-5xl">
             {project.title}
           </h1>
 
-          <dl className="mt-7 grid gap-3 border-y border-border py-5 text-sm sm:grid-cols-3">
-            <div className="flex items-center gap-2">
-              <Building2 size={15} className="shrink-0 text-accent-strong dark:text-accent" />
-              <div>
-                <dt className="sr-only">Client</dt>
-                <dd className="leading-snug">{project.client}</dd>
+          <div className="mt-7">
+            <HairRule />
+            <dl className="grid justify-items-center gap-3 py-5 text-sm sm:grid-cols-3">
+              <div className="flex items-center gap-2">
+                <Building2 size={15} className="shrink-0 text-accent-strong dark:text-accent" />
+                <div>
+                  <dt className="sr-only">Client</dt>
+                  <dd className="leading-snug">{project.client}</dd>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <UserRound size={15} className="shrink-0 text-accent-strong dark:text-accent" />
-              <div>
-                <dt className="sr-only">Role</dt>
-                <dd className="leading-snug">{project.role}</dd>
+              <div className="flex items-center gap-2">
+                <UserRound size={15} className="shrink-0 text-accent-strong dark:text-accent" />
+                <div>
+                  <dt className="sr-only">Role</dt>
+                  <dd className="leading-snug">{project.role}</dd>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <CalendarDays size={15} className="shrink-0 text-accent-strong dark:text-accent" />
-              <div>
-                <dt className="sr-only">Period</dt>
-                <dd className="font-mono text-xs leading-snug">
-                  {project.period} · {project.duration}
-                </dd>
+              <div className="flex items-center gap-2">
+                <CalendarDays size={15} className="shrink-0 text-accent-strong dark:text-accent" />
+                <div>
+                  <dt className="sr-only">Period</dt>
+                  <dd className="font-mono text-xs leading-snug">
+                    {project.period} · {project.duration}
+                  </dd>
+                </div>
               </div>
-            </div>
-          </dl>
+            </dl>
+            <HairRule delay={0.12} />
+          </div>
         </Reveal>
 
         {project.metrics.length > 0 && (
           <Reveal delay={0.12}>
-            <dl className="mt-8 grid gap-4 sm:grid-cols-3">
+            {/* Column count follows the metric count, and 1–2 cards are centred
+                at card-width so they never leave an empty track dangling to the
+                right the way a fixed 3-column grid did. */}
+            <dl
+              className={cn(
+                "mt-8 grid gap-4 md:gap-5",
+                project.metrics.length === 1 && "mx-auto max-w-xs",
+                project.metrics.length === 2 && "mx-auto max-w-[520px] sm:grid-cols-2",
+                project.metrics.length >= 3 && "sm:grid-cols-3",
+              )}
+            >
               {project.metrics.map((metric) => (
-                <div
-                  key={metric.label}
-                  className="rounded-card border border-border bg-surface/60 p-5"
-                >
-                  <dt className="font-mono text-2xl font-semibold text-accent-strong dark:text-accent">
-                    {metric.value}
-                  </dt>
-                  <dd className="mt-1.5 text-xs leading-snug text-muted">{metric.label}</dd>
-                </div>
+                <StatCard key={metric.label} value={metric.value} label={metric.label} />
               ))}
             </dl>
           </Reveal>
         )}
+      </div>
 
+      {/* Broken out of the prose column: the documentation reads as its own wide
+          gallery. Same page background — it renders nothing when the project has
+          no images. */}
+      <ProjectDocumentation images={project.documentationImages} title={project.title} />
+
+      <div className="container-page max-w-3xl">
         <Reveal delay={0.16}>
           <div className="mt-14">
             <MDXRemote source={project.content} components={mdxComponents} />
