@@ -61,9 +61,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // data-scroll-behavior: as of Next 16 the router no longer overrides a
+    // global `scroll-behavior: smooth` during navigation, so without this the
+    // jump to the top of a new page animates as a long smooth scroll and fights
+    // the transition. The attribute restores the instant scroll while leaving
+    // smooth behaviour in place for the in-page anchor links.
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <head>

@@ -29,15 +29,23 @@ export type ProjectMeta = {
   period: BiText;
   duration: BiText;
   summary: BiText;
-  tags: BiList;
-  metrics: ProjectMetric[];
+  /**
+   * The single image the card leads with. Just the one — the card only ever
+   * shows a cover, so shipping the whole documentation array to the client
+   * would be dead payload. Null when the project has no documentation yet,
+   * which is the signal for the card's generated fallback.
+   */
+  cover: DocumentationImage | null;
 };
 
-// The MDX bodies live only on the full Project, never on ProjectMeta, so the
-// card list on the homepage keeps them out of its client bundle.
+// MDX bodies, the full image set, tags and metrics live only on the full
+// Project, never on ProjectMeta: the card list on the homepage renders none of
+// them, so this is what keeps them out of its client bundle.
 export type Project = ProjectMeta & {
   content: BiText;
   documentationImages: DocumentationImage[];
+  tags: BiList;
+  metrics: ProjectMetric[];
 };
 
 type Frontmatter = Record<string, unknown>;
@@ -61,6 +69,16 @@ function parseDocumentation(raw: unknown, title: string): DocumentationImage[] {
       return { src: "", alt: fallbackAlt, cover: false };
     })
     .filter((image) => image.src.length > 0);
+}
+
+/**
+ * The image the card leads with: the one flagged `cover`, else the first in the
+ * list. Same precedence the Documentation coverflow uses, so the card and the
+ * detail page open on the same document rather than disagreeing.
+ */
+function pickCover(images: DocumentationImage[]): DocumentationImage | null {
+  if (images.length === 0) return null;
+  return images.find((image) => image.cover) ?? images[0];
 }
 
 /** Read and split one MDX file, or return null if it isn't there (a project
@@ -95,6 +113,7 @@ function parse(filename: string): Project {
 
   const enTags = Array.isArray(e.tags) ? e.tags.map(String) : [];
   const idTags = Array.isArray(i.tags) && i.tags.length === enTags.length ? i.tags.map(String) : enTags;
+  const documentationImages = parseDocumentation(e.documentationImages, title);
 
   return {
     slug,
@@ -108,7 +127,8 @@ function parse(filename: string): Project {
     summary: bi(String(e.summary ?? ""), i.summary ? String(i.summary) : undefined),
     tags: { en: enTags, id: idTags },
     metrics: parseMetrics(e.metrics, i.metrics),
-    documentationImages: parseDocumentation(e.documentationImages, title),
+    documentationImages,
+    cover: pickCover(documentationImages),
     content: bi(en.content, id?.content),
   };
 }
@@ -123,7 +143,8 @@ export function getAllProjects(): Project[] {
 }
 
 export function getProjectMeta(): ProjectMeta[] {
-  // Listed field by field so MDX bodies never reach the client bundle
+  // Listed field by field so the MDX body, the full image set, tags and metrics
+  // never reach the client bundle — the card renders none of them.
   return getAllProjects().map((project) => ({
     slug: project.slug,
     order: project.order,
@@ -134,8 +155,7 @@ export function getProjectMeta(): ProjectMeta[] {
     period: project.period,
     duration: project.duration,
     summary: project.summary,
-    tags: project.tags,
-    metrics: project.metrics,
+    cover: project.cover,
   }));
 }
 
