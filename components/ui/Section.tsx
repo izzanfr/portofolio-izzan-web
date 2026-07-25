@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./Reveal";
 import { SectionBackdrop, SectionSeam } from "./SectionBackdrop";
+import { SectionWipe } from "./SectionWipe";
 
 type SectionProps = {
   id: string;
@@ -40,14 +41,19 @@ export function Section({
         // 8px wider than the viewport on mobile. `clip` contains that without
         // making the section a scroll container the way `hidden` would.
         "relative scroll-mt-24 overflow-x-clip py-20 md:py-28",
-        tone === "tint" && "bg-tint",
         className,
       )}
     >
-      {/* Soft band instead of a hairline: against a drifting wash a 1px rule
-          reads as a hard edge cutting through it. */}
-      <SectionSeam />
-      <SectionBackdrop index={index} />
+      {/* The tint and the ambient wash are wiped in together, so the section's
+          whole ground arrives as one movement. The seam stays outside the clip:
+          it marks the join to the previous section and should already be there
+          when the curtain starts. */}
+      <SectionWipe tinted={tone === "tint"}>
+        {/* Soft band instead of a hairline: against a drifting wash a 1px rule
+            reads as a hard edge cutting through it. */}
+        <SectionSeam />
+        <SectionBackdrop index={index} />
+      </SectionWipe>
 
       <div className="container-page relative">
         {(eyebrow || title || lead) && (

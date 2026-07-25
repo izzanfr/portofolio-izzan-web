@@ -1,3 +1,7 @@
+"use client";
+
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -45,19 +49,46 @@ export function SectionBackdrop({
   const layout =
     MESH_LAYOUTS[((index % MESH_LAYOUTS.length) + MESH_LAYOUTS.length) % MESH_LAYOUTS.length];
 
+  const frameRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  /**
+   * Parallax. The wash trails the content it sits behind, which is what reads as
+   * depth rather than as a moving decoration.
+   *
+   * The ref is on the static outer frame, never on the layer that moves:
+   * `useScroll` measures its target with getBoundingClientRect, which includes
+   * transforms, so measuring the translated element would feed its own offset
+   * back into the progress it is driven by.
+   */
+  const { scrollYProgress } = useScroll({
+    target: frameRef,
+    offset: ["start end", "end start"],
+  });
+  // ±9% of the section's height across a full pass: enough to separate the
+  // planes, small enough that nobody catches it moving on its own.
+  const y = useTransform(scrollYProgress, [0, 1], ["-9%", "9%"]);
+
   return (
     <div
+      ref={frameRef}
       aria-hidden
       className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
     >
-      <div
-        className={cn("absolute h-[34rem] w-[44rem] rounded-full", animated && "wash-drift-a")}
-        style={{ ...layout.warm, backgroundImage: WARM_WASH }}
-      />
-      <div
-        className={cn("absolute h-[38rem] w-[40rem] rounded-full", animated && "wash-drift-b")}
-        style={{ ...layout.cool, backgroundImage: COOL_WASH }}
-      />
+      {/* Taller than the frame so the drift never pulls an empty edge into view. */}
+      <motion.div
+        style={prefersReducedMotion ? undefined : { y, willChange: "transform" }}
+        className="absolute inset-x-0 -inset-y-[12%]"
+      >
+        <div
+          className={cn("absolute h-[34rem] w-[44rem] rounded-full", animated && "wash-drift-a")}
+          style={{ ...layout.warm, backgroundImage: WARM_WASH }}
+        />
+        <div
+          className={cn("absolute h-[38rem] w-[40rem] rounded-full", animated && "wash-drift-b")}
+          style={{ ...layout.cool, backgroundImage: COOL_WASH }}
+        />
+      </motion.div>
     </div>
   );
 }

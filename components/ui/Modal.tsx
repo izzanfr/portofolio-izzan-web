@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
+import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { cn } from "@/lib/utils";
 
 type ModalProps = {
@@ -22,6 +23,7 @@ type ModalProps = {
 export function Modal({ open, onClose, children, label, className }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const lenisRef = useLenisRef();
 
   useEffect(() => {
     if (!open) return;
@@ -29,6 +31,9 @@ export function Modal({ open, onClose, children, label, className }: ModalProps)
     returnFocusRef.current = document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // `overflow: hidden` alone no longer holds the page still: Lenis drives
+    // scrolling itself and would keep easing the page behind the dialog.
+    lenisRef?.current?.stop();
     panelRef.current?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -39,9 +44,14 @@ export function Modal({ open, onClose, children, label, className }: ModalProps)
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
+      // Read fresh rather than capturing above: this points at a Lenis
+      // instance, not a DOM node, and if the provider replaced it while the
+      // dialog was open we must restart the current one, not a destroyed one.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      lenisRef?.current?.start();
       returnFocusRef.current?.focus();
     };
-  }, [open, onClose]);
+  }, [open, onClose, lenisRef]);
 
   return (
     <AnimatePresence>
@@ -65,6 +75,9 @@ export function Modal({ open, onClose, children, label, className }: ModalProps)
             aria-modal="true"
             aria-label={label}
             tabIndex={-1}
+            // The panel scrolls on its own; this tells Lenis to leave wheel and
+            // touch inside it alone so a tall certificate scrolls natively.
+            data-lenis-prevent
             initial={{ opacity: 0, scale: 0.94, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
