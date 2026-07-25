@@ -45,6 +45,7 @@ export default async function ProjectPage({ params }: Params) {
         <Reveal>
           <Link
             href="/#projects"
+            transitionTypes={["nav-back"]}
             className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent-strong dark:hover:text-accent"
           >
             <ArrowLeft
@@ -148,6 +149,7 @@ export default async function ProjectPage({ params }: Params) {
         <Reveal delay={0.1}>
           <Link
             href={`/projects/${next.slug}`}
+            transitionTypes={["nav-forward"]}
             className="group mt-16 flex items-center justify-between gap-6 rounded-card border border-border bg-surface/60 p-6 transition-colors duration-300 hover:border-accent/55"
           >
             <div>

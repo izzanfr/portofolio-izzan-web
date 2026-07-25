@@ -33,7 +33,12 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    // The name keeps the bar out of the page's view-transition group, so it
+    // stays put while the content slides underneath it (see globals.css).
+    <header
+      style={{ viewTransitionName: "site-header" }}
+      className="fixed inset-x-0 top-0 z-50"
+    >
       <nav className="container-page flex h-20 items-center justify-center md:h-24">
         {/* Floating capsule: the links, the primary CTA and the theme toggle
             read as one grouped control rather than a flat bar. It carries its

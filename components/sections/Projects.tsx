@@ -2,7 +2,7 @@
 import { ArrowRight } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
-import { ProjectCarousel } from "@/components/ui/ProjectCarousel";
+import { ProjectCoverflow } from "@/components/ui/ProjectCoverflow";
 import { T } from "@/components/ui/T";
 import { getProjectMeta } from "@/lib/projects";
 
@@ -12,12 +12,13 @@ export function Projects() {
   return (
     <Section id="projects" title={<T en="Projects" id="Proyek" />} tone="base" index={2}>
       <Reveal>
-        <ProjectCarousel projects={projects} />
+        <ProjectCoverflow projects={projects} />
       </Reveal>
 
       <Reveal delay={0.1}>
         <Link
           href="/projects"
+          transitionTypes={["nav-forward"]}
           className="group mt-10 inline-flex items-center gap-2 text-sm font-medium text-accent-strong dark:text-accent"
         >
           <T

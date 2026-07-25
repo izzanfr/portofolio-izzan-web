@@ -21,6 +21,7 @@ export default function ProjectsIndexPage() {
         <Reveal>
           <Link
             href="/"
+            transitionTypes={["nav-back"]}
             className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent-strong dark:hover:text-accent"
           >
             <ArrowLeft
