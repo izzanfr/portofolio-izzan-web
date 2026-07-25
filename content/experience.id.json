@@ -19,10 +19,10 @@
         "title": "Instruktur Data Science",
         "points": [
           "Pelatihan Python untuk Data Science, dari pengolahan data hingga deployment model",
-          "Pembangunan model Machine Learning secara langsung (supervised & unsupervised)",
+          "Pelatihan praktik langsung membangun model Machine Learning (supervised & unsupervised)",
           "Fundamental Deep Learning dan implementasi praktisnya",
           "Memfasilitasi pelatihan Power BI dan Tableau untuk dashboard dan visualisasi data",
-          "Merancang dan menyampaikan program analitik data menyeluruh untuk klien sektor keuangan: EDA, korelasi diagnostik, peramalan deret waktu ARIMA, dan pelaporan rekomendasi strategis menggunakan data nilai tukar multi-tahun"
+          "Merancang dan melaksanakan program analitik data menyeluruh untuk klien sektor keuangan: EDA, korelasi diagnostik, peramalan deret waktu ARIMA, dan pelaporan rekomendasi strategis menggunakan data nilai tukar multi-tahun"
         ],
         "photos": [
           {
@@ -109,7 +109,7 @@
       {
         "title": "Instruktur Manajemen Proyek",
         "points": [
-          "Pelatihan manajemen proyek yang berlandaskan pengalaman pelaksanaan lapangan nyata",
+          "Pelatihan manajemen proyek yang berlandaskan pengalaman nyata di lapangan",
           "Membimbing 100+ peserta hingga lulus sertifikasi PMI CAPM®",
           "Studi kasus Agile & Waterfall",
           "Pelatihan Microsoft Project (penjadwalan, alokasi sumber daya)",
@@ -137,7 +137,7 @@
       {
         "title": "Instruktur Manajemen Data",
         "points": [
-          "Pelatihan Manajemen Data berbasis DMBOK mencakup seluruh 11 knowledge area",
+          "Pelatihan Manajemen Data berbasis DMBOK mencakup seluruh 11 area pengetahuan (knowledge area)",
           "Metodologi asesmen hibrida COBIT 2019 + DMBOK",
           "Data Science Management dan Big Data Analytics Management sebagai strategi data perusahaan",
           "Menerapkan model 6 Core Values of Hexagonal Environmental Factors"
@@ -182,7 +182,7 @@
     "location": "Jakarta Selatan, Indonesia",
     "period": "Jun 2021 – Agu 2021",
     "duration": "3 bln",
-    "summary": "Strategic Marketing yang berfokus pada analisis kompetitif dan produk untuk penawaran keamanan.",
+    "summary": "Strategic Marketing yang berfokus pada analisis kompetitif dan produk untuk lini produk keamanan.",
     "roles": [
       {
         "title": "Pemasaran Strategis",

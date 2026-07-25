@@ -146,7 +146,7 @@ export function ProjectCoverflow({ projects }: { projects: ProjectMeta[] }) {
                     <Link
                       href={`/projects/${project.slug}`}
                       transitionTypes={["nav-forward"]}
-                      aria-label={`${title} — ${pick({ en: "open project", id: "buka proyek" }, locale)}`}
+                      aria-label={`${title}, ${pick({ en: "open project", id: "buka proyek" }, locale)}`}
                       className={cn(FRAME, "group cursor-pointer")}
                       style={{ boxShadow: "var(--shadow-card)" }}
                     >

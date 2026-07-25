@@ -1,6 +1,6 @@
 {
   "roles": [
-    "Konsultan IT",
+    "Konsultan TI",
     "Instruktur Data Science",
     "Instruktur AI",
     "Instruktur Manajemen Data"
@@ -9,7 +9,7 @@
   "heroIntro": "Saya mengubah persoalan data pemerintah dan perusahaan menjadi arsitektur, kerangka tata kelola, dan orang-orang yang paham cara menjalankannya.",
   "location": "Tasikmalaya, Jawa Barat, Indonesia",
   "locationNote": "Melayani klien di seluruh Indonesia · basis operasi di Daerah Istimewa Yogyakarta",
-  "introBody": "Saya bekerja di persimpangan manajemen proyek, kecerdasan buatan, dan teknologi informasi dengan mengajar, mengonsultasikan, dan sesekali melakukan keduanya sekaligus. Di Inixindo Jogja, saya melatih berbagai tim dalam AI dan Data Science, sekaligus menjadi konsultan proyek SPBE dan Manajemen Data untuk institusi sektor publik. Jika Anda sedang bergulat dengan tantangan data, atau sedang mempertimbangkan alih karier ke Data Science, saya dengan senang hati berdiskusi.",
+  "introBody": "Saya berkarier di titik temu antara manajemen proyek, kecerdasan buatan, dan teknologi informasi: mengajar, menjadi konsultan, dan terkadang melakukan keduanya sekaligus. Di Inixindo Jogja, saya melatih berbagai tim dalam AI dan Data Science, sekaligus menjadi konsultan proyek SPBE dan Manajemen Data untuk institusi sektor publik. Kalau Anda sedang menghadapi tantangan seputar data, atau mempertimbangkan alih karier ke Data Science, saya dengan senang hati mengobrol.",
   "stats": [
     { "value": "10+", "label": "Proyek Konsultasi Diselesaikan" },
     { "value": "1000+", "label": "Peserta Dilatih di AI & Data Science" },
