@@ -135,15 +135,21 @@ export default async function ProjectPage({ params }: Params) {
 
       <div className="container-page max-w-3xl">
         <Reveal delay={0.16}>
-          {/* Both languages are rendered; CSS (keyed on <html lang>) shows one.
-              Two server-rendered MDX trees rather than a client re-render, so the
-              switch is instant and needs no refetch. */}
-          <div className="mt-14" data-lc="en">
-            <MDXRemote source={project.content.en} components={mdxComponents} />
-          </div>
-          <div className="mt-14" data-lc="id">
-            <MDXRemote source={project.content.id} components={mdxComponents} />
-          </div>
+          {/* Both bodies are compiled on the server and handed to <T> as props;
+              only the active one is put in the DOM, so the case study is never
+              duplicated in two languages for a crawler or a screen reader. */}
+          <T
+            en={
+              <div className="mt-14">
+                <MDXRemote source={project.content.en} components={mdxComponents} />
+              </div>
+            }
+            id={
+              <div className="mt-14">
+                <MDXRemote source={project.content.id} components={mdxComponents} />
+              </div>
+            }
+          />
         </Reveal>
 
         <Reveal delay={0.1}>

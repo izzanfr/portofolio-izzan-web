@@ -306,21 +306,6 @@
   ::-webkit-scrollbar-corner {
     background: transparent;
   }
-
-  /* ---------------------------------------------------------------
-     Language switch — dual-rendered content, CSS decides which shows
-
-     Every translatable string is rendered twice, tagged data-lc="en"
-     and data-lc="id". The active language lives on <html lang> (set by
-     the locale init script before paint, flipped by LocaleProvider), so
-     switching hides one set and reveals the other with no React
-     re-render and no flash — the same model the theme uses. The hidden
-     side is fully removed from layout so it never affects spacing.
-  --------------------------------------------------------------- */
-  html[lang="en"] [data-lc="id"],
-  html[lang="id"] [data-lc="en"] {
-    display: none !important;
-  }
 }
 
 @layer utilities {

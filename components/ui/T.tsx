@@ -1,40 +1,27 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useCurrentLocale } from "@/components/providers/LocaleProvider";
 
 /**
- * Renders both language versions inline and lets CSS (keyed on `<html lang>`,
- * see globals.css) show the active one. No hooks, so it works identically in
- * server and client components, and switching languages never triggers a React
- * re-render — the same principle the theme uses.
+ * Renders one language, not both.
  *
- * Use the block variant `<TBlock>` when the content is block-level (paragraphs,
- * lists, an MDX body) so the wrapper isn't an inline `<span>`.
+ * This used to emit both versions and let CSS hide the inactive one, which kept
+ * switching free of re-renders but left every translated string duplicated in
+ * the document: a crawler indexed the page as two languages spliced together,
+ * and a screen reader read it out twice. Only the active language is in the DOM
+ * now, so both of those read a single coherent language.
+ *
+ * The locale resolves to "en" during SSR and on the first client render, then
+ * syncs from <html lang> in an effect — matching markup on both sides, so there
+ * is no hydration mismatch. The consequence is that a returning Indonesian
+ * visitor sees English for the first frame; that is the price of keeping one URL
+ * for both languages, since the server has nothing to read the preference from.
+ *
+ * No wrapper element: the chosen node is returned as-is, so this adds nothing to
+ * the markup and stays usable inline, around a block, or around a whole MDX body.
  */
 export function T({ en, id }: { en: ReactNode; id: ReactNode }) {
-  return (
-    <>
-      <span data-lc="en">{en}</span>
-      <span data-lc="id">{id}</span>
-    </>
-  );
-}
-
-export function TBlock({
-  en,
-  id,
-  className,
-}: {
-  en: ReactNode;
-  id: ReactNode;
-  className?: string;
-}) {
-  return (
-    <>
-      <div data-lc="en" className={className}>
-        {en}
-      </div>
-      <div data-lc="id" className={className}>
-        {id}
-      </div>
-    </>
-  );
+  const locale = useCurrentLocale();
+  return <>{locale === "id" ? id : en}</>;
 }

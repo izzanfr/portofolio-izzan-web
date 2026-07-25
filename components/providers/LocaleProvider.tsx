@@ -28,19 +28,22 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 export const LOCALE_STORAGE_KEY = "izzan-locale";
 
 /**
- * Inlined in <head> before paint so the first frame already carries the right
- * `<html lang>`. Every translatable string is rendered in both languages and
- * hidden per-locale by CSS keyed on that attribute (see globals.css), so setting
- * it here — ahead of hydration — is what makes the Indonesian view flash-free
- * for a returning visitor, exactly the way the theme script is for dark mode.
+ * Inlined in <head> before paint so the document advertises the right
+ * `<html lang>` from the first frame — which is what assistive tech and
+ * translation tooling read to decide the page's language.
+ *
+ * It also seeds the value <T> picks up on mount. It cannot prevent the first
+ * paint being English, though: the markup is prerendered, so a stored
+ * Indonesian preference only takes effect once React hydrates.
  */
 export const localeInitScript = `(function(){try{var k="${LOCALE_STORAGE_KEY}";var s=localStorage.getItem(k);var l=(s==="en"||s==="id")?s:"en";document.documentElement.lang=l;}catch(e){}})();`;
 
 /**
- * The active language lives on <html lang="en|id">, not in React state — the
- * same trick the theme uses. Because both languages are always in the markup and
- * only CSS decides which shows, no component re-renders on switch and server and
- * client markup stay identical.
+ * The active language lives on <html lang="en|id">, and the change is broadcast
+ * so every <T> re-renders with the other language. Unlike the theme — which can
+ * stay a pure CSS swap because both colour sets are just styles — the language
+ * has to re-render: only one version may exist in the DOM at a time, or crawlers
+ * and screen readers see the page in two languages at once.
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const setLocale = useCallback((locale: Locale) => {
