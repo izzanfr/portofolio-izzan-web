@@ -10,6 +10,7 @@
       {
         "title": "Information Technology Consultant",
         "slug": "it-consultant",
+        "category": "consulting",
         "icon": "Compass",
         "photos": [],
         "points": [
@@ -22,6 +23,7 @@
       {
         "title": "Data Science Instructor",
         "slug": "data-science-instructor",
+        "category": "instructor",
         "icon": "LineChart",
         "photos": [
           {
@@ -76,6 +78,7 @@
       {
         "title": "AI Instructor",
         "slug": "ai-instructor",
+        "category": "instructor",
         "icon": "BrainCircuit",
         "photos": [
           {
@@ -110,6 +113,7 @@
       {
         "title": "Big Data Specialist Instructor",
         "slug": "big-data-instructor",
+        "category": "instructor",
         "icon": "Database",
         "photos": [
           {
@@ -133,6 +137,7 @@
       {
         "title": "Project Management Instructor",
         "slug": "project-management-instructor",
+        "category": "instructor",
         "icon": "ClipboardCheck",
         "photos": [
           {
@@ -167,6 +172,7 @@
       {
         "title": "Data Management Instructor",
         "slug": "data-management-instructor",
+        "category": "instructor",
         "icon": "Layers",
         "photos": [
           {
@@ -195,6 +201,7 @@
       {
         "title": "Digital Skills Instructor",
         "slug": "digital-skills-instructor",
+        "category": "instructor",
         "icon": "Sparkles",
         "photos": [
           {
