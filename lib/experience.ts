@@ -19,6 +19,13 @@ export type BiRole = {
   title: BiText;
   slug: string;
   icon: string;
+  /**
+   * Drives the category chips above a company's role list. Language-neutral, so
+   * it lives in the English file with the other structural fields. A role with
+   * no category is never filtered out — that is what leaves the second
+   * company's single role showing regardless of the active chip.
+   */
+  category?: string;
   points: BiText[];
   photos: BiPhoto[];
 };
@@ -64,6 +71,9 @@ function mergeRole(en: EnRole, id: IdRole | undefined): BiRole {
   return {
     slug: en.slug,
     icon: en.icon,
+    // Read defensively: only the roles that belong to a filtered company carry
+    // a category, so it is absent from the inferred type of the others.
+    category: (en as { category?: string }).category,
     title: bi(en.title, id?.title),
     points: en.points.map((point, i) => bi(point, idPoints[i])),
     photos: (en.photos as EnPhoto[]).map((photo, i) => mergePhoto(photo, idPhotos[i])),
