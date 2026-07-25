@@ -4,6 +4,8 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { ThemeProvider, themeInitScript } from "@/components/providers/ThemeProvider";
 import { LocaleProvider, localeInitScript } from "@/components/providers/LocaleProvider";
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+import "lenis/dist/lenis.css";
 import { Preloader, preloaderInitScript } from "@/components/Preloader";
 import { ImageGuard } from "@/components/ImageGuard";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
@@ -82,9 +84,11 @@ export default function RootLayout({
         <ImageGuard />
         <ThemeProvider>
           <LocaleProvider>
-            <ScrollProgress />
-            <Navbar />
-            <main className="flex-1">{children}</main>
+            <SmoothScrollProvider>
+              <ScrollProgress />
+              <Navbar />
+              <main className="flex-1">{children}</main>
+            </SmoothScrollProvider>
           </LocaleProvider>
         </ThemeProvider>
       </body>

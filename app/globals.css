@@ -165,8 +165,13 @@
 }
 
 @layer base {
+  /* No `scroll-behavior: smooth` here on purpose. Lenis owns the smoothing and
+     the in-page anchors (see SmoothScrollProvider), and it explicitly requires
+     the CSS property to stay `auto` or the two fight over the same scroll.
+     `scroll-padding-top` still matters: it is what keeps a hash landing clear of
+     the fixed navbar on the native path — reduced-motion visitors, who never get
+     a Lenis instance at all. */
   html {
-    scroll-behavior: smooth;
     scroll-padding-top: 6rem;
     -webkit-text-size-adjust: 100%;
   }
@@ -220,9 +225,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
     *,
     *::before,
     *::after {
