@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { T } from "@/components/ui/T";
 import { navLinks, sectionIds } from "@/lib/content";
 import { useActiveSection } from "@/lib/useActiveSection";
@@ -17,6 +18,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
   const pathname = usePathname();
+  const lenisRef = useLenisRef();
   // Sections only exist on the homepage
   const active = useActiveSection(sectionIds, pathname === "/");
 
@@ -24,13 +26,21 @@ export function Navbar() {
     setScrolled(latest > 24);
   });
 
-  // Lock body scroll while the mobile sheet is open
+  // Lock body scroll while the mobile sheet is open. `overflow: hidden` alone
+  // no longer holds the page: Lenis drives scrolling itself, so it has to be
+  // stopped too or the page keeps moving behind the open sheet.
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    if (open) lenisRef?.current?.stop();
+    else lenisRef?.current?.start();
     return () => {
       document.body.style.overflow = "";
+      // Read fresh rather than capturing: this is a Lenis instance, not a DOM
+      // node, and if the provider replaced it we must restart the current one.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      lenisRef?.current?.start();
     };
-  }, [open]);
+  }, [open, lenisRef]);
 
   return (
     // The name keeps the bar out of the page's view-transition group, so it

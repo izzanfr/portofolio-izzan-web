@@ -9,15 +9,20 @@ import { T } from "./T";
 import { useCurrentLocale } from "@/components/providers/LocaleProvider";
 import { pick, type BiText } from "@/lib/i18n";
 import type { BiPhoto } from "@/lib/experience";
+import { cn } from "@/lib/utils";
 
 export type ExperiencePhoto = BiPhoto;
 
 export function ExperienceGallery({
   photos,
   roleTitle,
+  className,
 }: {
   photos: BiPhoto[];
   roleTitle: BiText;
+  /** Replaces the default padding. The accordion needs the deep left indent
+   *  that lines the grid up under the role title; the strip layout does not. */
+  className?: string;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const locale = useCurrentLocale();
@@ -37,7 +42,7 @@ export function ExperienceGallery({
   const active = openIndex === null ? null : photos[openIndex];
 
   return (
-    <div className="px-5 pb-5 pl-5 md:pl-[4.25rem]">
+    <div className={cn(className ?? "px-5 pb-5 pl-5 md:pl-[4.25rem]")}>
       <p className="mb-3 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
         <ImageIcon size={12} />
         <T
