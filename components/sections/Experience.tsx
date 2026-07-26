@@ -4,11 +4,11 @@ import {
   AnimatePresence,
   motion,
   useMotionValueEvent,
+  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
   type MotionValue,
-  type Variants,
 } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -18,30 +18,10 @@ import { ExperienceGallery } from "@/components/ui/ExperienceGallery";
 import { T } from "@/components/ui/T";
 import { cn } from "@/lib/utils";
 import { getExperience, type BiJob, type BiRole } from "@/lib/experience";
+import { RoleSplitRail } from "./RoleSplitRail";
+import { EASE, RoleBullets, useHasFinePointer, useTilt } from "./experienceShared";
 
 const experience = getExperience();
-
-/** The site's standard curve, shared with the reveals and the nav pill. */
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-/* ---------------------------------------------------------------
-   Role bullets — staggered reveal
-
-   Variants rather than per-item delays: the list owns the rhythm, so
-   adding a bullet to the content never means retuning a delay. Opening
-   runs top-down and waits a beat for the panel to start expanding;
-   closing runs bottom-up and quicker, so the list clears out of the way
-   rather than lingering while the panel collapses over it.
---------------------------------------------------------------- */
-const pointList: Variants = {
-  hidden: { transition: { staggerChildren: 0.035, staggerDirection: -1 } },
-  visible: { transition: { delayChildren: 0.08, staggerChildren: 0.07 } },
-};
-
-const pointItem: Variants = {
-  hidden: { opacity: 0, x: -10, transition: { duration: 0.14, ease: "easeIn" } },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.24, ease: EASE } },
-};
 
 /* ---------------------------------------------------------------
    Timeline dot
@@ -133,7 +113,11 @@ function RoleFilter({
 }
 
 /* ---------------------------------------------------------------
-   Role accordion
+   Role accordion — the narrow-screen layout
+
+   Kept as-is from before the strips were added: on a phone there is no
+   horizontal room for a row of panels, and no cursor to drive a tilt,
+   so this stays the layout below `md`.
 --------------------------------------------------------------- */
 function RoleAccordion({
   role,
@@ -145,11 +129,42 @@ function RoleAccordion({
   defaultOpen: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const prefersReducedMotion = useReducedMotion();
+  const hasFinePointer = useHasFinePointer();
+
+  const depthEnabled = !prefersReducedMotion;
+  const tiltEnabled = depthEnabled && hasFinePointer;
+
+  /**
+   * The stage carries the perspective and is what the scroll is measured
+   * against. It is deliberately never transformed: `useScroll` measures its
+   * target with getBoundingClientRect, which includes transforms, so measuring
+   * the scaled card would feed its own scale back into the progress driving it.
+   */
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: stageRef,
+    // Completes shortly after the card clears the fold. A range that only
+    // finished near the top of the viewport would leave the last card in a
+    // list stranded at partial scale, since nothing scrolls past it.
+    offset: ["start end", "start 70%"],
+  });
+  const depth = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 });
+  const scale = useTransform(depth, [0, 1], [0.94, 1]);
+  const depthOpacity = useTransform(depth, [0, 1], [0.65, 1]);
+
+  const tilt = useTilt(tiltEnabled);
 
   return (
     // The gap between cards is padding *inside* the item, not a margin between
     // them, so collapsing the item's height on exit takes the spacing with it
     // and the remaining cards close up without a leftover gap.
+    //
+    // `-m-2 p-2` is what gives the tilt somewhere to go: the negative margin
+    // cancels the padding so the card sits exactly where it did, but the clip
+    // box is 8px larger all round, so a rotated corner is not sheared off by
+    // the overflow-hidden that the filter's height collapse depends on.
     <motion.li
       layout
       initial={{ opacity: 0, y: 18 }}
@@ -157,69 +172,77 @@ function RoleAccordion({
       viewport={{ once: true, amount: 0.4 }}
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.45, delay: index * 0.05, ease: EASE }}
-      className="overflow-hidden"
+      className="-m-2 overflow-hidden p-2"
     >
       <div className="pb-2.5">
         <div
-          className={cn(
-            "group rounded-card border transition-colors duration-300",
-            open
-              ? "border-accent/45 bg-surface"
-              : "border-border bg-surface/50 hover:border-accent/35",
-          )}
+          ref={stageRef}
+          onMouseMove={tilt.onMouseMove}
+          onMouseLeave={tilt.onMouseLeave}
+          style={tiltEnabled ? { perspective: 1000 } : undefined}
         >
-          <button
-            type="button"
-            onClick={() => setOpen((value) => !value)}
-            aria-expanded={open}
-            className="flex w-full items-center gap-4 px-5 py-4 text-left"
-          >
-            <span
-              className={cn(
-                "grid h-9 w-9 shrink-0 place-items-center rounded-lg transition-colors duration-300",
-                open
-                  ? "bg-accent text-accent-contrast"
-                  : "bg-surface-2 text-muted group-hover:text-accent-strong dark:group-hover:text-accent",
-              )}
-            >
-              <DynamicIcon name={role.icon} size={17} />
-            </span>
-            <span className="flex-1 text-sm font-medium md:text-base">
-              <T en={role.title.en} id={role.title.id} />
-            </span>
-            <motion.span
-              animate={{ rotate: open ? 180 : 0 }}
-              transition={{ duration: 0.25 }}
-              className="shrink-0 text-muted"
-            >
-              <ChevronDown size={17} />
-            </motion.span>
-          </button>
-
           <motion.div
-            initial={false}
-            animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-            transition={{ duration: 0.32, ease: EASE }}
-            className="overflow-hidden"
+            style={
+              depthEnabled
+                ? {
+                    scale,
+                    opacity: depthOpacity,
+                    ...(tiltEnabled
+                      ? { rotateX: tilt.rotateX, rotateY: tilt.rotateY }
+                      : {}),
+                    willChange: "transform",
+                  }
+                : undefined
+            }
+            className={cn(
+              "group rounded-card border transition-colors duration-300",
+              open
+                ? "border-accent/45 bg-surface"
+                : "border-border bg-surface/50 hover:border-accent/35",
+            )}
           >
-            {/* Variants live here rather than on the height wrapper above: that
-                wrapper animates with an object, which does not propagate a
-                variant label to children. */}
-            <motion.ul
-              initial={false}
-              animate={open ? "visible" : "hidden"}
-              variants={pointList}
-              className="space-y-2.5 px-5 pb-5 pl-[4.25rem] text-sm leading-relaxed text-muted"
+            <button
+              type="button"
+              onClick={() => setOpen((value) => !value)}
+              aria-expanded={open}
+              className="flex w-full items-center gap-4 px-5 py-4 text-left"
             >
-              {role.points.map((point, pointIndex) => (
-                <motion.li key={pointIndex} variants={pointItem} className="relative pl-4">
-                  <span className="absolute left-0 top-[0.6em] h-1 w-1 rounded-full bg-accent" />
-                  <T en={point.en} id={point.id} />
-                </motion.li>
-              ))}
-            </motion.ul>
+              <span
+                className={cn(
+                  "grid h-9 w-9 shrink-0 place-items-center rounded-lg transition-colors duration-300",
+                  open
+                    ? "bg-accent text-accent-contrast"
+                    : "bg-surface-2 text-muted group-hover:text-accent-strong dark:group-hover:text-accent",
+                )}
+              >
+                <DynamicIcon name={role.icon} size={17} />
+              </span>
+              <span className="flex-1 text-sm font-medium md:text-base">
+                <T en={role.title.en} id={role.title.id} />
+              </span>
+              <motion.span
+                animate={{ rotate: open ? 180 : 0 }}
+                transition={{ duration: 0.25 }}
+                className="shrink-0 text-muted"
+              >
+                <ChevronDown size={17} />
+              </motion.span>
+            </button>
 
-            <ExperienceGallery photos={role.photos} roleTitle={role.title} />
+            <motion.div
+              initial={false}
+              animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
+              transition={{ duration: 0.32, ease: EASE }}
+              className="overflow-hidden"
+            >
+              <RoleBullets
+                points={role.points}
+                open={open}
+                className="px-5 pb-5 pl-[4.25rem]"
+              />
+
+              <ExperienceGallery photos={role.photos} roleTitle={role.title} />
+            </motion.div>
           </motion.div>
         </div>
       </div>
@@ -347,6 +370,42 @@ function JobBlockWithDot({
   );
 }
 
+/**
+ * Depth-scale for the split rail.
+ *
+ * Applied to the rail and the panel together as one object rather than to each
+ * role: the panel already runs its own transition on every selection, and a
+ * second transform underneath it would fight that. The measured stage is again
+ * separate from the layer that scales, so the transform cannot feed back into
+ * the scroll progress driving it.
+ */
+function RoleBoard({ roles }: { roles: BiRole[] }) {
+  const prefersReducedMotion = useReducedMotion();
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: stageRef,
+    offset: ["start end", "start 70%"],
+  });
+  const depth = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 });
+  const scale = useTransform(depth, [0, 1], [0.94, 1]);
+  const depthOpacity = useTransform(depth, [0, 1], [0.65, 1]);
+
+  return (
+    <div ref={stageRef}>
+      <motion.div
+        style={
+          prefersReducedMotion
+            ? undefined
+            : { scale, opacity: depthOpacity, willChange: "transform" }
+        }
+      >
+        <RoleSplitRail roles={roles} />
+      </motion.div>
+    </div>
+  );
+}
+
 function JobBlockBody({ job }: { job: BiJob }) {
   const [filter, setFilter] = useState<CategoryId>("all");
   const filterable = job.roles.some((role) => role.category);
@@ -358,6 +417,13 @@ function JobBlockBody({ job }: { job: BiJob }) {
         : job.roles.filter((role) => role.category === filter),
     [job.roles, filter, filterable],
   );
+
+  /**
+   * Master–detail only earns its place when there is a list to choose from. The
+   * second company has a single role, so it stays the plain expandable card
+   * rather than a rail with one permanently-selected entry.
+   */
+  const useSplitRail = job.roles.length > 1;
 
   return (
     <>
@@ -391,21 +457,25 @@ function JobBlockBody({ job }: { job: BiJob }) {
 
       {filterable && <RoleFilter active={filter} onChange={setFilter} />}
 
-      <motion.ul layout className="flex flex-col">
-        {/* No `initial={false}`: it would suppress the scroll reveal the cards
-            play on first sight. Cards that re-enter after a filter change mount
-            fresh, are already in view, and so reveal immediately. */}
-        <AnimatePresence>
-          {visibleRoles.map((role, index) => (
-            <RoleAccordion
-              key={role.slug}
-              role={role}
-              index={index}
-              defaultOpen={index === 0 && filter === "all"}
-            />
-          ))}
-        </AnimatePresence>
-      </motion.ul>
+      {useSplitRail ? (
+        <RoleBoard roles={visibleRoles} />
+      ) : (
+        <motion.ul layout className="flex flex-col">
+          {/* No `initial={false}`: it would suppress the scroll reveal the cards
+              play on first sight. Cards that re-enter after a filter change mount
+              fresh, are already in view, and so reveal immediately. */}
+          <AnimatePresence>
+            {visibleRoles.map((role, index) => (
+              <RoleAccordion
+                key={role.slug}
+                role={role}
+                index={index}
+                defaultOpen={index === 0 && filter === "all"}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.ul>
+      )}
     </>
   );
 }
