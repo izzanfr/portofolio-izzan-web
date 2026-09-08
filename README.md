@@ -1,4 +1,4 @@
-# Personal Portfolio — Izzan Faikar Ramadhy, CAPM®
+# Personal Portfolio - Izzan Faikar Ramadhy, CAPM®
 
 Personal portfolio site for an IT Consultant and Professional AI, Data Science, and Project
 Management Instructor. Built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Framer
