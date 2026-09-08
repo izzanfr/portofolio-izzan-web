@@ -12,6 +12,7 @@ import { T } from "@/components/ui/T";
 import { navLinks, sectionIds } from "@/lib/content";
 import { useActiveSection } from "@/lib/useActiveSection";
 import { cn } from "@/lib/utils";
+import { EASE } from "@/lib/motion";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -142,7 +143,7 @@ export function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.32, ease: EASE }}
             className="overflow-hidden border-t border-border bg-background/95 backdrop-blur-xl md:hidden"
           >
             <ul className="container-page flex flex-col py-4">

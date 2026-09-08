@@ -19,7 +19,11 @@ import { cn } from "@/lib/utils";
  */
 
 /** The site's standard curve, shared with the reveals and the nav pill. */
-export const EASE = [0.22, 1, 0.36, 1] as const;
+import { EASE } from "@/lib/motion";
+
+/** Re-exported so the Experience components keep importing their motion
+ *  vocabulary from one neighbouring module rather than reaching past it. */
+export { EASE };
 
 /* ---------------------------------------------------------------
    Role bullets — staggered reveal

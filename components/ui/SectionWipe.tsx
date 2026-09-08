@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { EASE } from "@/lib/motion";
 
 /**
  * The signature transition at a section boundary: the section's ground — its
@@ -22,7 +23,6 @@ import { cn } from "@/lib/utils";
  * it, or the page flickers every time the visitor changes their mind.
  */
 
-const EASE = [0.22, 1, 0.36, 1] as const;
 const DURATION = 0.7;
 
 export function SectionWipe({

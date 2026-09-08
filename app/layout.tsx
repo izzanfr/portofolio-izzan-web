@@ -10,6 +10,7 @@ import { Preloader, preloaderInitScript } from "@/components/Preloader";
 import { ImageGuard } from "@/components/ImageGuard";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { profile } from "@/lib/content";
+import { motionInitScript } from "@/lib/motion";
 
 // Display serif — SOFT/WONK axes are what keep large headings from reading generic
 const display = Fraunces({
@@ -78,6 +79,9 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: localeInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: preloaderInitScript }} />
+        {/* Marks the document scripted before first paint, which is what lets
+            the stylesheet keep every reveal visible when it is not. */}
+        <script dangerouslySetInnerHTML={{ __html: motionInitScript }} />
       </head>
       <body className="grain flex min-h-full flex-col">
         <Preloader />

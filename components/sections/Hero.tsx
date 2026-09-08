@@ -11,13 +11,14 @@ import { TechMarquee } from "@/components/ui/TechMarquee";
 import { useIntroDone } from "@/components/Preloader";
 import { T } from "@/components/ui/T";
 import { profile, profileId } from "@/lib/content";
+import { EASE } from "@/lib/motion";
 
 const rise = {
   hidden: { opacity: 0, y: 24 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, delay: 0.1 + i * 0.09, ease: [0.22, 1, 0.36, 1] as const },
+    transition: { duration: 0.7, delay: 0.1 + i * 0.09, ease: EASE },
   }),
 };
 

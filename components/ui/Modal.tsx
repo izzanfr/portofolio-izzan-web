@@ -6,6 +6,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { cn } from "@/lib/utils";
+import { EASE } from "@/lib/motion";
 
 type ModalProps = {
   open: boolean;
@@ -99,7 +100,7 @@ export function Modal({ open, onClose, children, label, fit = false, className }
             initial={{ opacity: 0, scale: 0.94, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
-            transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.26, ease: EASE }}
             className={cn(
               "relative max-h-full rounded-card border border-border bg-background shadow-2xl outline-none",
               // `w-fit` in fit mode: the panel takes its width from the image

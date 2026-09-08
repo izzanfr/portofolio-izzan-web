@@ -6,11 +6,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useState } from "react";
 import { T } from "./T";
+import { Scramble } from "./Scramble";
 import { GeneratedCover } from "./ProjectCoverArt";
 import { useCurrentLocale } from "@/components/providers/LocaleProvider";
 import { pick } from "@/lib/i18n";
 import type { ProjectMeta } from "@/lib/projects";
 import { cn } from "@/lib/utils";
+import { EASE } from "@/lib/motion";
 
 /**
  * The homepage project browser: a coverflow of the case-study document covers,
@@ -25,8 +27,6 @@ import { cn } from "@/lib/utils";
  * Arrows flank the stage rather than sitting on top of it, so they never cover
  * the artwork they are there to move.
  */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 // Shared with ProjectDocumentation: side covers turn away in 3D and fade, and
 // anything past a neighbour parks off to its side at zero opacity so it fades
@@ -106,18 +106,21 @@ export function ProjectCoverflow({ projects }: { projects: ProjectMeta[] }) {
               const title = pick(project.title, locale);
 
               const art = project.cover ? (
+                // `motion-art` carries the hover zoom; the scale lives on the
+                // image rather than the frame so the rounded corners and the
+                // shadow stay put while the artwork alone grows into them.
                 <Image
                   src={project.cover.src}
                   alt=""
                   aria-hidden
                   fill
                   sizes="(max-width: 640px) 74vw, (max-width: 1024px) 46vw, 400px"
-                  className="object-contain"
+                  className="motion-art object-contain"
                 />
               ) : (
                 // Lettered like a real document cover: a bare gradient in a
                 // portrait frame this large would read as a missing scan.
-                <GeneratedCover slug={project.slug}>
+                <GeneratedCover slug={project.slug} className="motion-art">
                   <div className="absolute inset-0 flex flex-col justify-end gap-2 p-5 sm:p-7">
                     <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/70 sm:text-[10px]">
                       <T en={project.role.en} id={project.role.id} />
@@ -197,7 +200,7 @@ export function ProjectCoverflow({ projects }: { projects: ProjectMeta[] }) {
             transition={{ duration: 0.28, ease: EASE }}
           >
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-strong dark:text-accent">
-              <T en={current.role.en} id={current.role.id} />
+              <Scramble en={current.role.en} id={current.role.id} />
             </p>
             <h3 className="mx-auto mt-2 max-w-xl text-balance text-lg tracking-[-0.02em] sm:text-xl">
               <Link
@@ -212,7 +215,7 @@ export function ProjectCoverflow({ projects }: { projects: ProjectMeta[] }) {
               <T en={current.client.en} id={current.client.id} />
               <span className="mx-1.5 opacity-50">·</span>
               <span className="font-mono text-xs">
-                <T en={current.period.en} id={current.period.id} />
+                <Scramble en={current.period.en} id={current.period.id} />
               </span>
             </p>
           </motion.div>

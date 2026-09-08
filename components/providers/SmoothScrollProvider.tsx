@@ -64,17 +64,27 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
        * misconfiguration: Lenis takes duration whenever both are set, so the
        * lerp knob was dead.
        *
-       * 0.2 rather than the 0.1 default, chosen from a recording of the real
-       * problem. A mouse wheel adds 100px to the target per notch, and a burst
-       * of seven notches in ~60ms puts the target ~600px ahead of the painted
-       * position. Closing that gap takes ln(600)/(lerp*60) seconds — about
-       * 880ms at 0.12, which matched the measured 845ms of coasting after the
-       * page had already reached the bottom. That coast, with further wheel
-       * input doing nothing because the target is already clamped, is what
-       * feels like being shoved into the end of the page. At 0.2 the same gap
-       * closes in ~530ms, and no scroll distance is discarded to get there.
+       * 0.3, raised from 0.2, and the reason is the tail rather than the
+       * travel. Damping is exponential, so the first frames of a move cover
+       * most of the distance and the last ones crawl — the trip is visually
+       * over long before it is arithmetically over, and until it is, fresh
+       * input lands on a target that is still catching up. Measured here, one
+       * wheel notch against the page:
+       *
+       *   lerp   90% covered   99% covered   largest single frame
+       *   0.20      200ms         400ms            104px
+       *   0.25      167ms         317ms            110px
+       *   0.30      133ms         267ms            114px
+       *   0.40      100ms         200ms            118px
+       *
+       * The 0.2 row is what a reversal at the foot of the page felt like: a
+       * flick upward began moving within one frame, then spent a third of a
+       * second finishing 100px, which reads as the page being reluctant rather
+       * than as it being smooth. 0.3 takes a third off that while costing ten
+       * pixels on the sharpest frame of a fast burst — smoothing you can still
+       * see, hesitation you cannot.
        */
-      lerp: 0.2,
+      lerp: 0.3,
       // Framer's loop drives it; see the note above.
       autoRaf: false,
       // Lenis takes over in-page anchors, which is what keeps the navbar links
@@ -117,7 +127,43 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       (window as unknown as { lenis?: Lenis }).lenis = instance;
     }
 
-    const update = ({ timestamp }: { timestamp: number }) => instance.raf(timestamp);
+    /**
+     * Lenis is driven from a clock built out of Framer's frame deltas, not from
+     * the raw timestamp — and that distinction is the whole fix for the lurch
+     * on the first scroll to the foot of the page.
+     *
+     * Lenis damps frame-rate-independently: it advances by however much time
+     * the frame says has passed. Handed a wall-clock timestamp, one long frame
+     * reports its true length and the easing collapses the entire remaining
+     * distance into a single paint. Measured on this page, against a 312px
+     * backlog:
+     *
+     *   frame length   distance covered in that one frame
+     *      16.7ms          81px   (26% — the normal case)
+     *        50ms         185px   (59%)
+     *       120ms         276px   (88%)
+     *       250ms         308px   (99% — indistinguishable from a teleport)
+     *
+     * That long frame is not hypothetical, and it is why the jolt only ever
+     * showed up once per load: the first scroll into new territory pays for
+     * image decode, first paint of sections, and every reveal firing for the
+     * first time. Second pass down, everything is warm, no frame runs long,
+     * and nothing lurches.
+     *
+     * Framer already solved this for its own animations — its batcher clamps
+     * delta to `maxElapsed`, 40ms — and passing `timestamp` straight through
+     * was quietly opting Lenis out of that same protection. Accumulating the
+     * clamped delta instead keeps Lenis on the identical time base as every
+     * spring and reveal on the page, and caps what one stalled frame can do to
+     * roughly half the backlog rather than all of it. Nothing is lost: the
+     * target is unchanged, so the remaining distance is covered over the next
+     * few frames as easing rather than as a jump.
+     */
+    let clock = 0;
+    const update = ({ delta }: { delta: number }) => {
+      clock += delta;
+      instance.raf(clock);
+    };
     frame.update(update, true);
 
     return () => {

@@ -43,6 +43,9 @@
   --accent-strong: var(--accent-700);
   --accent-contrast: #1a1205;
   --grain-opacity: 0.035;
+  /* The site's signature curve, mirrored from lib/motion.ts so a CSS hover and
+     a Framer reveal move on exactly the same easing. */
+  --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
   /* Alternating section wash — navy at ~4% over the page background */
   --tint: #eceff4;
 
@@ -242,6 +245,32 @@
   }
 
   /* ---------------------------------------------------------------
+     Reveal safety net
+
+     Framer Motion serialises its `initial` state into the HTML, so every
+     <Reveal> ships as `opacity: 0` and waits for the runtime to animate it
+     open. That is a blank page in the two cases where the runtime never
+     arrives — script blocked or chunk failed — and an unwanted animation in a
+     third, where the visitor has asked for less motion and hydration has not
+     landed yet.
+
+     So the hidden state is opted into, not assumed: it holds only once the
+     head script has marked the document `.js`, and never under reduced motion.
+     Text-first is the default; the animation is the enhancement.
+  --------------------------------------------------------------- */
+  html:not(.js) [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* ---------------------------------------------------------------
      Custom scrollbar — amber gradient thumb, invisible track
 
      Applied globally so the page scrollbar and any internal scroll
@@ -369,6 +398,23 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Coverflow artwork, zoomed a touch while the centre cover is hovered.
+
+     Only the centre cover is a `.group`, so this selector cannot reach the
+     side covers — they are previews, and a preview that reacts to the pointer
+     invites a click that does not do what the movement implies. The scale sits
+     on the artwork rather than on the frame so the rounded corners and the
+     card shadow hold still while the image grows inside them, and it is a
+     transform, so nothing around it reflows. Duration and curve are the same
+     ones every reveal on the page uses. */
+  .motion-art {
+    transition: transform 500ms var(--ease-signature);
+  }
+
+  .group:hover .motion-art {
+    transform: scale(1.04);
   }
 
   /* For display type on elements that aren't headings (pull quotes, stat figures) */

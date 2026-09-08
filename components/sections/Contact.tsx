@@ -1,15 +1,17 @@
 ﻿"use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Mail, MapPin, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { LinkedInIcon } from "@/components/ui/icons";
 import { T } from "@/components/ui/T";
+import { Scramble } from "@/components/ui/Scramble";
 import { useCurrentLocale } from "@/components/providers/LocaleProvider";
 import { profile, profileId } from "@/lib/content";
 import { pick } from "@/lib/i18n";
+import { EASE, REVEAL_DISTANCE, REVEAL_DURATION, VIEWPORT } from "@/lib/motion";
 
 const inputClass =
   "w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-sm outline-none transition-colors duration-200 placeholder:text-muted/70 focus:border-accent";
@@ -17,6 +19,7 @@ const inputClass =
 export function Contact() {
   const [sent, setSent] = useState(false);
   const locale = useCurrentLocale();
+  const reduceMotion = useReducedMotion();
 
   // No backend yet — compose a mailto: so the message lands in the visitor's own client
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -50,7 +53,7 @@ export function Contact() {
       index={4}
     >
       <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-        <Reveal className="space-y-4">
+        <Reveal direction="right" className="space-y-4">
           <a
             href={`mailto:${profile.email}`}
             className="group flex items-center gap-4 rounded-card border border-border bg-surface/60 p-5 transition-colors duration-300 hover:border-accent/55"
@@ -60,7 +63,7 @@ export function Contact() {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                Email
+                <Scramble text="Email" />
               </span>
               <span className="block truncate text-sm font-medium">{profile.email}</span>
             </span>
@@ -81,7 +84,7 @@ export function Contact() {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                LinkedIn
+                <Scramble text="LinkedIn" />
               </span>
               <span className="block truncate text-sm font-medium">{profile.linkedinLabel}</span>
             </span>
@@ -97,7 +100,7 @@ export function Contact() {
             </span>
             <span>
               <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                <T en="Based in" id="Berbasis di" />
+                <Scramble en="Based in" id="Berbasis di" />
               </span>
               <span className="block text-sm font-medium">
                 <T en={profile.location} id={profileId.location} />
@@ -157,8 +160,18 @@ export function Contact() {
               />
             </label>
 
+            {/* The button follows the form in rather than arriving with it: the
+                fields are what the visitor reads first, and the call to action
+                landing a beat later is what draws the eye down to it. A quarter
+                second — long enough to register as a sequence, short enough
+                that nobody ready to click is kept waiting. */}
             <motion.button
               type="submit"
+              data-reveal
+              initial={reduceMotion ? false : { opacity: 0, y: REVEAL_DISTANCE }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT}
+              transition={{ duration: REVEAL_DURATION, delay: 0.25, ease: EASE }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:hover:bg-accent-strong"

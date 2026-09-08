@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { BadgeCheck, Expand } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Modal } from "./Modal";
 import { T } from "./T";
+import { Scramble } from "./Scramble";
 import { staggerChild, staggerParent } from "./Reveal";
+import { VIEWPORT } from "@/lib/motion";
 import { useCurrentLocale } from "@/components/providers/LocaleProvider";
 import { pick } from "@/lib/i18n";
 import type { Certificate } from "@/lib/certifications";
@@ -17,18 +19,23 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
   const close = useCallback(() => setOpenIndex(null), []);
   const active = openIndex === null ? null : certificates[openIndex];
   const locale = useCurrentLocale();
+  const reduceMotion = useReducedMotion();
 
   return (
     <>
+      {/* One reveal, eighty milliseconds apart down the grid — the cards arrive
+          as a run rather than all at once, which is what makes a long list of
+          credentials read as a sequence you can follow. Under reduced motion
+          the whole grid starts in its resting state and nothing staggers. */}
       <motion.ul
         variants={staggerParent}
-        initial="hidden"
+        initial={reduceMotion ? "visible" : "hidden"}
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={VIEWPORT}
         className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
       >
         {certificates.map((certificate, index) => (
-          <motion.li key={certificate.name} variants={staggerChild}>
+          <motion.li key={certificate.name} data-reveal variants={staggerChild}>
             <motion.button
               type="button"
               onClick={() => setOpenIndex(index)}
@@ -58,14 +65,14 @@ export function CertificateCards({ certificates }: { certificates: Certificate[]
                 {certificate.featured && (
                   <span className="mb-2 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
                     <BadgeCheck size={12} />
-                    <T en="Flagship credential" id="Kredensial unggulan" />
+                    <Scramble en="Flagship credential" id="Kredensial unggulan" />
                   </span>
                 )}
                 <span className="block text-sm font-medium leading-snug">{certificate.name}</span>
                 <span className="mt-1.5 block text-xs text-muted">{certificate.issuer}</span>
                 {certificate.date.en && (
                   <span className="mt-1 block font-mono text-[11px] text-muted">
-                    <T en={certificate.date.en} id={certificate.date.id} />
+                    <Scramble en={certificate.date.en} id={certificate.date.id} />
                   </span>
                 )}
               </span>

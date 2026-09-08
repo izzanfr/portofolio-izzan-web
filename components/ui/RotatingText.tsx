@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { indefiniteArticle } from "@/lib/utils";
+import { EASE } from "@/lib/motion";
 
 /** Number of `--role-N` tokens defined in globals.css. */
 const ROLE_COLORS = 4;
@@ -48,7 +49,7 @@ export function RotatingText({
             initial={{ y: "0.6em", opacity: 0, filter: "blur(6px)" }}
             animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
             exit={{ y: "-0.6em", opacity: 0, filter: "blur(6px)" }}
-            transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.42, ease: EASE }}
             className="col-start-1 row-start-1 whitespace-nowrap"
           >
             {article && <span className="text-muted">{indefiniteArticle(current)} </span>}
