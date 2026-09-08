@@ -12,6 +12,7 @@ import {
   SiPython,
   SiTensorflow,
 } from "react-icons/si";
+import { Scramble } from "./Scramble";
 
 /**
  * A tool is drawn either from a react-icons glyph (tinted to its brand colour)
@@ -98,7 +99,7 @@ export function TechMarquee() {
       {/* Centred and enlarged so the marquee reads as its own titled block
           rather than a caption trailing the stats above it. */}
       <h3 className="mb-7 text-center font-mono text-sm uppercase tracking-[0.32em] text-accent-strong dark:text-accent md:text-base">
-        Tech skills
+        <Scramble text="Tech skills" />
       </h3>
       <div className="flex flex-col gap-4">
         <MarqueeRow tools={ANALYSIS} />

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
+import { EASE } from "@/lib/motion";
 
 /**
  * Ends on "Halo": the local greeting closes the sequence, so the last thing on
@@ -48,9 +49,6 @@ export const preloaderInitScript = `(function(){try{var k="${INTRO_STORAGE_KEY}"
 
 /** Curtain length, and the grace period the safety net waits out. */
 const EXIT_MS = 800;
-
-/** The site's signature curve, reused so the intro moves like everything else. */
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
  * Variants rather than inline props: the panel's `exit` propagates to the

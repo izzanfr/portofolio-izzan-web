@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { EASE } from "@/lib/motion";
 
 /**
  * A hairline that draws itself in from the centre — the amber accent line
@@ -19,7 +20,7 @@ export function HairRule({ className, delay = 0 }: { className?: string; delay?:
       initial={{ scaleX: 0, opacity: 0 }}
       whileInView={{ scaleX: 1, opacity: 1 }}
       viewport={{ once: true, amount: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
+      transition={{ duration: 0.7, ease: EASE, delay }}
     />
   );
 }

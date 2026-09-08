@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Modal } from "./Modal";
-import { T } from "./T";
+import { Scramble } from "./Scramble";
 import { useCurrentLocale } from "@/components/providers/LocaleProvider";
 import { pick, type BiText } from "@/lib/i18n";
 import type { BiPhoto } from "@/lib/experience";
@@ -45,7 +45,7 @@ export function ExperienceGallery({
     <div className={cn(className ?? "px-5 pb-5 pl-5 md:pl-[4.25rem]")}>
       <p className="mb-3 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
         <ImageIcon size={12} />
-        <T
+        <Scramble
           en={`Documentation · ${photos.length} photo${photos.length > 1 ? "s" : ""}`}
           id={`Dokumentasi · ${photos.length} foto`}
         />

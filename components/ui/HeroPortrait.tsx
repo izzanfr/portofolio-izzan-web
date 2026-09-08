@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { FlipHorizontal2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { profile } from "@/lib/content";
+import { EASE } from "@/lib/motion";
 
 const SIZES = "(max-width: 640px) 15rem, (max-width: 1024px) 17rem, 30rem";
 
@@ -83,7 +84,7 @@ export function HeroPortrait() {
           <div className="absolute inset-0 [perspective:1200px]">
             <motion.div
               animate={{ rotateY: flipped ? 180 : 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, ease: EASE }}
               style={{ transformStyle: "preserve-3d" }}
               className="relative h-full w-full"
             >

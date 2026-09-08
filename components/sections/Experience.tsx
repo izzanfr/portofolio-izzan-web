@@ -16,6 +16,7 @@ import { Section } from "@/components/ui/Section";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
 import { ExperienceGallery } from "@/components/ui/ExperienceGallery";
 import { T } from "@/components/ui/T";
+import { Scramble } from "@/components/ui/Scramble";
 import { cn } from "@/lib/utils";
 import { getExperience, type BiJob, type BiRole } from "@/lib/experience";
 import { RoleSplitRail } from "./RoleSplitRail";
@@ -441,14 +442,14 @@ function JobBlockBody({ job }: { job: BiJob }) {
               small. */}
           {job.current && (
             <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
-              <T en="Current" id="Saat ini" />
+              <Scramble en="Current" id="Saat ini" />
             </span>
           )}
         </div>
         <p className="mt-1.5 font-mono text-xs text-muted">
-          <T en={job.period.en} id={job.period.id} /> ·{" "}
-          <T en={job.duration.en} id={job.duration.id} /> ·{" "}
-          <T en={job.location.en} id={job.location.id} />
+          <Scramble en={job.period.en} id={job.period.id} /> ·{" "}
+          <Scramble en={job.duration.en} id={job.duration.id} /> ·{" "}
+          <Scramble en={job.location.en} id={job.location.id} />
         </p>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
           <T en={job.summary.en} id={job.summary.id} />

@@ -5,6 +5,7 @@ import { T } from "./T";
 import { GeneratedCover } from "./ProjectCoverArt";
 import type { ProjectMeta } from "@/lib/projects";
 import { cn } from "@/lib/utils";
+import { Scramble } from "./Scramble";
 
 export function ProjectCard({
   project,
@@ -51,7 +52,7 @@ export function ProjectCard({
 
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
             <span className="rounded-full border border-white/20 bg-navy/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white backdrop-blur-sm">
-              <T en={project.role.en} id={project.role.id} />
+              <Scramble en={project.role.en} id={project.role.id} />
             </span>
             <ArrowUpRight
               size={17}
@@ -73,8 +74,8 @@ export function ProjectCard({
           </p>
           <p className="mt-1 flex items-center gap-1.5 font-mono text-xs text-muted">
             <CalendarDays size={13} className="shrink-0" />
-            <T en={project.period.en} id={project.period.id} /> ·{" "}
-            <T en={project.duration.en} id={project.duration.id} />
+            <Scramble en={project.period.en} id={project.period.id} /> ·{" "}
+            <Scramble en={project.duration.en} id={project.duration.id} />
           </p>
 
           {/* Two lines then ellipsis — the card is a scan target, the detail

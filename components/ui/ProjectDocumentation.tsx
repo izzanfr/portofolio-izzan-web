@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import { Reveal } from "./Reveal";
 import type { DocumentationImage } from "@/lib/projects";
 import { cn } from "@/lib/utils";
+import { EASE } from "@/lib/motion";
 
 /**
  * Project documentation, shown full-size in the page — no click-to-enlarge.
@@ -21,8 +22,6 @@ import { cn } from "@/lib/utils";
  * The coverflow frames are fixed-aspect, which lets them use next/image; the
  * single-image case uses a plain <img> so it keeps its natural aspect ratio.
  */
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 // Pose per signed distance from the active card. Side cards turn away in 3D and
 // fade; anything past a neighbour parks off to its side at zero opacity so it
