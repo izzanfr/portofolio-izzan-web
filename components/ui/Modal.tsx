@@ -39,7 +39,14 @@ type ModalProps = {
  * budget the lightbox sizes itself with was measured against a box a fraction
  * of the viewport — so the photo overflowed and the caption was clipped.
  */
-export function Modal({ open, onClose, children, label, fit = false, className }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  children,
+  label,
+  fit = false,
+  className,
+}: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const lenisRef = useLenisRef();
@@ -48,21 +55,66 @@ export function Modal({ open, onClose, children, label, fit = false, className }
     if (!open) return;
 
     returnFocusRef.current = document.activeElement as HTMLElement | null;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    // `overflow: hidden` alone no longer holds the page still: Lenis drives
-    // scrolling itself and would keep easing the page behind the dialog.
+
+    /**
+     * The page is held still by refusing the input, not by clamping the body's
+     * overflow — and that distinction is load-bearing.
+     *
+     * `document.body.style.overflow = "hidden"` was the old lock, and it made
+     * the body a scroll container. Anything `position: sticky` inside a scroll
+     * container that does not itself scroll cannot stick, so opening a dialog
+     * from the credentials page unpinned it: the dark page dropped away and
+     * the site's own off-white showed through behind the dialog. Refusing
+     * wheel, touch and the scrolling keys leaves the layout untouched, so
+     * whatever was on screen when the dialog opened is still there behind it.
+     *
+     * Every guard lets the dialog's own panel through — a long certificate has
+     * to stay scrollable while the page behind it does not.
+     */
     lenisRef?.current?.stop();
     panelRef.current?.focus();
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+    const insidePanel = (target: EventTarget | null) =>
+      target instanceof Node && Boolean(panelRef.current?.contains(target));
+
+    const refuseScroll = (event: Event) => {
+      if (insidePanel(event.target)) return;
+      if (event.cancelable) event.preventDefault();
     };
+
+    // Space, Page Up/Down, Home/End and the arrows all scroll a document.
+    const SCROLL_KEYS = new Set([
+      " ",
+      "PageUp",
+      "PageDown",
+      "Home",
+      "End",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+    ]);
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (SCROLL_KEYS.has(event.key) && !insidePanel(event.target)) {
+        event.preventDefault();
+      }
+    };
+
+    // Non-passive, or preventDefault is ignored on these two.
+    const wheelOptions = { passive: false } as const;
+    window.addEventListener("wheel", refuseScroll, wheelOptions);
+    window.addEventListener("touchmove", refuseScroll, wheelOptions);
     document.addEventListener("keydown", onKeyDown);
 
     return () => {
+      window.removeEventListener("wheel", refuseScroll);
+      window.removeEventListener("touchmove", refuseScroll);
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
       // Read fresh rather than capturing above: this points at a Lenis
       // instance, not a DOM node, and if the provider replaced it while the
       // dialog was open we must restart the current one, not a destroyed one.

@@ -8,7 +8,6 @@ import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvide
 import "lenis/dist/lenis.css";
 import { Preloader, preloaderInitScript } from "@/components/Preloader";
 import { ImageGuard } from "@/components/ImageGuard";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { profile } from "@/lib/content";
 import { motionInitScript } from "@/lib/motion";
 
@@ -89,7 +88,10 @@ export default function RootLayout({
         <ThemeProvider>
           <LocaleProvider>
             <SmoothScrollProvider>
-              <ScrollProgress />
+              {/* Fixed-layer order, since nothing here states it locally:
+                  navbar z-50, grain z-60, modals z-[70], intro curtain z-[100].
+                  The gap at z-[65] is where the reading-progress bar used to
+                  sit; anything new pinned to the top edge belongs there. */}
               <Navbar />
               <main className="flex-1">{children}</main>
             </SmoothScrollProvider>
