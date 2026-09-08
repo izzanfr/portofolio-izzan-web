@@ -36,7 +36,10 @@ export const navLinks = [
   {
     href: "/#credentials",
     id: "credentials",
-    label: { en: "Credentials", id: "Kredensial" },
+    // Matches the section's own heading. The anchor stays `#credentials`:
+    // the label is what a visitor reads, the id is what their bookmarks and
+    // any shared links already point at.
+    label: { en: "Certifications", id: "Sertifikasi" },
     tone: "--role-4",
   },
   {

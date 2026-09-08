@@ -162,18 +162,31 @@ function RoleAccordion({
     // them, so collapsing the item's height on exit takes the spacing with it
     // and the remaining cards close up without a leftover gap.
     //
-    // `-m-2 p-2` is what gives the tilt somewhere to go: the negative margin
-    // cancels the padding so the card sits exactly where it did, but the clip
-    // box is 8px larger all round, so a rotated corner is not sheared off by
-    // the overflow-hidden that the filter's height collapse depends on.
+    // The negative margin cancels the padding, so the card sits exactly where
+    // it did while the clip box around it grows — room for a tilted corner to
+    // project into without being sheared by the overflow-hidden that the
+    // filter's height collapse depends on.
+    //
+    // The room needed is not symmetric, and 8px all round was not enough
+    // horizontally. Under `perspective: 1000px` a 7° turn swings the near edge
+    // of a 1048px-wide card toward the viewer, and perspective magnifies what
+    // comes closer: measured, the card's painted box overhangs its layout box
+    // by 31px at the sides but only 5px top and bottom, because the same angle
+    // acts on a height a quarter of the width. 64px across and 24px down —
+    // comfortably past the measured need rather than sized to it, since the
+    // overhang grows with the card and a card grows with its content.
+    //
+    // Padding collapses with the height on exit. Left standing it would hold a
+    // filtered-out card's slot open by its own padding after the height had
+    // gone, so the list would close up to a gap instead of closing up.
     <motion.li
       layout
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
-      exit={{ opacity: 0, height: 0 }}
+      exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
       transition={{ duration: 0.45, delay: index * 0.05, ease: EASE }}
-      className="-m-2 overflow-hidden p-2"
+      className="-mx-16 -my-6 overflow-hidden px-16 py-6"
     >
       <div className="pb-2.5">
         <div
@@ -195,12 +208,13 @@ function RoleAccordion({
                   }
                 : undefined
             }
-            className={cn(
-              "group rounded-card border transition-colors duration-300",
-              open
-                ? "border-accent/45 bg-surface"
-                : "border-border bg-surface/50 hover:border-accent/35",
-            )}
+            // The same border and ground as the split rail's panel. Which of
+            // the two layouts a company gets depends only on how many roles it
+            // has, so a card that changed colour on open made a one-role
+            // company look like a different kind of thing from a seven-role
+            // one. Open is already said by the chevron and by the content
+            // being there; it does not also need its own palette.
+            className="group rounded-card border border-border bg-surface/50 transition-colors duration-300 hover:border-accent/35"
           >
             <button
               type="button"

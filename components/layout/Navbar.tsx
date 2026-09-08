@@ -43,12 +43,31 @@ export function Navbar() {
     };
   }, [open, lenisRef]);
 
+  /**
+   * The credentials page hides the bar.
+   *
+   * That section is meant to read as somewhere else entirely — full bleed,
+   * dark, its own scroll direction — and a floating control from the site
+   * hovering over it is the one thing that keeps saying "you are still on the
+   * page you were on". It comes back on its own the moment the section is no
+   * longer what you are looking at, so nothing is lost: the section ends, the
+   * navigation returns.
+   *
+   * `useActiveSection` already knows which section holds the middle of the
+   * screen, so this needs no observer of its own.
+   */
+  const hidden = active === "credentials" && !open;
+
   return (
     // The name keeps the bar out of the page's view-transition group, so it
     // stays put while the content slides underneath it (see globals.css).
-    <header
+    <motion.header
       style={{ viewTransitionName: "site-header" }}
-      className="fixed inset-x-0 top-0 z-50"
+      animate={{ y: hidden ? -120 : 0, opacity: hidden ? 0 : 1 }}
+      transition={{ duration: 0.45, ease: EASE }}
+      // Out of the way for the pointer as well as the eye — a bar faded to
+      // zero still swallows clicks aimed at what is behind it.
+      className={cn("fixed inset-x-0 top-0 z-50", hidden && "pointer-events-none")}
     >
       <nav className="container-page flex h-20 items-center justify-center md:h-24">
         {/* Floating capsule: the links, the primary CTA and the theme toggle
@@ -180,6 +199,6 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }

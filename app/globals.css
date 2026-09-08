@@ -263,6 +263,31 @@
     transform: none !important;
   }
 
+  /* The credentials rail depends on script for its whole shape: the stage's
+     height is measured, and the sideways travel is a transform driven by
+     scroll. Unscripted, that would be a tall empty section with one card
+     stranded at the left. So the pinning comes apart and the rail wraps into
+     a column that scrolls like everything else. */
+  html:not(.js) .cert-stage {
+    height: auto !important;
+  }
+
+  /* `!important` because these are undoing Tailwind utilities, and a utility
+     in its own layer outranks anything declared here without it. */
+  html:not(.js) .cert-stage > div {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  html:not(.js) .cert-track {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline: 1.25rem;
+    transform: none !important;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-reveal] {
       opacity: 1 !important;
@@ -300,6 +325,29 @@
 
   ::-webkit-scrollbar-track {
     background: transparent;
+  }
+
+  /* ---------------------------------------------------------------
+     Inside the credentials page, the page scrollbar goes quiet.
+
+     That section already draws its own progress — the rail's own bar under
+     "Scroll to explore" — and two indicators of the same scroll, moving on
+     different axes at different rates, contradict each other: the one at the
+     edge measures a vertical distance the visitor cannot see anything moving
+     through.
+
+     Hidden by going transparent rather than by being removed. Taking the
+     scrollbar away would return its gutter to the layout, widening the
+     viewport by ~10px mid-scroll and shunting the whole page sideways at the
+     exact moment this section is asking to be looked at.
+  --------------------------------------------------------------- */
+  html.credentials-open {
+    scrollbar-color: transparent transparent;
+  }
+
+  html.credentials-open::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    background-image: none;
   }
 
   ::-webkit-scrollbar-thumb {
@@ -415,6 +463,51 @@
 
   .group:hover .motion-art {
     transform: scale(1.04);
+  }
+
+  /* ---------------------------------------------------------------
+     Immersive panel ground
+
+     The Certifications panel is dark in both themes, so it cannot be built
+     from the theme tokens the rest of the page uses — it is deliberately not
+     the page. Two large, heavily blurred washes drift across the navy behind
+     the cards: enough movement that the ground is not a flat rectangle, slow
+     enough that nothing competes with the certificates on top of it.
+
+     Transform only. The blobs are composited layers that never touch layout,
+     and the global reduced-motion rule freezes them where they stand.
+  --------------------------------------------------------------- */
+  .panel-wash {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    will-change: transform;
+  }
+
+  .panel-wash-warm {
+    animation: panel-drift-warm 26s ease-in-out infinite alternate;
+  }
+
+  .panel-wash-cool {
+    animation: panel-drift-cool 32s ease-in-out infinite alternate;
+  }
+
+  @keyframes panel-drift-warm {
+    from {
+      transform: translate3d(-6%, -4%, 0) scale(1);
+    }
+    to {
+      transform: translate3d(8%, 6%, 0) scale(1.15);
+    }
+  }
+
+  @keyframes panel-drift-cool {
+    from {
+      transform: translate3d(5%, 6%, 0) scale(1.1);
+    }
+    to {
+      transform: translate3d(-7%, -5%, 0) scale(0.95);
+    }
   }
 
   /* For display type on elements that aren't headings (pull quotes, stat figures) */

@@ -12,7 +12,12 @@
         "Predictive, agile & hybrid methodologies",
         "Schedule and cost management",
         "Risk & stakeholder management"
-      ]
+      ],
+      "publisher": {
+        "name": "Project Management Institute",
+        "short": "PMI",
+        "logo": "/publishers/pmi.webp"
+      }
     },
     {
       "name": "Certified Data Science Specialist (CDSS)",
@@ -26,7 +31,14 @@
         "Exploratory & diagnostic analysis",
         "Machine learning modelling",
         "Insight communication"
-      ]
+      ],
+      "publisher": {
+        "name": "iTrain Asia",
+        "short": "iTrain Asia",
+        "logo": "/publishers/itrain-asia.webp",
+        "logoOnDark": true,
+        "logoFill": true
+      }
     },
     {
       "name": "Power BI Data Analyst",
@@ -40,7 +52,12 @@
         "DAX measures",
         "Report & dashboard design",
         "Workspace management"
-      ]
+      ],
+      "publisher": {
+        "name": "Microsoft",
+        "short": "Microsoft",
+        "logo": "/publishers/microsoft.webp"
+      }
     },
     {
       "name": "Salesforce Certified Tableau Data Analyst",
@@ -54,7 +71,12 @@
         "Calculations & analytics",
         "Dashboard design",
         "Sharing & permissions"
-      ]
+      ],
+      "publisher": {
+        "name": "Salesforce",
+        "short": "Salesforce",
+        "logo": "/publishers/salesforce.webp"
+      }
     },
     {
       "name": "Machine Learning Professional Certification",
@@ -68,7 +90,12 @@
         "Scoring & hold-out validation",
         "Correlations & feature importance",
         "Clustering & association rules"
-      ]
+      ],
+      "publisher": {
+        "name": "RapidMiner",
+        "short": "RapidMiner",
+        "logo": "/publishers/rapidminer.webp"
+      }
     },
     {
       "name": "Data Engineering Professional Certification",
@@ -82,7 +109,12 @@
         "Basic transformations",
         "Working with multiple data sets",
         "Pivot tables, routines & text processing"
-      ]
+      ],
+      "publisher": {
+        "name": "RapidMiner",
+        "short": "RapidMiner",
+        "logo": "/publishers/rapidminer.webp"
+      }
     }
   ]
 }
