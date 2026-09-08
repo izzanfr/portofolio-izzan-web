@@ -79,11 +79,28 @@ export function ExperienceGallery({
         open={active !== null}
         onClose={close}
         label={`${pick(roleTitle, locale)} ${pick({ en: "photo viewer", id: "penampil foto" }, locale)}`}
+        fit
         className="max-w-5xl"
       >
         {active && (
-          <div>
-            <div className="relative bg-navy">
+          <>
+            {/*
+              The height budget, not a percentage: `max-h-full` here resolves
+              against a flex item whose own height is auto, so the browser
+              treats it as indefinite and ignores it — the image kept its full
+              height and pushed a scrollbar into the panel. Subtracting the
+              chrome from the viewport is what actually binds. The figure is
+              the overlay's padding (2rem, 4rem from md) plus the caption,
+              which is pinned to 100px by the clamps below, plus a little
+              slack. `svh` rather than `vh` so a phone's retracting URL bar
+              cannot make the panel taller than the screen it is on.
+
+              `w-auto` alongside it is what keeps the frame tight: when width
+              is auto and max-height is what binds, CSS scales the width to
+              match, so the panel — sized by this image — never grows bars
+              beside it.
+            */}
+            <div className="relative flex items-center justify-center bg-navy">
               {/* Intrinsic sizing keeps portrait and landscape shots both fully visible */}
               <Image
                 src={active.src}
@@ -91,7 +108,7 @@ export function ExperienceGallery({
                 width={1600}
                 height={1200}
                 sizes="90vw"
-                className="max-h-[72vh] w-full object-contain"
+                className="block max-h-[calc(100svh_-_9rem)] w-auto max-w-full object-contain md:max-h-[calc(100svh_-_11rem)]"
               />
 
               {photos.length > 1 && (
@@ -116,18 +133,27 @@ export function ExperienceGallery({
               )}
             </div>
 
-            <div className="flex flex-wrap items-baseline justify-between gap-3 p-5">
-              <div>
-                <p className="text-sm font-medium">
+            {/*
+              `w-0 min-w-full` keeps the caption out of the panel's width
+              calculation — otherwise a long caption, not the photo, would
+              decide how wide the frame is — while still filling whatever width
+              the photo settles on. The clamps hold this row at a constant
+              100px, which is the number the image's height budget is drawn
+              against; no wrapping, so the counter cannot drop to its own line
+              and quietly spend height the budget has not allowed for.
+            */}
+            <div className="flex w-0 min-w-full shrink-0 items-baseline justify-between gap-3 p-5">
+              <div className="min-w-0 flex-1">
+                <p className="line-clamp-2 text-sm font-medium">
                   {pick(active.caption ?? active.alt, locale)}
                 </p>
-                <p className="mt-1 text-xs text-muted">{pick(roleTitle, locale)}</p>
+                <p className="mt-1 truncate text-xs text-muted">{pick(roleTitle, locale)}</p>
               </div>
-              <p className="font-mono text-xs text-muted">
+              <p className="shrink-0 font-mono text-xs text-muted">
                 {(openIndex ?? 0) + 1} / {photos.length}
               </p>
             </div>
-          </div>
+          </>
         )}
       </Modal>
     </div>

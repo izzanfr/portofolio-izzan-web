@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,13 @@ type ModalProps = {
   children: ReactNode;
   /** Accessible name for the dialog. */
   label: string;
+  /**
+   * Fits the panel to the viewport instead of letting it scroll. The photo
+   * lightbox wants this: a scrollbar there means the image is taller than its
+   * frame, which reads as broken rather than as more content. Children become
+   * flex rows, so one of them can take the leftover height.
+   */
+  fit?: boolean;
   className?: string;
 };
 
@@ -19,8 +27,18 @@ type ModalProps = {
  * Shared overlay for the experience lightbox and the certificate viewer.
  * Closes on Escape, on backdrop click, and on the close button; locks page
  * scroll and returns focus to whatever opened it.
+ *
+ * Rendered through a portal into `document.body`, and that is load-bearing
+ * rather than tidiness. Both callers sit inside the Experience section's depth
+ * and tilt effects, and a `perspective`, a `transform` or a `will-change:
+ * transform` on any ancestor makes that ancestor the containing block for
+ * `position: fixed` descendants. Left in place, `fixed inset-0` resolved
+ * against the role card instead of the screen: the backdrop covered only that
+ * card, the panel inherited the card's rotation, and the viewport-height
+ * budget the lightbox sizes itself with was measured against a box a fraction
+ * of the viewport — so the photo overflowed and the caption was clipped.
  */
-export function Modal({ open, onClose, children, label, className }: ModalProps) {
+export function Modal({ open, onClose, children, label, fit = false, className }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const lenisRef = useLenisRef();
@@ -53,7 +71,7 @@ export function Modal({ open, onClose, children, label, className }: ModalProps)
     };
   }, [open, onClose, lenisRef]);
 
-  return (
+  const overlay = (
     <AnimatePresence>
       {open && (
         <motion.div
@@ -83,7 +101,12 @@ export function Modal({ open, onClose, children, label, className }: ModalProps)
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
-              "relative max-h-full w-full overflow-y-auto rounded-card border border-border bg-background shadow-2xl outline-none",
+              "relative max-h-full rounded-card border border-border bg-background shadow-2xl outline-none",
+              // `w-fit` in fit mode: the panel takes its width from the image
+              // rather than from the viewport, so a photo scaled down to fit a
+              // short screen is framed tight instead of stranded between two
+              // bars of backdrop.
+              fit ? "flex w-fit flex-col overflow-hidden" : "w-full overflow-y-auto",
               className,
             )}
           >
@@ -101,4 +124,9 @@ export function Modal({ open, onClose, children, label, className }: ModalProps)
       )}
     </AnimatePresence>
   );
+
+  // No portal target during SSR. Both branches render nothing while the dialog
+  // is closed, so the client's first pass matches the server's.
+  if (typeof document === "undefined") return null;
+  return createPortal(overlay, document.body);
 }
