@@ -26,6 +26,34 @@ import { EASE } from "@/lib/motion";
 export { EASE };
 
 /* ---------------------------------------------------------------
+   Card ground
+
+   Both layouts put their role content in a bordered panel, and both
+   used to fill it at 50%. That was fine over a flat tint and stopped
+   being fine the moment a lattice started moving behind it: every
+   bullet had lines crossing it, and small muted type is where that
+   costs the most.
+
+   So a card is now the calm place. The fill is nearly opaque, which
+   suppresses the lattice inside a card while leaving it alone around
+   one — the movement belongs to the ground, not to the paragraph
+   being read. `lattice-card` is what switches the halo back off (see
+   `.on-lattice` in globals.css): inside here the type has a surface
+   of its own and does not need one.
+
+   Not fully opaque, and deliberately not `backdrop-blur`: a hair of
+   translucency keeps the card sitting *on* the ground rather than
+   punched out of it, and a backdrop filter would have to survive the
+   3D tilt one of the two callers puts on it, which is exactly where
+   backdrop filters stop being reliable.
+
+   One constant rather than the same string in two files, because it
+   is one decision — the two layouts differing here would read as a
+   bug, not as a choice.
+--------------------------------------------------------------- */
+export const ROLE_SURFACE = "lattice-card rounded-card border border-border bg-surface/92";
+
+/* ---------------------------------------------------------------
    Role bullets — staggered reveal
 
    Variants rather than per-item delays: the list owns the rhythm, so

@@ -12,7 +12,13 @@ import { ExperienceGallery } from "@/components/ui/ExperienceGallery";
 import { T } from "@/components/ui/T";
 import type { BiRole } from "@/lib/experience";
 import { cn } from "@/lib/utils";
-import { EASE, RoleBullets, useHasFinePointer, useTilt } from "./experienceShared";
+import {
+  EASE,
+  ROLE_SURFACE,
+  RoleBullets,
+  useHasFinePointer,
+  useTilt,
+} from "./experienceShared";
 
 /**
  * A company's roles as master–detail: the list of roles on a rail, the selected
@@ -61,8 +67,12 @@ function RailItem({
         type="button"
         onClick={onSelect}
         aria-current={isActive ? "true" : undefined}
+        // `isolate` matters now that the rail has a background of its own: the
+        // active marker sits at -z-10, and without a stacking context here it
+        // would resolve against an ancestor and paint *behind* that background
+        // instead of behind the label.
         className={cn(
-          "relative flex w-full items-center gap-2.5 whitespace-nowrap rounded-full px-4 py-2.5 text-left transition-colors duration-200",
+          "relative isolate flex w-full items-center gap-2.5 whitespace-nowrap rounded-full px-4 py-2.5 text-left transition-colors duration-200",
           "md:gap-3 md:rounded-lg md:px-4 md:py-3.5 md:whitespace-normal",
           isActive ? "text-foreground" : "text-muted hover:text-foreground",
         )}
@@ -134,8 +144,13 @@ export function RoleSplitRail({ roles }: { roles: BiRole[] }) {
         layout={!reduceMotion}
         data-lenis-prevent
         className={cn(
-          "flex gap-2 overflow-x-auto pb-2",
-          "md:w-[28%] md:shrink-0 md:flex-col md:gap-1 md:overflow-visible md:pb-0",
+          // The rail gets the panel's own surface. The two are peers in a
+          // master-detail, and only one of them having a floor was the tell:
+          // the role list was seven lines of type sitting straight on a moving
+          // lattice next to a panel that had been lifted off it.
+          ROLE_SURFACE,
+          "flex gap-2 overflow-x-auto p-2 pb-2",
+          "md:w-[28%] md:shrink-0 md:flex-col md:gap-1 md:overflow-visible md:p-2.5",
           // Hides the scrollbar on the mobile rail without hiding the page's.
           "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:[scrollbar-width:thin]",
         )}
@@ -166,7 +181,7 @@ export function RoleSplitRail({ roles }: { roles: BiRole[] }) {
               ? { rotateX: tilt.rotateX, rotateY: tilt.rotateY, willChange: "transform" }
               : undefined
           }
-          className="rounded-card border border-border bg-surface/50 p-5 md:p-7"
+          className={cn(ROLE_SURFACE, "p-5 md:p-7")}
         >
           {/* `wait`: the outgoing role clears before the incoming one arrives,
               so the two never overlap mid-air in the same panel. */}

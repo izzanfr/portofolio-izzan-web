@@ -30,6 +30,22 @@ type SectionProps = {
    * with the content for the one screenful it has to fit in.
    */
   spacing?: "default" | "tight";
+  /**
+   * Replaces the shared ambient wash for sections that carry a ground of their
+   * own. Whatever is passed is rendered in the backdrop slot — underneath the
+   * content, inside the section's clip. Explicit `null` means the section paints
+   * no ground at all, for the case where something outside it does.
+   */
+  backdrop?: ReactNode | null;
+  /**
+   * How the section's ground arrives. `wipe` is the page default: a curtain
+   * rising once, with a hairline on its leading edge. `none` is for a boundary
+   * that is already being handled elsewhere — the hero-to-experience bridge
+   * scrubs its own handoff, and a curtain firing on top of it would be a second
+   * answer to a question already asked. `none` drops the seam with it, since a
+   * seam marks a join the bridge has covered.
+   */
+  transition?: "wipe" | "none";
   className?: string;
   contentClassName?: string;
 };
@@ -44,11 +60,16 @@ export function Section({
   index = 0,
   align = "left",
   spacing = "default",
+  backdrop,
+  transition = "wipe",
   className,
   contentClassName,
 }: SectionProps) {
   const centred = align === "center";
   const tight = spacing === "tight";
+  // `??` would swallow an explicit null, which is the one value that has to
+  // mean something different from "not given".
+  const ground = backdrop === undefined ? <SectionBackdrop index={index} /> : backdrop;
   return (
     <section
       id={id}
@@ -66,12 +87,18 @@ export function Section({
           whole ground arrives as one movement. The seam stays outside the clip:
           it marks the join to the previous section and should already be there
           when the curtain starts. */}
-      <SectionWipe tinted={tone === "tint"}>
-        {/* Soft band instead of a hairline: against a drifting wash a 1px rule
-            reads as a hard edge cutting through it. */}
-        <SectionSeam />
-        <SectionBackdrop index={index} />
-      </SectionWipe>
+      {transition === "wipe" ? (
+        <SectionWipe tinted={tone === "tint"}>
+          {/* Soft band instead of a hairline: against a drifting wash a 1px rule
+              reads as a hard edge cutting through it. */}
+          <SectionSeam />
+          {ground}
+        </SectionWipe>
+      ) : (
+        <div aria-hidden className={cn("absolute inset-0", tone === "tint" && "bg-tint")}>
+          {ground}
+        </div>
+      )}
 
       <div className="container-page relative">
         {(eyebrow || title || lead) && (

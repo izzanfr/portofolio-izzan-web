@@ -20,7 +20,13 @@ import { Scramble } from "@/components/ui/Scramble";
 import { cn } from "@/lib/utils";
 import { getExperience, type BiJob, type BiRole } from "@/lib/experience";
 import { RoleSplitRail } from "./RoleSplitRail";
-import { EASE, RoleBullets, useHasFinePointer, useTilt } from "./experienceShared";
+import {
+  EASE,
+  ROLE_SURFACE,
+  RoleBullets,
+  useHasFinePointer,
+  useTilt,
+} from "./experienceShared";
 
 const experience = getExperience();
 
@@ -98,11 +104,17 @@ function RoleFilter({
             type="button"
             onClick={() => onChange(category.id)}
             aria-pressed={isActive}
+            // Both states carry a fill, and both fills are opaque. A pill is a
+            // control: an outline with the lattice running through it reads as
+            // a shape drawn on the background rather than as something to
+            // press. The active fill is mixed into the surface rather than
+            // laid over it at 12%, which is the only way to tint it without
+            // reopening the hole the tint was covering.
             className={cn(
-              "rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors duration-200",
+              "lattice-card rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors duration-200",
               isActive
-                ? "border-accent bg-accent/12 text-accent-strong dark:text-accent"
-                : "border-border text-muted hover:border-accent/40 hover:text-foreground",
+                ? "border-accent bg-[color-mix(in_srgb,var(--accent)_13%,var(--surface))] text-accent-strong dark:text-accent"
+                : "border-border bg-surface/92 text-muted hover:border-accent/40 hover:text-foreground",
             )}
           >
             <T en={category.label.en} id={category.label.id} />
@@ -214,7 +226,10 @@ function RoleAccordion({
             // company look like a different kind of thing from a seven-role
             // one. Open is already said by the chevron and by the content
             // being there; it does not also need its own palette.
-            className="group rounded-card border border-border bg-surface/50 transition-colors duration-300 hover:border-accent/35"
+            className={cn(
+              ROLE_SURFACE,
+              "group transition-colors duration-300 hover:border-accent/35",
+            )}
           >
             <button
               type="button"
@@ -323,8 +338,19 @@ export function Experience() {
     <Section
       id="experience"
       title={<T en="Experience" id="Pengalaman" />}
-      tone="tint"
       index={1}
+      // Both the ground and the arrival belong to <ExperienceZone>, which wraps
+      // this section: the lattice behind it is sticky and spans the whole zone,
+      // so it cannot be painted by anything that scrolls with the content. The
+      // section itself stays transparent and carries no reveal of its own —
+      // the zone's curtain is already answering that boundary.
+      backdrop={null}
+      transition="none"
+      // The halo that keeps type legible over the lattice. On the section
+      // rather than on each block because text-shadow inherits, so one
+      // declaration covers the heading, the company header and the role rail
+      // alike — and the cards inside turn it back off for themselves.
+      className="on-lattice"
     >
       <div ref={trackRef} className="relative">
         {/* Scroll-linked timeline spine */}
@@ -447,7 +473,12 @@ function JobBlockBody({ job }: { job: BiJob }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.55, ease: EASE }}
-        className="mb-6"
+        // The same surface the role content sits on. This block — company,
+        // period, location, summary — was the last text in the section still
+        // floating directly on the lattice, and the mono period line is the
+        // smallest type on the page, so it was where lines crossing strokes
+        // cost the most. A header that reads as a header still needs a floor.
+        className={cn(ROLE_SURFACE, "mb-6 p-5 md:p-6")}
       >
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h3 className="text-xl tracking-[-0.024em] md:text-2xl">{job.company}</h3>

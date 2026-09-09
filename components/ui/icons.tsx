@@ -18,3 +18,51 @@ export function LinkedInIcon({ size = 16, ...props }: SVGProps<SVGSVGElement> & 
     </svg>
   );
 }
+
+/**
+ * Flag chips for the language menu.
+ *
+ * Drawn rather than written as emoji: emoji flags do not render on Windows at
+ * all — Chrome there falls back to the bare two-letter code — and that is a
+ * large share of this site's audience.
+ *
+ * Deliberately simplified. The Union Jack's real construction offsets the red
+ * diagonals to one side of the white ones; at 20px that is invisible and costs
+ * four more paths, so the diagonals here are centred. The svg root clips to its
+ * viewBox by default, which is what keeps the diagonal stroke ends square with
+ * the corners.
+ *
+ * A flag names a country and these name languages, which is not the same thing —
+ * so they stay decoration. Every option in the menu carries its language's own
+ * name beside the chip, and that is what actually identifies it.
+ */
+function FlagFrame({ children, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 16" aria-hidden="true" {...props}>
+      {children}
+    </svg>
+  );
+}
+
+/** English. */
+export function FlagGB(props: SVGProps<SVGSVGElement>) {
+  return (
+    <FlagFrame {...props}>
+      <rect width="24" height="16" fill="#012169" />
+      <path d="M0 0 24 16M24 0 0 16" stroke="#FFFFFF" strokeWidth="3.4" />
+      <path d="M0 0 24 16M24 0 0 16" stroke="#C8102E" strokeWidth="1.9" />
+      <path d="M12 0v16M0 8h24" stroke="#FFFFFF" strokeWidth="5.6" />
+      <path d="M12 0v16M0 8h24" stroke="#C8102E" strokeWidth="3.4" />
+    </FlagFrame>
+  );
+}
+
+/** Bahasa Indonesia. */
+export function FlagID(props: SVGProps<SVGSVGElement>) {
+  return (
+    <FlagFrame {...props}>
+      <rect width="24" height="8" fill="#CE1126" />
+      <rect y="8" width="24" height="8" fill="#F7F7F7" />
+    </FlagFrame>
+  );
+}

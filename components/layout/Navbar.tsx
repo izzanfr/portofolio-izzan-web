@@ -124,15 +124,18 @@ export function Navbar() {
           <li>
             <LanguageToggle />
           </li>
-          <li>
-            <ThemeToggle className="h-9 w-9 text-muted hover:bg-accent/10 hover:text-accent-strong dark:hover:text-accent" />
+          {/* No chrome passed: the switch is a neumorphic surface that owns its
+              own size and depth, so a border or a hover fill from out here
+              would draw the edge its shadows exist to imply. */}
+          <li className="flex items-center">
+            <ThemeToggle />
           </li>
         </ul>
 
         {/* Mobile controls, pushed to the right since the logo is gone */}
         <div className="ml-auto flex items-center gap-2 md:hidden">
           <LanguageToggle />
-          <ThemeToggle className="h-10 w-10 border border-border bg-surface/70 hover:border-accent hover:text-accent-strong dark:hover:text-accent" />
+          <ThemeToggle />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

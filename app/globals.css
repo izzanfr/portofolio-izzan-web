@@ -522,30 +522,8 @@
     letter-spacing: -0.038em;
   }
 
-  /* Language switch options. The active one is driven purely by <html lang>
-     rather than React state, so it lights up in step with the dual-rendered
-     content and carries no hydration flash. Both themes covered: amber reads on
-     the light page and on navy alike. */
-  .lang-opt {
-    color: var(--muted);
-    transition: color 200ms ease, background-color 200ms ease;
-  }
-
-  .lang-opt:hover {
-    color: var(--foreground);
-  }
-
-  html[lang="en"] .lang-opt[data-set-locale="en"],
-  html[lang="id"] .lang-opt[data-set-locale="id"] {
-    color: var(--accent-strong);
-    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent);
-  }
-
-  html.dark[lang="en"] .lang-opt[data-set-locale="en"],
-  html.dark[lang="id"] .lang-opt[data-set-locale="id"] {
-    color: var(--accent);
-  }
+  /* The language menu's own colours live outside this layer, with its depth —
+     see the neumorphic block near the foot of this file. */
 }
 
 /* ---------------------------------------------------------------
@@ -839,4 +817,547 @@ html[data-preload]:not(.intro-done) body {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
   }
+}
+
+/* ---------------------------------------------------------------
+   Type over the lattice
+
+   Everything in the experience section that is not inside a card sits
+   directly on a moving line network — headings, company names, the
+   mono period line, the role rail. Lines passing close to a stroke
+   are what makes small muted type hard to read there.
+
+   So each glyph carries a little clear space with it: a soft halo in
+   the ground's own colour, which reads as nothing at all where there
+   is no line behind the text and as separation where there is. It is
+   cheaper than boxing the type in panels, and — the point — it leaves
+   the lattice visible rather than hiding it.
+
+   text-shadow inherits, so this goes on the section once and reaches
+   every descendant. Cards switch it back off: inside one the lattice
+   is already suppressed, and a halo over a calm surface only makes
+   the type look soft.
+--------------------------------------------------------------- */
+.on-lattice {
+  text-shadow:
+    0 0 8px var(--tint),
+    0 0 20px var(--tint);
+}
+
+.on-lattice .lattice-card {
+  text-shadow: none;
+}
+
+/* ---------------------------------------------------------------
+   Experience section ground
+
+   The lattice itself is WebGL (see components/ui/VantaNet). What is
+   here is the colour underneath it and, on the machines that never
+   get the lattice — no WebGL, no script, reduced motion — the whole
+   ground on its own: two wide, heavily blurred gradient bars turning
+   over each other at different periods, so the composition behind the
+   timeline is never quite the same twice.
+
+   Transform-only. The blur is rasterised once and then translated,
+   the same trade `.panel-wash` already makes.
+--------------------------------------------------------------- */
+.aurora-ribbon {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(74px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.dark .aurora-ribbon {
+  opacity: 0.7;
+}
+
+.aurora-ribbon-a {
+  left: -14%;
+  top: 2%;
+  width: 76%;
+  height: 15rem;
+  background-image: linear-gradient(
+    98deg,
+    transparent,
+    color-mix(in srgb, var(--accent-500) 40%, transparent) 40%,
+    color-mix(in srgb, var(--accent-400) 26%, transparent) 66%,
+    transparent
+  );
+  animation: aurora-sweep-a 30s ease-in-out infinite alternate;
+}
+
+.aurora-ribbon-b {
+  right: -18%;
+  top: 34%;
+  width: 82%;
+  height: 17rem;
+  background-image: linear-gradient(
+    82deg,
+    transparent,
+    color-mix(in srgb, var(--wash-cool) 46%, transparent) 44%,
+    color-mix(in srgb, var(--wash-cool) 24%, transparent) 70%,
+    transparent
+  );
+  animation: aurora-sweep-b 38s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-sweep-a {
+  from {
+    transform: translate3d(-6%, 0, 0) rotate(-9deg) scale(1);
+  }
+  to {
+    transform: translate3d(10%, 5%, 0) rotate(-2deg) scale(1.12);
+  }
+}
+
+@keyframes aurora-sweep-b {
+  from {
+    transform: translate3d(8%, 3%, 0) rotate(7deg) scale(1.08);
+  }
+  to {
+    transform: translate3d(-9%, -5%, 0) rotate(13deg) scale(0.95);
+  }
+}
+
+/* Vanta appends its own canvas and sizes it in JS. Pinning it to the host box
+   keeps it honest through a resize, and `display: block` drops the inline
+   baseline gap that would otherwise leave a hairline of tint under it. */
+.vanta-canvas > canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* As everywhere else on this page: the global reduced-motion rule only clamps
+   duration, which would leave these ping-ponging at 0.001ms. Dropping the
+   animation name is what actually stops them. The lattice is not mounted at
+   all in that case, so there is nothing else to hold still. */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-ribbon {
+    animation-name: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Neumorphic theme switch
+
+   Neumorphism is one idea applied twice: the track is pressed *into*
+   the surface and the knob is raised *out* of it, and both are made
+   of the same pair of shadows — a dark one where the light does not
+   reach and a light one where it does — just inverted between them.
+   Inset on the track, outset on the knob.
+
+   Which is why nothing here has a border. A border would draw the
+   edge that the shadows are meant to imply, and the illusion is that
+   the control is the same material as the page, deformed.
+
+   The dark shadow is navy rather than black, for the reason the card
+   elevation tokens already give: grey over this cool off-white reads
+   muddy. The dark theme flips that — over navy a tinted shadow does
+   nothing, so it goes near-black and the light side drops to a few
+   percent white, because a bright highlight on a dark surface reads
+   as plastic.
+
+   State is the `.dark` class, never React — see ThemeToggle.
+--------------------------------------------------------------- */
+.theme-switch {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  width: 3.375rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background-color: var(--surface-2);
+  box-shadow:
+    inset 2px 2px 5px color-mix(in srgb, var(--navy) 20%, transparent),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.92);
+  transition: background-color 400ms ease, box-shadow 400ms ease;
+}
+
+.dark .theme-switch {
+  /* A step below --surface: the track has to read as the deepest thing
+     on the bar, or the knob has nothing to sit above. */
+  background-color: #08121f;
+  box-shadow:
+    inset 2px 2px 6px rgba(0, 0, 0, 0.62),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.05);
+}
+
+/* ---------------------------------------------------------------
+   The knob
+
+   `translate` and `scale` as their own properties rather than a
+   composed `transform`, so the slide and the squash can carry their
+   own durations and curves and not fight over one declaration.
+
+   The slide overshoots. That is the whole difference between a knob
+   that moves and one that is thrown: it arrives slightly past its
+   stop and settles back, which is what a physical switch does.
+--------------------------------------------------------------- */
+.theme-switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: grid;
+  place-items: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  background-color: var(--surface-raised);
+  box-shadow:
+    -2px -2px 4px rgba(255, 255, 255, 0.95),
+    2px 3px 6px color-mix(in srgb, var(--navy) 26%, transparent),
+    0 0 0 0 transparent;
+  translate: 0;
+  transition:
+    translate 480ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 400ms ease,
+    box-shadow 400ms ease,
+    scale 200ms ease-out;
+}
+
+.dark .theme-switch-knob {
+  /* Track width less both insets and the knob: 54 - 6 - 22. */
+  translate: 1.625rem;
+  background-color: var(--surface-2);
+  box-shadow:
+    -2px -2px 4px rgba(255, 255, 255, 0.06),
+    2px 3px 7px rgba(0, 0, 0, 0.65),
+    /* The gold only appears on the dark side, where it reads as the moon
+       being lit rather than as the control being highlighted. */
+    0 0 10px 0 color-mix(in srgb, var(--accent-500) 34%, transparent);
+}
+
+/* Squash on press. The one piece of the motion that is not the theme
+   changing — it answers the finger, not the state. */
+.theme-switch:active .theme-switch-knob {
+  scale: 1.12 0.9;
+}
+
+.theme-switch:hover .theme-switch-knob {
+  box-shadow:
+    -2px -2px 4px rgba(255, 255, 255, 0.95),
+    2px 4px 8px color-mix(in srgb, var(--navy) 32%, transparent),
+    0 0 0 0 transparent;
+}
+
+.dark .theme-switch:hover .theme-switch-knob {
+  box-shadow:
+    -2px -2px 4px rgba(255, 255, 255, 0.06),
+    2px 4px 9px rgba(0, 0, 0, 0.7),
+    0 0 13px 0 color-mix(in srgb, var(--accent-500) 46%, transparent);
+}
+
+/* ---------------------------------------------------------------
+   The two icons
+
+   Both mounted, both positioned in the same grid cell, crossfaded by
+   theme — the same trick the icon button used, and for the same
+   reason: no state, no mismatch. They turn rather than simply fading,
+   and they turn on the knob's own curve, so the pair reads as one
+   object rotating to its other face.
+--------------------------------------------------------------- */
+.theme-switch-icon {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  transition:
+    opacity 280ms ease,
+    rotate 480ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-switch-icon-sun {
+  color: var(--accent-600);
+  opacity: 1;
+  rotate: 0deg;
+  scale: 1;
+}
+
+.dark .theme-switch-icon-sun {
+  opacity: 0;
+  rotate: 90deg;
+  scale: 0.4;
+}
+
+.theme-switch-icon-moon {
+  color: var(--accent-400);
+  opacity: 0;
+  rotate: -90deg;
+  scale: 0.4;
+}
+
+.dark .theme-switch-icon-moon {
+  opacity: 1;
+  rotate: 0deg;
+  scale: 1;
+}
+
+/* ---------------------------------------------------------------
+   Stars
+
+   Only on the stretch of track the knob has vacated, and only in the
+   dark. Each carries its own size and delay inline, so three elements
+   share one rule and no two arrive together.
+--------------------------------------------------------------- */
+.theme-switch-star {
+  position: absolute;
+  width: var(--star-size);
+  height: var(--star-size);
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--accent-400) 70%, white);
+  opacity: 0;
+  scale: 0.3;
+  transition:
+    opacity 300ms ease,
+    scale 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dark .theme-switch-star {
+  opacity: 0.9;
+  scale: 1;
+  transition-delay: var(--star-delay);
+}
+
+/* The global reduced-motion rule already collapses every duration here, which
+   is the right outcome for this control: the switch still ends in the correct
+   state, it simply gets there without the throw. */
+
+/* ---------------------------------------------------------------
+   Neumorphic language menu
+
+   Same material as the theme switch, in its other posture: the
+   trigger is raised until it is opened, at which point it presses
+   *into* the surface and the panel rises out of it. That is the
+   whole reason to build a menu this way — pressed and raised are the
+   two states the material already has, so "open" needs no colour,
+   no ring and no arrow to say it.
+
+   Which flag the trigger shows, and which row reads as chosen, is
+   keyed on `html[lang]` rather than on React — see LanguageToggle
+   for why. Only the open state is script.
+--------------------------------------------------------------- */
+.lang-menu {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.lang-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 1.75rem;
+  padding-inline: 0.5rem 0.45rem;
+  border-radius: 999px;
+  background-color: var(--surface-raised);
+  color: var(--muted);
+  box-shadow:
+    -2px -2px 4px rgba(255, 255, 255, 0.95),
+    2px 3px 6px color-mix(in srgb, var(--navy) 26%, transparent);
+  transition:
+    background-color 300ms ease,
+    box-shadow 300ms ease,
+    color 200ms ease,
+    scale 200ms ease-out;
+}
+
+.dark .lang-menu-trigger {
+  background-color: var(--surface-2);
+  box-shadow:
+    -2px -2px 4px rgba(255, 255, 255, 0.06),
+    2px 3px 7px rgba(0, 0, 0, 0.65);
+}
+
+.lang-menu-trigger:hover {
+  color: var(--foreground);
+}
+
+.lang-menu-trigger:active {
+  scale: 0.96;
+}
+
+/* Open is the material being held down. */
+.lang-menu[data-open="true"] .lang-menu-trigger {
+  background-color: var(--surface-2);
+  color: var(--accent-strong);
+  box-shadow:
+    inset 2px 2px 5px color-mix(in srgb, var(--navy) 20%, transparent),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.92);
+}
+
+.dark .lang-menu[data-open="true"] .lang-menu-trigger {
+  background-color: #08121f;
+  color: var(--accent);
+  box-shadow:
+    inset 2px 2px 6px rgba(0, 0, 0, 0.62),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.05);
+}
+
+.lang-menu-code {
+  font-family: var(--font-mono-stack), monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.lang-menu-chevron {
+  transition: rotate 340ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lang-menu[data-open="true"] .lang-menu-chevron {
+  rotate: 180deg;
+}
+
+/* One pair shown, keyed on the document's own language. `display: none` and
+   not a visual-only hide: the hidden half must stay out of the accessible
+   name as well as out of the layout.
+
+   Scoped to `.lang-menu` for specificity, not for tidiness. `.lang-flag` below
+   sets its own `display`, and a bare `.lang-swap` ties with it on specificity
+   and loses on source order — which left the inactive flag on screen while the
+   inactive code correctly disappeared. Two classes here beats one there; the
+   `html[lang]` rule that shows a swap still outranks both. */
+.lang-menu .lang-swap {
+  display: none;
+}
+
+html[lang="en"] .lang-swap-en,
+html[lang="id"] .lang-swap-id {
+  display: inline-flex;
+}
+
+/* The chip. A hairline ring rather than a border on the svg itself, so the
+   white half of the Indonesian flag still has an edge on the light page. */
+.lang-flag {
+  display: inline-flex;
+  flex: none;
+  width: 1.25rem;
+  height: 0.8125rem;
+  overflow: hidden;
+  border-radius: 0.1875rem;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--navy) 22%, transparent);
+}
+
+.dark .lang-flag {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.lang-flag > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------------------------------------------------------------
+   The panel
+
+   Raised out of the page, dropping from the trigger it belongs to,
+   on the same overshoot curve the theme switch's knob travels.
+   Anchored right so it can never run off the edge on a phone.
+--------------------------------------------------------------- */
+.lang-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 9.25rem;
+  padding: 0.3rem;
+  border-radius: 0.9rem;
+  background-color: var(--surface);
+  box-shadow:
+    -3px -3px 8px rgba(255, 255, 255, 0.9),
+    4px 6px 16px color-mix(in srgb, var(--navy) 24%, transparent);
+  transform-origin: top right;
+  translate: 0 -0.4rem;
+  scale: 0.95;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    translate 340ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale 340ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 200ms ease;
+}
+
+.dark .lang-menu-panel {
+  background-color: var(--surface-2);
+  box-shadow:
+    -3px -3px 8px rgba(255, 255, 255, 0.045),
+    4px 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.lang-menu[data-open="true"] .lang-menu-panel {
+  translate: 0 0;
+  scale: 1;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------
+   The rows
+
+   Explicit property/duration/delay lists rather than the shorthand,
+   because only two of these should be staggered. The arrival slides
+   and fades in sequence; hover and the pressed state have to answer
+   the moment they are asked, not 130ms after the menu opened.
+--------------------------------------------------------------- */
+.lang-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.625rem;
+  text-align: left;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  translate: 0 -0.35rem;
+  opacity: 0;
+  transition-property: translate, opacity, background-color, color, box-shadow;
+  transition-duration: 320ms, 220ms, 200ms, 200ms, 260ms;
+  transition-timing-function:
+    cubic-bezier(0.34, 1.56, 0.64, 1),
+    ease,
+    ease,
+    ease,
+    ease;
+}
+
+.lang-menu[data-open="true"] .lang-menu-item {
+  translate: 0 0;
+  opacity: 1;
+  transition-delay: var(--item-delay), var(--item-delay), 0s, 0s, 0s;
+}
+
+.lang-menu-item:hover {
+  color: var(--foreground);
+  background-color: color-mix(in srgb, var(--foreground) 5%, transparent);
+}
+
+/* Chosen is the row pressed into the panel — the same inversion the trigger
+   makes when it opens, so "selected" and "held down" are one idea. */
+html[lang="en"] .lang-menu-item[data-set-locale="en"],
+html[lang="id"] .lang-menu-item[data-set-locale="id"] {
+  color: var(--accent-strong);
+  background-color: var(--surface-2);
+  box-shadow:
+    inset 2px 2px 4px color-mix(in srgb, var(--navy) 16%, transparent),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.85);
+}
+
+html.dark[lang="en"] .lang-menu-item[data-set-locale="en"],
+html.dark[lang="id"] .lang-menu-item[data-set-locale="id"] {
+  color: var(--accent);
+  background-color: #08121f;
+  box-shadow:
+    inset 2px 2px 5px rgba(0, 0, 0, 0.55),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.05);
 }
