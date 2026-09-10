@@ -21,20 +21,28 @@ export function useActiveSection(ids: readonly string[], enabled = true) {
 
     const visible = new Set<string>();
 
-    const observer = new IntersectionObserver(
+    let observer: IntersectionObserver;
+    const observe = () => {
+      observer?.disconnect();
+      visible.clear();
+      observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) visible.add(entry.target.id);
           else visible.delete(entry.target.id);
         }
-        // Keep document order so overlapping sections resolve predictably
-        setActive(ids.find((id) => visible.has(id)) ?? "");
+        // A later section is painted over the earlier pinned section during
+        // an overlap. Its navigation state should take over with that surface.
+        setActive([...ids].reverse().find((id) => visible.has(id)) ?? "");
       },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
+      { rootMargin: `-${window.innerHeight * 0.45}px 0px -${window.innerHeight * 0.5}px 0px`, threshold: 0 },
     );
 
     for (const element of elements) observer.observe(element);
-    return () => observer.disconnect();
+    };
+    observe();
+    window.addEventListener("resize", observe);
+    return () => { observer.disconnect(); window.removeEventListener("resize", observe); };
   }, [ids, enabled]);
 
   // Derived rather than stored, so leaving the homepage clears the highlight

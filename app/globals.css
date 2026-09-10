@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./journey.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -81,6 +82,17 @@
   --shadow-card: 0 10px 30px rgba(10, 26, 47, 0.05), 0 2px 6px rgba(10, 26, 47, 0.035);
   --shadow-card-hover: 0 18px 42px rgba(10, 26, 47, 0.1), 0 4px 10px rgba(10, 26, 47, 0.05);
 
+  /* The overlapping boundary (see <SectionOverlap>). A shadow thrown *upward*,
+     which no other shadow on this site does — every other one is a card lying
+     on the page, and this is one page climbing over another. Wide and soft, so
+     it reads as the distance between two planes rather than as an outline.
+
+     The shade is what the section underneath is dimmed by, and it is navy
+     rather than neutral black for the same reason the card shadows are: grey
+     over a cool off-white page reads muddy. */
+  --shadow-overlap: 0 -22px 48px -20px rgba(10, 26, 47, 0.28), 0 -3px 12px -6px rgba(10, 26, 47, 0.1);
+  --overlap-shade: rgba(10, 26, 47, 0.24);
+
   /* Hero portrait glow. No border on the photo — the exclusivity comes from a
      soft halo hugging the card, two layers: a deep navy drop for the float and
      a warm amber bleed. On the light page navy leads (it reads as premium lift)
@@ -140,6 +152,13 @@
      seam; it is near-black and stronger than its light counterpart. */
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.32), 0 2px 6px rgba(0, 0, 0, 0.24);
   --shadow-card-hover: 0 18px 42px rgba(0, 0, 0, 0.42), 0 4px 10px rgba(0, 0, 0, 0.3);
+
+  /* Over navy the separation cannot come from a tinted shadow — navy on navy is
+     nothing — so both of these go to near-black and up in strength. The shade
+     especially: on the dark page the outgoing section has to actually go dark
+     to read as being behind something. */
+  --shadow-overlap: 0 -24px 52px -18px rgba(0, 0, 0, 0.68), 0 -3px 14px -6px rgba(0, 0, 0, 0.45);
+  --overlap-shade: rgba(0, 0, 0, 0.55);
 
   /* On navy the roles flip: amber leads the glow (it pops against the dark) over
      a near-black drop that carries the lift a soft shadow can't. */
@@ -906,6 +925,60 @@ html[data-preload]:not(.intro-done) body {
   text-shadow: none;
 }
 
+
+/* ---------------------------------------------------------------
+   The overlapping boundary
+
+   Two rules, both of them the *look* of the join rather than its
+   movement — <SectionOverlap> owns the movement, and it keeps these
+   under reduced motion precisely because they are not motion.
+
+   The border is a hairline the shadow alone cannot supply: against a
+   pale page a soft upward shadow fades out long before it meets the
+   panel, leaving the top edge undefined at exactly the point the
+   whole effect depends on it being definite.
+--------------------------------------------------------------- */
+/**
+ * The offset that lets the incoming panel start inside the held screen instead
+ * of a full viewport below it, and the trickiest thing on this page to get
+ * wrong quietly.
+ *
+ * The query is the experience stage's own condition — the same string as the
+ * `stage:` variant, plus the reduced-motion clause — and it is written this way
+ * rather than as `stage:-mt-...` in the markup for exactly that clause. The
+ * variant does not carry it, and a reduced-motion desktop visitor would then
+ * get the margin with no pin held open behind it: the projects panel would sit
+ * permanently over the bottom of a company card, at rest, forever. The margin
+ * is only ever safe where something is holding the screen still underneath it.
+ *
+ * `svh` because the number has to be the same one Experience.tsx computes from
+ * `window.innerHeight`, and on the desktop widths this query admits those agree.
+ * A disagreement is not subtle: too much margin covers live content, too little
+ * leaves a strip of the section below showing through.
+ */
+@media (min-width: 1200px) and (min-height: 760px) and (prefers-reduced-motion: no-preference) {
+  .overlap-under[data-experience-pinned] ~ .overlap-frame {
+    margin-top: -100svh;
+  }
+}
+
+/* The edge. A hairline and an upward shadow, and deliberately nothing else —
+   no radius, no accent rule. A rounded top corner reads as a card beginning
+   here and a gold line across the full viewport reads as a divider; this is
+   one page in front of another, and a soft shadow with a defined edge is what
+   says that. The hairline is doing work the shadow cannot: against a pale page
+   a wide soft shadow has faded to nothing by the time it reaches the panel,
+   leaving the edge undefined at the one place the effect depends on it. */
+.overlap-panel {
+  border-radius: 0;
+  border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  box-shadow: var(--shadow-overlap);
+}
+
+.overlap-shade {
+  background-image: linear-gradient(to top, var(--overlap-shade), transparent);
+}
+
 /* ---------------------------------------------------------------
    Experience section ground
 
@@ -1504,10 +1577,8 @@ html.dark[lang="id"] .lang-menu-item[data-set-locale="id"] {
 /**
  * A node.
  *
- * Opacity belongs to GSAP — the timeline hands the lit state from one node to
- * the next as the page travels — so nothing here may set it. What is here is
- * the ground-coloured fill that cuts the dashed rule where the node sits, and
- * the padding that gives that fill something to be.
+ * The fill stays opaque to mask the timeline underneath. GSAP only dims the
+ * inner label; fading the whole button would expose the rule through the text.
  */
 .exp-node {
   padding: 0.375rem 0.875rem 0.375rem 0.5rem;

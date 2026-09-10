@@ -71,7 +71,9 @@ export function ExperienceZone({ children }: { children: ReactNode }) {
   const groundOpacity = useTransform(departure, [0, 1], [1, 0]);
 
   return (
-    <div ref={zoneRef} className="relative bg-tint">
+    /* Experience marks this zone while its desktop pin is active. Only then
+       may the following Projects panel overlap it. */
+    <div ref={zoneRef} className="overlap-under relative bg-tint">
       {/* Ground. `absolute inset-0` spans the zone; the sticky child inside it
           cannot escape that box, so the lattice is pushed back off screen when
           the section ends rather than bleeding into what follows.

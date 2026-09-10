@@ -264,7 +264,7 @@ export function ProjectMarquee({ projects }: { projects: ProjectMeta[] }) {
                 cover legible on a phone in landscape.
               */}
               <span
-                className="relative block aspect-[5/7] h-[min(380px,40svh)] min-h-[250px] overflow-hidden rounded-xl bg-surface-2 md:h-[min(520px,48svh)] md:rounded-2xl"
+                className="project-marquee-cover relative block aspect-[5/7] h-[min(380px,40svh)] min-h-[250px] overflow-hidden rounded-xl bg-surface-2 md:h-[min(520px,48svh)] md:rounded-2xl"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
                 {project.cover ? (
@@ -301,7 +301,7 @@ export function ProjectMarquee({ projects }: { projects: ProjectMeta[] }) {
                   calculation, so a long project title cannot make one card
                   wider than the rest — the cover decides the column, the text
                   wraps inside it. */}
-              <span className="mt-4 block w-0 min-w-full px-0.5">
+              <span className="project-marquee-caption mt-4 block w-0 min-w-full px-0.5">
                 <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-accent-strong dark:text-accent">
                   {copy === 0 ? (
                     <Scramble en={project.role.en} id={project.role.id} />

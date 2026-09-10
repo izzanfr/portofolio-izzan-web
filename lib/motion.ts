@@ -17,6 +17,9 @@ export const EASE = [0.22, 1, 0.36, 1] as const;
  *  drive). Kept beside the array so the two can never disagree. */
 export const EASE_CSS = "cubic-bezier(0.22, 1, 0.36, 1)";
 
+/** Kept in sync with the journey/overlap media query in globals.css. */
+export const JOURNEY_MEDIA = "(min-width: 1200px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)";
+
 /** Seconds. Long enough to read as deliberate, short enough that a visitor
  *  scrolling at speed is never waiting on it. */
 export const REVEAL_DURATION = 0.5;

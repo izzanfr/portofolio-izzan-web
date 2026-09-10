@@ -5,6 +5,7 @@ import { Certifications } from "@/components/sections/Certifications";
 import { Contact } from "@/components/sections/Contact";
 import { ExperienceZone } from "@/components/ui/ExperienceZone";
 import { SectionCut } from "@/components/ui/SectionCut";
+import { SectionOverlap } from "@/components/ui/SectionOverlap";
 
 export default function Home() {
   return (
@@ -20,7 +21,14 @@ export default function Home() {
           <Experience />
         </ExperienceZone>
       </SectionCut>
-      <Projects />
+      {/* The other boundary that is not an ordinary scroll — and the opposite
+          kind of not-ordinary. The cut above replaces one page with another:
+          you never see both. This one insists on seeing both, with projects
+          climbing over the foot of experience and experience dimming as it
+          goes underneath. See <SectionOverlap>. */}
+      <SectionOverlap>
+        <Projects />
+      </SectionOverlap>
       <Certifications />
       <Contact />
     </>
