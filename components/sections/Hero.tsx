@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { HeroPortrait } from "@/components/ui/HeroPortrait";
 import { SectionBackdrop } from "@/components/ui/SectionBackdrop";
 import { StatCard } from "@/components/ui/StatCard";
+import { CountUp } from "@/components/ui/CountUp";
 import { TechMarquee } from "@/components/ui/TechMarquee";
 import { useIntroDone } from "@/components/Preloader";
 import { T } from "@/components/ui/T";
@@ -162,7 +163,12 @@ export function Hero() {
             {profile.stats.map((stat, index) => (
               <StatCard
                 key={stat.label}
-                value={<T en={stat.value} id={profileId.stats[index]?.value ?? stat.value} />}
+                value={
+                  <T
+                    en={<CountUp value={stat.value} delay={0.15 + index * 0.08} />}
+                    id={<CountUp value={profileId.stats[index]?.value ?? stat.value} delay={0.15 + index * 0.08} />}
+                  />
+                }
                 label={<T en={stat.label} id={profileId.stats[index]?.label ?? stat.label} />}
               />
             ))}

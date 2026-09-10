@@ -34,6 +34,8 @@ export type BiRole = {
 
 export type BiJob = {
   company: string;
+  /** Official company logo in /public/logos, shown at the core of the orbit. */
+  logo?: string;
   current: boolean;
   location: BiText;
   period: BiText;
@@ -88,6 +90,7 @@ export function getExperience(): BiJob[] {
     const idRoles = id.roles ?? [];
     return {
       company: job.company,
+      logo: (job as { logo?: string }).logo,
       current: job.current,
       location: bi(job.location, id.location),
       period: bi(job.period, id.period),

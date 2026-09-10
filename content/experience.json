@@ -1,6 +1,7 @@
 [
   {
     "company": "Inixindo Jogja",
+    "logo": "/logos/inixindo-jogja.png",
     "location": "Yogyakarta Special Region, Indonesia",
     "period": "Aug 2022 to Present",
     "duration": "4 yrs",
@@ -226,6 +227,7 @@
   },
   {
     "company": "PT. Media Telekomunikasi Mandiri",
+    "logo": "/logos/mtm.svg",
     "location": "South Jakarta, Indonesia",
     "period": "Jun 2021 to Aug 2021",
     "duration": "3 mos",
