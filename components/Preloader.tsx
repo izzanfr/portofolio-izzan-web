@@ -44,8 +44,13 @@ export const INTRO_STORAGE_KEY = "izzan-intro";
  * Deciding here rather than in React means a returning visitor never sees a
  * frame of navy before hydration clears it. The flag is written up front, so a
  * refresh partway through the animation does not replay it either.
+ *
+ * Only an arrival on the homepage plays it. A deep link — a project opened in
+ * a new tab, a shared URL — should land on what was asked for, not on a
+ * greeting; and since sessionStorage is per tab, every new tab would otherwise
+ * count as a first visit.
  */
-export const preloaderInitScript = `(function(){try{var k="${INTRO_STORAGE_KEY}";if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;document.documentElement.setAttribute("${INTRO_ATTR}","");}catch(e){}})();`;
+export const preloaderInitScript = `(function(){try{if(location.pathname!=="/")return;var k="${INTRO_STORAGE_KEY}";if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;document.documentElement.setAttribute("${INTRO_ATTR}","");}catch(e){}})();`;
 
 /** Curtain length, and the grace period the safety net waits out. */
 const EXIT_MS = 800;

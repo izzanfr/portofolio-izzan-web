@@ -147,16 +147,7 @@ export function ProjectMarquee({ projects }: { projects: ProjectMeta[] }) {
     velocity.current = 0;
     lastPointerX.current = event.clientX;
     lastPointerTime.current = performance.now();
-    // Capture keeps the gesture alive when the finger leaves the band, so a
-    // drag that strays upward does not simply stop. It is an enhancement, not
-    // a requirement: a pointer id the browser no longer considers active
-    // throws, and the drag works fine without it, so a failure here must not
-    // take the gesture down with it.
-    try {
-      event.currentTarget.setPointerCapture(event.pointerId);
-    } catch {
-      /* no capture available — the drag still tracks while over the band */
-    }
+    // No pointer capture here: see onPointerMove.
   };
 
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -171,6 +162,21 @@ export function ProjectMarquee({ projects }: { projects: ProjectMeta[] }) {
     lastPointerX.current = event.clientX;
     lastPointerTime.current = now;
     travelled.current += Math.abs(dx);
+
+    // Capture keeps the gesture alive when the finger leaves the band, so a
+    // drag that strays upward does not simply stop — but only once this is
+    // clearly a drag. Capturing on press retargets the pointerup, and with it
+    // the click, from the link to this band, so a plain click on a cover never
+    // reached its link and opened nothing. Best effort: a pointer id the
+    // browser no longer considers active throws, and the drag works without it.
+    if (travelled.current > DRAG_SLOP && !event.currentTarget.hasPointerCapture(event.pointerId)) {
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId);
+      } catch {
+        /* no capture available — the drag still tracks while over the band */
+      }
+    }
+
     velocity.current =
       velocity.current * (1 - VELOCITY_SMOOTHING) + (dx / dt) * VELOCITY_SMOOTHING;
 

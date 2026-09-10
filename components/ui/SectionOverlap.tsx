@@ -66,12 +66,27 @@ export function SectionOverlap({
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1000px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)", () => {
+        // Give the complete composition reading time before it leaves. This
+        // begins only when Projects has fully covered the previous screen.
+        const pin = ScrollTrigger.create({
+          trigger: frame,
+          start: "top top",
+          end: () => `+=${window.innerHeight * 0.65}`,
+          pin: panel,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          refreshPriority: 1,
+        });
+
         // This page already reserves navbar space inside its composition.
-        // Target the stable wrapper, not #projects inside the moving pin.
-        const landOnProjects = () => {
-          const top = frame.getBoundingClientRect().top + window.scrollY;
-          if (lenisRef?.current) lenisRef.current.scrollTo(top);
-          else window.scrollTo({ top, behavior: "smooth" });
+        // Land on the pin's own start — the scroll position where Projects has
+        // fully covered the screen. ScrollTrigger keeps it current on every
+        // refresh, whereas measuring the element could run before the pins
+        // above had been laid out and land midway through Experience.
+        const landOnProjects = (immediate = false) => {
+          const top = pin.start;
+          if (lenisRef?.current) lenisRef.current.scrollTo(top, { immediate, force: true });
+          else window.scrollTo({ top, behavior: immediate ? "auto" : "smooth" });
         };
         const onAnchor = (event: MouseEvent) => {
           if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -85,17 +100,6 @@ export function SectionOverlap({
           landOnProjects();
         };
         document.addEventListener("click", onAnchor, true);
-        // Give the complete composition reading time before it leaves. This
-        // begins only when Projects has fully covered the previous screen.
-        ScrollTrigger.create({
-          trigger: frame,
-          start: "top top",
-          end: () => `+=${window.innerHeight * 0.65}`,
-          pin: panel,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          refreshPriority: 1,
-        });
         gsap.fromTo(
           shade,
           { opacity: 0 },
@@ -115,11 +119,38 @@ export function SectionOverlap({
             },
           },
         );
-        const timer = window.setTimeout(() => {
-          if (location.hash === "#projects") landOnProjects();
-        }, 250);
+        // Arriving on /#projects — the "All projects" link on a project page, or
+        // a shared URL — lands straight on Projects rather than taking a smooth
+        // trip down from the top. The pins above settle over several refreshes
+        // as fonts and images load, so re-land after each one until the
+        // visitor takes over the scroll or the page has had time to settle.
+        let arriving = location.hash === "#projects";
+        const settle = () => {
+          if (arriving) landOnProjects(true);
+        };
+        const release = () => {
+          arriving = false;
+        };
+        // Also at a few checkpoints and on load: the browser's own jump to the
+        // fragment honours scroll-padding-top and can land after ours — a
+        // navbar's height short, with Experience still showing above Projects.
+        const first = requestAnimationFrame(settle);
+        const checkpoints = [150, 400, 800, 1500, 2400].map((ms) => window.setTimeout(settle, ms));
+        const settled = window.setTimeout(release, 2500);
+        ScrollTrigger.addEventListener("refresh", settle);
+        window.addEventListener("load", settle);
+        window.addEventListener("wheel", release, { passive: true });
+        window.addEventListener("touchstart", release, { passive: true });
+        window.addEventListener("keydown", release);
         return () => {
-          window.clearTimeout(timer);
+          cancelAnimationFrame(first);
+          checkpoints.forEach((id) => window.clearTimeout(id));
+          window.clearTimeout(settled);
+          ScrollTrigger.removeEventListener("refresh", settle);
+          window.removeEventListener("load", settle);
+          window.removeEventListener("wheel", release);
+          window.removeEventListener("touchstart", release);
+          window.removeEventListener("keydown", release);
           document.removeEventListener("click", onAnchor, true);
         };
       });
