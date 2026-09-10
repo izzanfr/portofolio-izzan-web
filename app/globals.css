@@ -226,6 +226,13 @@
        the page bottoms out. That state has to unwind before wheel input counts
        again, which is felt as the scroll refusing to reverse for a moment. */
     overscroll-behavior-y: none;
+    /* Keeps the scrollbar's width reserved even while the intro locks scrolling
+       (`body { overflow: hidden }` below). Without it the page is measured
+       scrollbar-less during the intro, GSAP sizes its pin spacers to the full
+       window, and once the scrollbar returns they stick out by its width —
+       a sideways scroll on every section. It also stops the page shifting
+       sideways the moment the curtain lifts. */
+    scrollbar-gutter: stable;
   }
 
   body {
