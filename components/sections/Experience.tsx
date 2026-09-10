@@ -1,527 +1,537 @@
 "use client";
 
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
-import { ChevronDown } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Section } from "@/components/ui/Section";
-import { DynamicIcon } from "@/components/ui/DynamicIcon";
-import { ExperienceGallery } from "@/components/ui/ExperienceGallery";
+import { useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { useCallback, useRef, useState } from "react";
+import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { T } from "@/components/ui/T";
 import { Scramble } from "@/components/ui/Scramble";
 import { cn } from "@/lib/utils";
-import { getExperience, type BiJob, type BiRole } from "@/lib/experience";
+import { getExperience, type BiJob } from "@/lib/experience";
 import { RoleSplitRail } from "./RoleSplitRail";
 import {
-  EASE,
-  ROLE_SURFACE,
-  RoleBullets,
+  MicroLabel,
+  RolePanel,
+  STOP_SURFACE,
   useHasFinePointer,
-  useTilt,
+  useSheen,
 } from "./experienceShared";
 
-const experience = getExperience();
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+/**
+ * Oldest first. The JSON is authored newest-first, the way a CV is; a timeline
+ * reads the other way. Reversed here rather than in `lib/experience` because
+ * reading order is a presentation decision, and the résumé order is the right
+ * one for anything else that consumes this data.
+ */
+const experience = [...getExperience()].reverse();
+
+/** Summary figures for the eyebrow, counted rather than typed. A hardcoded
+ *  "8 roles" is a number that goes stale the first time the JSON changes and
+ *  nothing tells you it has. */
+const TOTAL_ROLES = experience.reduce((total, job) => total + job.roles.length, 0);
+const START_YEAR = experience[0]?.period.en.match(/\d{4}/)?.[0] ?? "";
+const IS_ONGOING = experience.some((job) => job.current);
 
 /* ---------------------------------------------------------------
-   Timeline dot
+   Experience, read sideways
 
-   Tied to the same spring that fills the spine rather than to a
-   viewport trigger of its own, so the dot lights the instant the line
-   reaches it instead of drifting in and out of step with it.
+   A full page rather than a section: no content column, no site
+   padding, and its own heading travelling inside the pin — the shape
+   the credentials page takes, and for the same reason. A company with
+   seven parallel roles is a place you stop at, not a block you scroll
+   past.
 
-   `threshold` is the dot's centre expressed as a fraction of the spine,
-   measured from the DOM — the accordions and the category filter both
-   change the column's height, so a hardcoded fraction would go stale
-   the moment anything expanded.
+   The geometry, which is the thing this file gets wrong most easily.
 
-   Only scale is animated; the colours are classes so each theme keeps
-   its own pair without a motion value having to know about the theme.
+   There are two horizontal bands and they never overlap. The upper one
+   is the spine: a dotted rule, the accent progress that fills along it,
+   and one node per company. It is fixed inside the pin and does not
+   travel. The lower band is the track, which is the only thing that
+   moves. An earlier version ran the spine through the vertical centre
+   of the stage and staggered the cards onto either side of it, which
+   meant the rule crossed every card it was supposed to be threading —
+   and the numbered badges, pinned to the cell rather than to the card
+   they labelled, ended up on top of the card borders. Bands that cannot
+   intersect is what fixes both, permanently: there is no card geometry
+   that puts a card in the spine's row.
+
+   The division of labour between the two animation engines is a line,
+   not a mixture:
+
+     GSAP owns anything scroll drives — the track's horizontal position,
+     the progress line and its head, and each node's and card's focus
+     state. All of them are tweens on one timeline, so a single
+     ScrollTrigger is the source of truth and nothing can report a
+     position the cards are not at.
+
+     Framer owns everything inside a stop — choosing a role, the panel
+     swapping, the bullet stagger. None of it is scroll-driven, so none
+     of it competes with the pin.
+
+   No DOM element is touched by both. The track, the spine and the nodes
+   are plain elements held by refs or found by class; everything inside
+   a card is `motion.*`.
+
+   Lenis is already wired to ScrollTrigger in SmoothScrollProvider,
+   where the instance lives — one subscription for the whole app.
 --------------------------------------------------------------- */
-function TimelineDot({
-  progress,
-  threshold,
-}: {
-  progress: MotionValue<number>;
-  threshold: number;
-}) {
-  const [reached, setReached] = useState(false);
 
-  useMotionValueEvent(progress, "change", (value) => {
-    setReached(value >= threshold);
-  });
-
-  return (
-    <motion.span
-      aria-hidden
-      initial={false}
-      animate={{ scale: reached ? 1 : 0.55 }}
-      // Underdamped on purpose: the overshoot is the "pop", so it comes from
-      // the spring itself rather than a scripted 1.3 keyframe.
-      transition={{ type: "spring", stiffness: 520, damping: 13, mass: 0.6 }}
-      className={cn(
-        "absolute -left-10 top-2 hidden h-[15px] w-[15px] rounded-full border-2 transition-colors duration-300 md:block",
-        reached
-          ? "border-background bg-navy dark:bg-accent"
-          : "border-border bg-background",
-      )}
-    />
-  );
-}
+/** Where a card rests when it is not the one being read. Small numbers: this is
+ *  depth, not a transition, and the far card is still legible enough to be
+ *  worth scrolling toward. */
+const CARD_IDLE = { opacity: 0.38, y: 16 };
+const CARD_ACTIVE = { opacity: 1, y: 0 };
 
 /* ---------------------------------------------------------------
-   Category filter
+   One stop
 --------------------------------------------------------------- */
-const CATEGORIES = [
-  { id: "all", label: { en: "All", id: "Semua" } },
-  { id: "consulting", label: { en: "Consulting", id: "Konsultasi" } },
-  { id: "instructor", label: { en: "Instructor", id: "Instruktur" } },
-] as const;
+function JobStop({ job, index }: { job: BiJob; index: number }) {
+  /**
+   * Master–detail only earns its place when there is a list to choose from. A
+   * company with one role renders straight into the panel — the rail would be
+   * a single permanently-selected row, which is furniture rather than
+   * navigation.
+   */
+  const hasRail = job.roles.length > 1;
 
-type CategoryId = (typeof CATEGORIES)[number]["id"];
-
-function RoleFilter({
-  active,
-  onChange,
-}: {
-  active: CategoryId;
-  onChange: (id: CategoryId) => void;
-}) {
-  return (
-    <div className="mb-5 flex flex-wrap gap-2">
-      {CATEGORIES.map((category) => {
-        const isActive = category.id === active;
-        return (
-          <button
-            key={category.id}
-            type="button"
-            onClick={() => onChange(category.id)}
-            aria-pressed={isActive}
-            // Both states carry a fill, and both fills are opaque. A pill is a
-            // control: an outline with the lattice running through it reads as
-            // a shape drawn on the background rather than as something to
-            // press. The active fill is mixed into the surface rather than
-            // laid over it at 12%, which is the only way to tint it without
-            // reopening the hole the tint was covering.
-            className={cn(
-              "lattice-card rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors duration-200",
-              isActive
-                ? "border-accent bg-[color-mix(in_srgb,var(--accent)_13%,var(--surface))] text-accent-strong dark:text-accent"
-                : "border-border bg-surface/92 text-muted hover:border-accent/40 hover:text-foreground",
-            )}
-          >
-            <T en={category.label.en} id={category.label.id} />
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ---------------------------------------------------------------
-   Role accordion — the narrow-screen layout
-
-   Kept as-is from before the strips were added: on a phone there is no
-   horizontal room for a row of panels, and no cursor to drive a tilt,
-   so this stays the layout below `md`.
---------------------------------------------------------------- */
-function RoleAccordion({
-  role,
-  index,
-  defaultOpen,
-}: {
-  role: BiRole;
-  index: number;
-  defaultOpen: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  const prefersReducedMotion = useReducedMotion();
   const hasFinePointer = useHasFinePointer();
+  const prefersReducedMotion = useReducedMotion();
+  const sheen = useSheen(hasFinePointer && !prefersReducedMotion);
 
-  const depthEnabled = !prefersReducedMotion;
-  const tiltEnabled = depthEnabled && hasFinePointer;
+  return (
+    <article
+      data-index={index}
+      onMouseMove={sheen.onMouseMove}
+      onMouseLeave={sheen.onMouseLeave}
+      className={cn(
+        STOP_SURFACE,
+        "exp-stop relative overflow-hidden p-5 md:px-7 md:py-6 stage:w-[min(88vw,1320px)] stage:shrink-0",
+      )}
+    >
+      {/* Company header. The index, the name and the period sit in one column;
+          the summary sits in a second, left-aligned behind a hairline. It used
+          to be right-aligned, which gave a two-line sentence a ragged left edge
+          floating in the middle of the card with nothing to align to. */}
+      <header className="md:flex md:items-start md:gap-7">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-[11px] leading-none tabular-nums text-accent-strong dark:text-accent">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span aria-hidden className="h-px w-6 shrink-0 translate-y-[-3px] bg-border" />
+            <MicroLabel>
+              <Scramble en={job.location.en} id={job.location.id} />
+            </MicroLabel>
+          </div>
+
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <h3 className="text-xl tracking-[-0.024em] md:text-[1.625rem]">
+              {job.company}
+            </h3>
+            {/* Tint is 10%, not 15%: the gold text on this pill is 10px, and
+                the heavier fill dragged it to 4.45:1 — just under AA for text
+                that small. */}
+            {job.current && (
+              <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
+                <Scramble en="Current" id="Saat ini" />
+              </span>
+            )}
+          </div>
+
+          <p className="mt-1.5 font-mono text-xs text-muted">
+            <Scramble en={job.period.en} id={job.period.id} /> ·{" "}
+            <Scramble en={job.duration.en} id={job.duration.id} />
+          </p>
+        </div>
+
+        <p className="mt-4 max-w-[46ch] text-sm leading-relaxed text-muted md:mt-0 md:w-[30%] md:shrink-0 md:border-l md:border-border md:pl-7">
+          <T en={job.summary.en} id={job.summary.id} />
+        </p>
+      </header>
+
+      <div className="mt-5 border-t border-border/70 pt-5">
+        {hasRail ? <RoleSplitRail roles={job.roles} /> : <RolePanel role={job.roles[0]} />}
+      </div>
+    </article>
+  );
+}
+
+/* ---------------------------------------------------------------
+   The page
+--------------------------------------------------------------- */
+function ExperienceStage() {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const spineRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const headRef = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<ScrollTrigger | null>(null);
+  const reduceMotion = useReducedMotion();
+  const lenisRef = useLenisRef();
 
   /**
-   * The stage carries the perspective and is what the scroll is measured
-   * against. It is deliberately never transformed: `useScroll` measures its
-   * target with getBoundingClientRect, which includes transforms, so measuring
-   * the scaled card would feed its own scale back into the progress driving it.
+   * Which stop the spine is currently pointing at. This is the one piece of
+   * scroll-derived state React is allowed to hold, and only because it carries
+   * `aria-current`: the lit node is otherwise a purely visual fact and a screen
+   * reader would have no way to read the stepper. Set through the functional
+   * form so an unchanged index bails out before a render — the handler runs on
+   * every scrubbed frame, and the value actually changes at most once per
+   * company.
    */
-  const stageRef = useRef<HTMLDivElement>(null);
+  const [activeStop, setActiveStop] = useState(0);
 
-  const { scrollYProgress } = useScroll({
-    target: stageRef,
-    // Completes shortly after the card clears the fold. A range that only
-    // finished near the top of the viewport would leave the last card in a
-    // list stranded at partial scale, since nothing scrolls past it.
-    offset: ["start end", "start 70%"],
-  });
-  const depth = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 });
-  const scale = useTransform(depth, [0, 1], [0.94, 1]);
-  const depthOpacity = useTransform(depth, [0, 1], [0.65, 1]);
+  const count = experience.length;
 
-  const tilt = useTilt(tiltEnabled);
+  /**
+   * Jump to a company. The stepper is the only way to skip a stop — a pinned
+   * horizontal track has no scrollbar of its own, so before this the seventh
+   * role of the last company was over a thousand pixels of wheel away with
+   * nothing on screen offering a shortcut.
+   *
+   * The target is read off the live ScrollTrigger rather than recomputed:
+   * `start` and `end` already account for the pin spacer, the navbar offset and
+   * whatever the track measured on the last refresh. Lenis owns the travel when
+   * it is there — it is the thing that knows where the page actually is — and
+   * the native smooth scroll covers the reduced-motion case, where there is no
+   * Lenis instance at all.
+   */
+  const goToStop = useCallback(
+    (index: number) => {
+      const trigger = triggerRef.current;
+      if (!trigger) return;
+
+      const ratio = count > 1 ? index / (count - 1) : 0;
+      const target = trigger.start + ratio * (trigger.end - trigger.start);
+      const lenis = lenisRef?.current;
+
+      if (lenis) lenis.scrollTo(target);
+      else window.scrollTo({ top: target, behavior: "smooth" });
+    },
+    [count, lenisRef],
+  );
+
+  useGSAP(
+    () => {
+      const stage = stageRef.current;
+      const frame = frameRef.current;
+      const track = trackRef.current;
+      const spine = spineRef.current;
+      const progress = progressRef.current;
+      const head = headRef.current;
+      if (!stage || !frame || !track || !spine || !progress || !head) return;
+
+      const mm = gsap.matchMedia();
+
+      /* The same condition as the `stage:` variant in globals.css, plus the
+         reduced-motion clause. Outside it the stops are a plain column and
+         there is nothing to travel — and turning someone's scroll ninety
+         degrees is exactly what that setting is about, so the branch simply
+         never runs. The two strings must stay in step: if CSS lays the track
+         out as a row and this does not pin it, the section scrolls sideways
+         off the page. */
+      mm.add(
+        "(min-width: 1200px) and (min-height: 860px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          /**
+           * How far the track has to move, measured rather than assumed — it
+           * depends on the viewport, on how wide a stop settles, and on where the
+           * labels happen to wrap. A function, because `invalidateOnRefresh`
+           * re-reads it on every refresh.
+           */
+          const travel = () => Math.max(0, track.scrollWidth - frame.clientWidth);
+          /** The spine's own width, which the progress head rides along. Read the
+           *  same way and for the same reason. */
+          const spineWidth = () => spine.clientWidth;
+
+          const cards = gsap.utils.toArray<HTMLElement>(
+            stage.querySelectorAll(".exp-stop"),
+          );
+          const nodes = gsap.utils.toArray<HTMLElement>(
+            stage.querySelectorAll(".exp-node"),
+          );
+
+          /**
+           * The timeline is one unit long, so every position below is a fraction
+           * of the scroll distance and reads as one. `end` equals the travel, so
+           * a pixel of wheel buys a pixel of sideways movement and the pin
+           * releases the instant the last stop lands.
+           */
+          const timeline = gsap.timeline({
+            defaults: { ease: "none", duration: 1 },
+            scrollTrigger: {
+              trigger: stage,
+              start: "top top",
+              end: () => `+=${travel()}`,
+              pin: frame,
+              /**
+               * A number, not `true`. `true` is exactly 1:1 with the scrollbar,
+               * which sounds like the honest choice and reads as a stutter: every
+               * jitter in the wheel lands on the track unfiltered. Half a second
+               * of catch-up is enough to smooth that without the track ever
+               * feeling like it is lagging behind the input.
+               */
+              scrub: 0.5,
+              invalidateOnRefresh: true,
+              // Pins a frame early, which is what stops the jump some browsers
+              // make when a fixed position is applied mid-scroll.
+              anticipatePin: 1,
+              onUpdate: (self) => {
+                const index = Math.round(self.progress * (count - 1));
+                setActiveStop((current) => (current === index ? current : index));
+              },
+            },
+          });
+
+          triggerRef.current = timeline.scrollTrigger ?? null;
+
+          gsap.set(progress, { transformOrigin: "left center", scaleX: 0 });
+          gsap.set(head, { x: 0 });
+
+          timeline
+            .to(track, { x: () => -travel() }, 0)
+            .to(progress, { scaleX: 1 }, 0)
+            .to(head, { x: () => spineWidth() }, 0);
+
+          /**
+           * The handover, written once for any number of companies rather than
+           * as a pair of hand-placed tweens for the two that exist today.
+           *
+           * Each stop owns a point on the timeline — stop `i` of `n` is fully lit
+           * at `i / (n - 1)` — and lights on the way in and dims on the way out
+           * over a window either side of it. The windows overlap by design: the
+           * ramps are longer than the gap between them, so two cards cross rather
+           * than both sitting flat in the middle of the travel.
+           *
+           * The two ramps are deliberately not the same curve. Linear on both
+           * put the crossing point at half-lit for each, which is the one frame
+           * where neither card is readable — measured mid-travel, both sat at
+           * 0.52 opacity. `power2.out` on the way in and `power2.in` on the way
+           * out moves that crossing up: the arriving card is most of the way lit
+           * while the leaving one is most of the way gone, which is what "the
+           * next thing is arriving" is supposed to look like.
+           */
+          const segment = count > 1 ? 1 / (count - 1) : 1;
+          const ramp = segment * 0.54;
+          const hold = segment * 0.08;
+          const EASE_IN = "power2.out";
+          const EASE_OUT = "power2.in";
+
+          cards.forEach((card, index) => {
+            const node = nodes[index];
+            const dot = node?.querySelector<HTMLElement>(".exp-node-dot");
+            const focus = index * segment;
+            const isFirst = index === 0;
+            const isLast = index === count - 1;
+
+            gsap.set(card, isFirst ? CARD_ACTIVE : CARD_IDLE);
+            if (node) gsap.set(node, { opacity: isFirst ? 1 : 0.45 });
+            if (dot) gsap.set(dot, { scale: isFirst ? 1 : 0.3 });
+
+            if (!isFirst) {
+              const at = Math.max(0, focus - hold - ramp);
+              timeline.to(card, { ...CARD_ACTIVE, duration: ramp, ease: EASE_IN }, at);
+              if (node)
+                timeline.to(node, { opacity: 1, duration: ramp, ease: EASE_IN }, at);
+              if (dot) timeline.to(dot, { scale: 1, duration: ramp, ease: EASE_IN }, at);
+            }
+
+            if (!isLast) {
+              const at = focus + hold;
+              timeline.to(card, { ...CARD_IDLE, duration: ramp, ease: EASE_OUT }, at);
+              if (node)
+                timeline.to(node, { opacity: 0.45, duration: ramp, ease: EASE_OUT }, at);
+              if (dot) timeline.to(dot, { scale: 0.3, duration: ramp, ease: EASE_OUT }, at);
+            }
+          });
+
+          /**
+           * A stop's height changes when a role is selected. Refreshing is
+           * expensive, so it waits for the layout to settle rather than running
+           * through the 300ms the panel takes to swap.
+           */
+          let pending: number | undefined;
+          const settle = () => {
+            window.clearTimeout(pending);
+            pending = window.setTimeout(() => ScrollTrigger.refresh(), 180);
+          };
+          const observer = new ResizeObserver(settle);
+          observer.observe(track);
+
+          /**
+           * The first measurement is load-bearing, and it is the one most likely
+           * to be wrong.
+           *
+           * `travel()` reads the track's width against the frame's, and if the
+           * stylesheet has not landed when this runs — which is the normal case
+           * in development, where CSS arrives through script — the track has not
+           * been told to be `w-max` yet and measures exactly one viewport. Travel
+           * comes out 0, the pin is given no distance, and the stage scrolls past
+           * instead of holding. Observed: a pin-spacer with `padding: 0`.
+           *
+           * ResizeObserver would catch it, but it is delivered at the end of a
+           * rendering cycle, so anything that delays the first frame delays the
+           * correction with it. A frame and a `load` are two more paths to the
+           * same refresh, owing nothing to each other: `load` is the one that
+           * also catches late images changing the track's width.
+           */
+          const raf = requestAnimationFrame(settle);
+          window.addEventListener("load", settle);
+          /* And a plain timeout, which is the only one of the four that owes
+             nothing to the page being rendered or to `load` still being ahead
+             of us. Both of those assumptions fail somewhere: `load` has usually
+             already fired by the time hydration attaches this listener, and a
+             frame callback does not run at all in a backgrounded tab — which is
+             exactly where a stage measured at zero travel would sit until the
+             visitor came back to it. */
+          const timeout = window.setTimeout(settle, 0);
+
+          return () => {
+            cancelAnimationFrame(raf);
+            window.clearTimeout(timeout);
+            window.removeEventListener("load", settle);
+            window.clearTimeout(pending);
+            observer.disconnect();
+            triggerRef.current = null;
+          };
+        },
+      );
+    },
+    { scope: stageRef },
+  );
+
+  const heading = (
+    <div className="shrink-0 px-5 text-center">
+      <h2 className="text-balance text-3xl tracking-[-0.028em] md:text-[2.5rem] md:leading-[1.08]">
+        <T en="Experience" id="Pengalaman" />
+      </h2>
+      <MicroLabel className="mt-3 tracking-[0.2em]">
+        <Scramble
+          en={`${START_YEAR} — ${IS_ONGOING ? "Present" : ""} · ${count} companies · ${TOTAL_ROLES} roles`}
+          id={`${START_YEAR} — ${IS_ONGOING ? "Sekarang" : ""} · ${count} perusahaan · ${TOTAL_ROLES} peran`}
+        />
+      </MicroLabel>
+    </div>
+  );
+
+  /**
+   * The spine.
+   *
+   * A stepper first and a decoration second: it says how many stops there are,
+   * which one is being read, and — because the nodes are buttons — it is the
+   * only way to reach the far one without scrolling through everything between.
+   * Hidden below md, where the stops are a column and the page's own scrollbar
+   * already does this job.
+   */
+  const spine = (
+    <nav
+      aria-label="Experience timeline"
+      className="exp-spine hidden shrink-0 justify-center px-[6vw] stage:flex"
+    >
+      <div ref={spineRef} className="relative w-[min(88vw,1320px)]">
+        {/* The rule and its progress share one row, and the nodes sit on top of
+            it with a ground-coloured fill, so the line is cut cleanly where a
+            node lands instead of running visibly beneath the label. */}
+        <div aria-hidden className="absolute inset-x-0 top-1/2 -translate-y-1/2">
+          <div className="border-t border-dashed border-border" />
+          <div
+            ref={progressRef}
+            className="absolute inset-x-0 top-0 origin-left border-t-2 border-accent/70"
+          />
+          <span
+            ref={headRef}
+            className="exp-spine-head absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2"
+          />
+        </div>
+
+        <ol className="relative flex items-center justify-between">
+          {experience.map((job, index) => (
+            <li key={job.company} className="min-w-0 max-w-[45%]">
+              <button
+                type="button"
+                onClick={() => goToStop(index)}
+                aria-current={activeStop === index ? "step" : undefined}
+                className="exp-node group flex items-center gap-2.5"
+              >
+                <span className="exp-node-mark">
+                  <span className="exp-node-dot" />
+                </span>
+                <span className="flex min-w-0 flex-col items-start gap-1 text-left">
+                  <span className="font-mono text-[10px] leading-none tabular-nums text-accent-strong dark:text-accent">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="max-w-full truncate font-display text-[0.8125rem] leading-none tracking-[-0.01em]">
+                    {job.company}
+                  </span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </nav>
+  );
+
+  const stops = experience.map((job, index) => (
+    <JobStop key={job.company} job={job} index={index} />
+  ));
+
+  /* Reduced motion gets the column outright rather than markup that only
+     behaves like one because a media query did not match. */
+  if (reduceMotion) {
+    return (
+      <div className="container-page flex flex-col gap-10 py-20">
+        {heading}
+        {stops}
+      </div>
+    );
+  }
 
   return (
-    // The gap between cards is padding *inside* the item, not a margin between
-    // them, so collapsing the item's height on exit takes the spacing with it
-    // and the remaining cards close up without a leftover gap.
-    //
-    // The negative margin cancels the padding, so the card sits exactly where
-    // it did while the clip box around it grows — room for a tilted corner to
-    // project into without being sheared by the overflow-hidden that the
-    // filter's height collapse depends on.
-    //
-    // The room needed is not symmetric, and 8px all round was not enough
-    // horizontally. Under `perspective: 1000px` a 7° turn swings the near edge
-    // of a 1048px-wide card toward the viewer, and perspective magnifies what
-    // comes closer: measured, the card's painted box overhangs its layout box
-    // by 31px at the sides but only 5px top and bottom, because the same angle
-    // acts on a height a quarter of the width. 64px across and 24px down —
-    // comfortably past the measured need rather than sized to it, since the
-    // overhang grows with the card and a card grows with its content.
-    //
-    // Padding collapses with the height on exit. Left standing it would hold a
-    // filtered-out card's slot open by its own padding after the height had
-    // gone, so the list would close up to a gap instead of closing up.
-    <motion.li
-      layout
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
-      transition={{ duration: 0.45, delay: index * 0.05, ease: EASE }}
-      className="-mx-16 -my-6 overflow-hidden px-16 py-6"
-    >
-      <div className="pb-2.5">
-        <div
-          ref={stageRef}
-          onMouseMove={tilt.onMouseMove}
-          onMouseLeave={tilt.onMouseLeave}
-          style={tiltEnabled ? { perspective: 1000 } : undefined}
-        >
-          <motion.div
-            style={
-              depthEnabled
-                ? {
-                    scale,
-                    opacity: depthOpacity,
-                    ...(tiltEnabled
-                      ? { rotateX: tilt.rotateX, rotateY: tilt.rotateY }
-                      : {}),
-                    willChange: "transform",
-                  }
-                : undefined
-            }
-            // The same border and ground as the split rail's panel. Which of
-            // the two layouts a company gets depends only on how many roles it
-            // has, so a card that changed colour on open made a one-role
-            // company look like a different kind of thing from a seven-role
-            // one. Open is already said by the chevron and by the content
-            // being there; it does not also need its own palette.
-            className={cn(
-              ROLE_SURFACE,
-              "group transition-colors duration-300 hover:border-accent/35",
-            )}
-          >
-            <button
-              type="button"
-              onClick={() => setOpen((value) => !value)}
-              aria-expanded={open}
-              className="flex w-full items-center gap-4 px-5 py-4 text-left"
-            >
-              <span
-                className={cn(
-                  "grid h-9 w-9 shrink-0 place-items-center rounded-lg transition-colors duration-300",
-                  open
-                    ? "bg-accent text-accent-contrast"
-                    : "bg-surface-2 text-muted group-hover:text-accent-strong dark:group-hover:text-accent",
-                )}
-              >
-                <DynamicIcon name={role.icon} size={17} />
-              </span>
-              <span className="flex-1 text-sm font-medium md:text-base">
-                <T en={role.title.en} id={role.title.id} />
-              </span>
-              <motion.span
-                animate={{ rotate: open ? 180 : 0 }}
-                transition={{ duration: 0.25 }}
-                className="shrink-0 text-muted"
-              >
-                <ChevronDown size={17} />
-              </motion.span>
-            </button>
+    <div ref={stageRef}>
+      {/* Two boxes, and the inner one is not redundant: ScrollTrigger moves a
+          pinned element's padding onto the spacer it creates and writes
+          `padding: 0` inline on the element itself, so any clearance declared on
+          `.exp-frame` is silently thrown away the moment the pin engages. The
+          navbar is fixed and floats over this stage, so that clearance is the
+          difference between a section heading and a section heading with a
+          navigation pill sitting on it. It lives one level in, where the pin
+          cannot reach it. */}
+      <div ref={frameRef} className="exp-frame stage:h-svh stage:overflow-hidden">
+        <div className="flex h-full flex-col justify-center gap-8 py-16 stage:gap-6 stage:pb-6 stage:pt-20">
+          {heading}
+          {spine}
 
-            <motion.div
-              initial={false}
-              animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-              transition={{ duration: 0.32, ease: EASE }}
-              className="overflow-hidden"
+          {/* The track's own row. `overflow-hidden` from md up so a card leaving
+              the frame is clipped at the edge of the stage rather than widening
+              the document — the pin is fixed-position, and a fixed element that
+              overflows still counts. */}
+          <div className="min-h-0 stage:overflow-hidden">
+            <div
+              ref={trackRef}
+              className="exp-track flex flex-col gap-12 px-5 stage:w-max stage:flex-row stage:items-start stage:gap-14 stage:px-[6vw]"
             >
-              <RoleBullets
-                points={role.points}
-                open={open}
-                className="px-5 pb-5 pl-[4.25rem]"
-              />
-
-              <ExperienceGallery photos={role.photos} roleTitle={role.title} />
-            </motion.div>
-          </motion.div>
+              {stops}
+            </div>
+          </div>
         </div>
       </div>
-    </motion.li>
+    </div>
   );
 }
 
 export function Experience() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const dotRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const [thresholds, setThresholds] = useState<number[]>(() => experience.map(() => 1));
-
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ["start 65%", "end 60%"],
-  });
-  // Spring the timeline fill so it trails the scroll slightly instead of snapping
-  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.4 });
-  const scaleY = useTransform(progress, (v) => Math.max(v, 0.02));
-
-  /**
-   * Each dot's centre as a fraction of the spine. Re-measured whenever the
-   * column resizes, which is what keeps the dots honest as accordions open and
-   * the filter adds or removes cards.
-   */
-  const measure = useCallback(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const bounds = track.getBoundingClientRect();
-    // Mirrors the spine's own geometry: top-2 and h-[calc(100%-1rem)].
-    const spineTop = bounds.top + 8;
-    const spineHeight = bounds.height - 16;
-    if (spineHeight <= 0) return;
-
-    const next = dotRefs.current.map((dot) => {
-      if (!dot) return 1;
-      const rect = dot.getBoundingClientRect();
-      const centre = rect.top + rect.height / 2;
-      return Math.min(1, Math.max(0, (centre - spineTop) / spineHeight));
-    });
-
-    setThresholds((previous) =>
-      previous.length === next.length && previous.every((v, i) => Math.abs(v - next[i]) < 0.001)
-        ? previous
-        : next,
-    );
-  }, []);
-
-  useEffect(() => {
-    measure();
-    const track = trackRef.current;
-    if (!track) return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(track);
-    window.addEventListener("resize", measure);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [measure]);
-
   return (
-    <Section
-      id="experience"
-      title={<T en="Experience" id="Pengalaman" />}
-      index={1}
-      // Both the ground and the arrival belong to <ExperienceZone>, which wraps
-      // this section: the lattice behind it is sticky and spans the whole zone,
-      // so it cannot be painted by anything that scrolls with the content. The
-      // section itself stays transparent and carries no reveal of its own —
-      // the zone's curtain is already answering that boundary.
-      backdrop={null}
-      transition="none"
-      // The halo that keeps type legible over the lattice. On the section
-      // rather than on each block because text-shadow inherits, so one
-      // declaration covers the heading, the company header and the role rail
-      // alike — and the cards inside turn it back off for themselves.
-      className="on-lattice"
-    >
-      <div ref={trackRef} className="relative">
-        {/* Scroll-linked timeline spine */}
-        <div className="absolute left-[7px] top-2 hidden h-[calc(100%-1rem)] w-px bg-border md:block">
-          {/* Navy in light mode, amber in dark: the amber fill was near
-              invisible against the light tint, and navy would sink into the
-              dark background the same way. */}
-          <motion.div
-            style={{ scaleY, originY: 0 }}
-            className="h-full w-full bg-gradient-to-b from-navy to-navy/30 dark:from-accent dark:to-accent/30"
-          />
-        </div>
-
-        <div className="space-y-14 md:space-y-20 md:pl-10">
-          {experience.map((job, jobIndex) => (
-            <JobBlockWithDot
-              key={job.company}
-              job={job}
-              progress={progress}
-              threshold={thresholds[jobIndex] ?? 1}
-              registerDot={(node) => {
-                dotRefs.current[jobIndex] = node;
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-/**
- * Pairs the measured anchor with the animated dot: the anchor is what the
- * measurement reads, the dot is what pops, and keeping them separate means the
- * spring never feeds its own scale back into the threshold.
- */
-function JobBlockWithDot({
-  job,
-  progress,
-  threshold,
-  registerDot,
-}: {
-  job: BiJob;
-  progress: MotionValue<number>;
-  threshold: number;
-  registerDot: (node: HTMLSpanElement | null) => void;
-}) {
-  return (
-    <div className="relative">
-      <span
-        ref={registerDot}
-        aria-hidden
-        className="pointer-events-none absolute -left-10 top-2 hidden h-[15px] w-[15px] md:block"
-      />
-      <TimelineDot progress={progress} threshold={threshold} />
-      <JobBlockBody job={job} />
-    </div>
-  );
-}
-
-/**
- * Depth-scale for the split rail.
- *
- * Applied to the rail and the panel together as one object rather than to each
- * role: the panel already runs its own transition on every selection, and a
- * second transform underneath it would fight that. The measured stage is again
- * separate from the layer that scales, so the transform cannot feed back into
- * the scroll progress driving it.
- */
-function RoleBoard({ roles }: { roles: BiRole[] }) {
-  const prefersReducedMotion = useReducedMotion();
-  const stageRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: stageRef,
-    offset: ["start end", "start 70%"],
-  });
-  const depth = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 });
-  const scale = useTransform(depth, [0, 1], [0.94, 1]);
-  const depthOpacity = useTransform(depth, [0, 1], [0.65, 1]);
-
-  return (
-    <div ref={stageRef}>
-      <motion.div
-        style={
-          prefersReducedMotion
-            ? undefined
-            : { scale, opacity: depthOpacity, willChange: "transform" }
-        }
-      >
-        <RoleSplitRail roles={roles} />
-      </motion.div>
-    </div>
-  );
-}
-
-function JobBlockBody({ job }: { job: BiJob }) {
-  const [filter, setFilter] = useState<CategoryId>("all");
-  const filterable = job.roles.some((role) => role.category);
-
-  const visibleRoles = useMemo(
-    () =>
-      filter === "all" || !filterable
-        ? job.roles
-        : job.roles.filter((role) => role.category === filter),
-    [job.roles, filter, filterable],
-  );
-
-  /**
-   * Master–detail only earns its place when there is a list to choose from. The
-   * second company has a single role, so it stays the plain expandable card
-   * rather than a rail with one permanently-selected entry.
-   */
-  const useSplitRail = job.roles.length > 1;
-
-  return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.55, ease: EASE }}
-        // The same surface the role content sits on. This block — company,
-        // period, location, summary — was the last text in the section still
-        // floating directly on the lattice, and the mono period line is the
-        // smallest type on the page, so it was where lines crossing strokes
-        // cost the most. A header that reads as a header still needs a floor.
-        className={cn(ROLE_SURFACE, "mb-6 p-5 md:p-6")}
-      >
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h3 className="text-xl tracking-[-0.024em] md:text-2xl">{job.company}</h3>
-          {/* Tint is 10%, not 15%: the gold text on this pill is 10px, and the
-              heavier fill dragged it to 4.45:1 — just under AA for text that
-              small. */}
-          {job.current && (
-            <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
-              <Scramble en="Current" id="Saat ini" />
-            </span>
-          )}
-        </div>
-        <p className="mt-1.5 font-mono text-xs text-muted">
-          <Scramble en={job.period.en} id={job.period.id} /> ·{" "}
-          <Scramble en={job.duration.en} id={job.duration.id} /> ·{" "}
-          <Scramble en={job.location.en} id={job.location.id} />
-        </p>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-          <T en={job.summary.en} id={job.summary.id} />
-        </p>
-      </motion.div>
-
-      {filterable && <RoleFilter active={filter} onChange={setFilter} />}
-
-      {useSplitRail ? (
-        <RoleBoard roles={visibleRoles} />
-      ) : (
-        <motion.ul layout className="flex flex-col">
-          {/* No `initial={false}`: it would suppress the scroll reveal the cards
-              play on first sight. Cards that re-enter after a filter change mount
-              fresh, are already in view, and so reveal immediately. */}
-          <AnimatePresence>
-            {visibleRoles.map((role, index) => (
-              <RoleAccordion
-                key={role.slug}
-                role={role}
-                index={index}
-                defaultOpen={index === 0 && filter === "all"}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.ul>
-      )}
-    </>
+    // A page, not a section: no padding, no content column, nothing that would
+    // draw the edge of a component. The ground underneath belongs to
+    // <ExperienceZone> — the lattice is already full-bleed and already this
+    // section's own, so painting another background here would only hide it.
+    <section id="experience" className="on-lattice relative scroll-mt-24">
+      <ExperienceStage />
+    </section>
   );
 }

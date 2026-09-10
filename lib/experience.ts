@@ -20,10 +20,12 @@ export type BiRole = {
   slug: string;
   icon: string;
   /**
-   * Drives the category chips above a company's role list. Language-neutral, so
-   * it lives in the English file with the other structural fields. A role with
-   * no category is never filtered out — that is what leaves the second
-   * company's single role showing regardless of the active chip.
+   * Currently unread. It drove the category chips above a company's role list;
+   * those went when Experience became two pinned stops, and every role in a
+   * company now shows at once. Kept because the classification is real and
+   * costs nothing to carry — a filter, a grouped rail or a badge would all
+   * want it back — but nothing renders from it today, so a wrong value here
+   * will not show up anywhere.
    */
   category?: string;
   points: BiText[];

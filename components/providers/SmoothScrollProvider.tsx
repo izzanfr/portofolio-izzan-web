@@ -1,6 +1,8 @@
 "use client";
 
 import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cancelFrame, frame, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import {
@@ -121,6 +123,29 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
 
     lenisRef.current = instance;
 
+    /**
+     * ScrollTrigger's link to Lenis.
+     *
+     * Lenis owns the scroll position, and it moves it inside its own `raf`
+     * rather than in response to the browser's scroll event — so ScrollTrigger,
+     * left alone, recalculates a frame behind whatever Lenis has just painted.
+     * Every scrub reads as lag. Telling ScrollTrigger to update on Lenis's own
+     * scroll event puts the two in the same frame.
+     *
+     * Deliberately only half of the usual GSAP/Lenis recipe. The other half —
+     * `gsap.ticker.add(t => lenis.raf(t * 1000))` with `lagSmoothing(0)` — is
+     * for the case where nothing else is driving Lenis. Here Framer's loop
+     * already is, and it does it better: it feeds Lenis a *clamped* delta (see
+     * the note on the ticker below), which is the exact protection
+     * `lagSmoothing(0)` switches off. Adding the GSAP ticker would put two
+     * loops on one instance and undo that fix.
+     *
+     * Registered here rather than at module scope: this runs only on the
+     * client, and ScrollTrigger touches the document as it initialises.
+     */
+    gsap.registerPlugin(ScrollTrigger);
+    instance.on("scroll", ScrollTrigger.update);
+
     // Dev-only handle for diagnosing scroll behaviour from the console. Never
     // shipped, and nothing in the app reads it.
     if (process.env.NODE_ENV !== "production") {
@@ -168,6 +193,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
 
     return () => {
       cancelFrame(update);
+      instance.off("scroll", ScrollTrigger.update);
       instance.destroy();
       lenisRef.current = null;
     };

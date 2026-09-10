@@ -3,6 +3,32 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------
+   The `stage:` variant
+
+   The pinned horizontal Experience stage needs a viewport wide enough
+   to put a role rail and a detail panel side by side inside a card
+   that is itself only 84% of the width — and tall enough to hold that
+   whole card between the fixed navbar and the foot of the screen.
+   `md:` answers neither half well: a 1024x600 tablet in landscape and
+   an 800px browser window both pass it, and both clipped the card they
+   were supposed to be presenting.
+
+   Measured, with the short-viewport pass below already applied: the
+   navbar clearance takes 80, the heading and the spine another 130,
+   and the tallest card settles at about 470. 760 is the first round
+   number above that sum. The width floor is 1024 because at 800 the
+   rail took 46% of the card and the panel's bullets wrapped to five
+   lines each.
+
+   Under either floor — and on every phone — the same stops are a plain
+   vertical column, which is what they already are for a visitor who
+   has asked for less motion. One condition, named once: the GSAP
+   matchMedia query that pins the stage is this same string plus the
+   reduced-motion clause, and the two must never drift.
+--------------------------------------------------------------- */
+@custom-variant stage (@media (min-width: 1200px) and (min-height: 860px));
+
+/* ---------------------------------------------------------------
    Design tokens — navy base, raw-gold accent
    Light and dark values live on :root / .dark so the theme toggle
    can crossfade every surface at once.
@@ -278,6 +304,38 @@
     position: static !important;
     height: auto !important;
     overflow: visible !important;
+  }
+
+  /* Same bargain as the credentials rail below, for the same reason: the
+     experience stage is only a viewport tall because a script is going to pin
+     it and move the stops sideways. Unscripted, that leaves a tall frame with
+     one stop in it and no way to reach the second. So the pinning comes apart
+     and the stops stack. */
+  html:not(.js) .exp-frame {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* By class, not by position: the frame's first child is the heading now, and
+     a positional selector would have laid that out as the track. */
+  html:not(.js) .exp-track {
+    width: 100%;
+    flex-direction: column;
+    padding-inline: 1.25rem;
+    padding-block: 0;
+    transform: none !important;
+  }
+
+  /* The spine is a stepper for a track that is no longer travelling, and its
+     nodes are buttons that would scroll to a position the pin never creates.
+     Unscripted it is not degraded, it is wrong, so it goes. */
+  html:not(.js) .exp-spine {
+    display: none !important;
+  }
+
+  html:not(.js) .exp-stop {
+    width: 100% !important;
+    max-width: none !important;
   }
 
   html:not(.js) .cert-track {
@@ -1360,4 +1418,240 @@ html.dark[lang="id"] .lang-menu-item[data-set-locale="id"] {
   box-shadow:
     inset 2px 2px 5px rgba(0, 0, 0, 0.55),
     inset -2px -2px 5px rgba(255, 255, 255, 0.05);
+}
+
+
+/* ---------------------------------------------------------------
+   Experience: the stop card
+
+   One surface per company, and the insets inside it are the only
+   other boxes. The fill drops from the shared 94% to 92% here and
+   here only: the card sits over a moving WebGL lattice, and this is
+   the one section where letting a little more of it through is the
+   point rather than a cost.
+--------------------------------------------------------------- */
+.exp-stop {
+  /* Read by the sheen below. Declared here so a card that has never been
+     hovered still has valid values — a `var()` with no fallback and no
+     declaration invalidates the whole gradient. */
+  --sheen-x: 50%;
+  --sheen-y: 0%;
+  --sheen-opacity: 0;
+  background-color: color-mix(in srgb, var(--surface) 92%, transparent);
+  transition: border-color 300ms var(--ease-signature);
+}
+
+/**
+ * Cursor sheen (see `useSheen` in experienceShared).
+ *
+ * `::after` over the card's own background and under its content, so it lights
+ * the surface without washing out the type. `pointer-events: none` keeps it out
+ * of the way of everything inside — the role rail, the gallery thumbnails and
+ * the panel all have to stay clickable through it.
+ *
+ * Only the opacity transitions. The position follows the cursor with no easing
+ * at all, because a lagging highlight reads as a bug rather than as smoothing;
+ * what wants easing is the light arriving and leaving, which is what the
+ * opacity is.
+ */
+.exp-stop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--sheen-opacity);
+  transition: opacity 400ms var(--ease-signature);
+  background: radial-gradient(
+    26rem circle at var(--sheen-x) var(--sheen-y),
+    color-mix(in srgb, var(--accent) 12%, transparent),
+    transparent 62%
+  );
+}
+
+.exp-stop > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .exp-stop:hover {
+    border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+}
+
+/* ---------------------------------------------------------------
+   The spine
+
+   A stepper, in its own band above the track. Nothing here overlaps a
+   card, which is the whole reason the band exists: the rule used to
+   run through the vertical centre of the stage, which is exactly where
+   the cards are.
+--------------------------------------------------------------- */
+
+/* The lit head of the progress line. GSAP moves it along the spine on the same
+   timeline as the travel, so it is always at the end of the fill rather than
+   near it. A glow rather than a hard dot — it reads as the line's leading edge
+   catching light, not as a third mark competing with the two nodes. */
+.exp-spine-head {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/**
+ * A node.
+ *
+ * Opacity belongs to GSAP — the timeline hands the lit state from one node to
+ * the next as the page travels — so nothing here may set it. What is here is
+ * the ground-coloured fill that cuts the dashed rule where the node sits, and
+ * the padding that gives that fill something to be.
+ */
+.exp-node {
+  padding: 0.375rem 0.875rem 0.375rem 0.5rem;
+  border-radius: 999px;
+  background-color: var(--tint);
+  box-shadow: 0 0 0 5px var(--tint);
+  transition: color 250ms var(--ease-signature);
+}
+
+.exp-node:hover {
+  color: var(--accent-strong);
+}
+
+.dark .exp-node:hover {
+  color: var(--accent);
+}
+
+/* The ring is drawn at full strength and the dot inside it is what GSAP scales,
+   so an unvisited stop still reads as a stop on the line rather than as an
+   empty space the line happens to pass through. */
+.exp-node-mark {
+  display: grid;
+  place-items: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.exp-node-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: var(--accent);
+}
+
+
+/* ---------------------------------------------------------------
+   Compacted for the pinned stage
+
+   A stop has one viewport of height to live in, not a page, and the
+   photo strip is the single largest thing standing between it and
+   fitting: eight thumbnails in a four-column grid are two rows plus a
+   gap, and the same eight in one row are not.
+
+   The query repeats the `stage:` variant's own condition rather than
+   using a looser one, because these rules only make sense where the
+   stage is actually pinned — in the vertical column below it, a card
+   has the whole page for its height and a wrapping grid is the better
+   shape.
+
+   These rules name `.exp-rail` and `.exp-panel`, which are classes the
+   components set for exactly this purpose. The version this replaced
+   reached in by shape — `.exp-stop ul.lattice-card ~ div .lattice-card`
+   — and broke the moment either component changed its markup.
+--------------------------------------------------------------- */
+@media (min-width: 1200px) and (min-height: 860px) {
+  /*
+     The documentation strip.
+
+     `grid-auto-flow: column` with a fixed track size turns the wrapping grid
+     into one row whatever the count — which matters because the counts here run
+     from two to eight, and a fixed eight-column rule would shrink a two-photo
+     role to nothing. `grid-template-columns: none` is what releases the
+     `sm:grid-cols-4` the component sets; without it the auto-flow has nothing
+     to do.
+  */
+  .exp-stop ul.grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 4.5rem);
+    justify-content: start;
+    /* Eight thumbnails at 72px are 632px wide and the panel beside a seven-row
+       rail is not, so the strip has to be able to run past its own edge. A
+       scrollable filmstrip rather than a second grid row: the row costs 65px of
+       a stage that is already counting them, and a strip that scrolls is the
+       familiar shape for "there are more of these". */
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .exp-stop ul.grid::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/**
+ * The short-viewport pass.
+ *
+ * The stage's floor is 1200x860, so 860 is the height that has to fit, and
+ * measured there the tallest role — Data Science Instructor, five bullets and
+ * eight photos — put the card at 590 against a content box that also carries an
+ * 80px navbar clearance, a 65px heading and a 39px spine. Three pixels over.
+ * Three pixels over is a clipped bullet.
+ *
+ * What gives is spacing, never type size: a stage that fits by shrinking its
+ * own copy has not really fitted. The rail's row height and the panel's padding
+ * are where height accumulates fastest (seven rows and one panel), the bullet
+ * list is next once a role has five points that wrap to three lines each, and
+ * the frame's own gaps make up the rest. With all of it applied the same role
+ * lands at 508 and the whole set fits at 1200x860, 1440x900 and 1920x1080.
+ *
+ * Bounded above as well as below: past 1000px of viewport height there is room
+ * to spare, and the stage should read as generous rather than as permanently
+ * compressed.
+ */
+@media (min-width: 1200px) and (min-height: 860px) and (max-height: 1000px) {
+  /* The frame's only child — the box that carries the padding the pin would
+     otherwise strip. See the note in Experience.tsx. */
+  .exp-frame > div {
+    gap: 1.125rem;
+  }
+
+  .exp-stop {
+    padding-block: 1.25rem;
+  }
+
+  .exp-rail .exp-rail-item {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+  }
+
+  .exp-panel {
+    padding: 1rem 1.125rem;
+  }
+
+  /* The bullet list, which is where the height actually is once a role has
+     five points that each wrap to three lines. Line-height is spacing, so it is
+     in scope here where font-size is not — and 1.5 is the floor rather than a
+     suggestion, so this stops at it instead of going under. */
+  .exp-panel ul:not(.grid) {
+    margin-top: 0.75rem;
+  }
+
+  .exp-panel ul:not(.grid) li {
+    line-height: 1.5;
+  }
+
+  .exp-panel ul:not(.grid) li + li {
+    margin-top: 0.375rem;
+  }
+
+  .exp-stop ul.grid {
+    grid-auto-columns: minmax(0, 3.5rem);
+  }
 }

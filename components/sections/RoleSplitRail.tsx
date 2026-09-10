@@ -1,24 +1,13 @@
 "use client";
 
-import {
-  AnimatePresence,
-  motion,
-  useIsPresent,
-  useReducedMotion,
-} from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
-import { ExperienceGallery } from "@/components/ui/ExperienceGallery";
+import { Scramble } from "@/components/ui/Scramble";
 import { T } from "@/components/ui/T";
 import type { BiRole } from "@/lib/experience";
 import { cn } from "@/lib/utils";
-import {
-  EASE,
-  ROLE_SURFACE,
-  RoleBullets,
-  useHasFinePointer,
-  useTilt,
-} from "./experienceShared";
+import { EASE, INSET_SURFACE, MicroLabel, RolePanel } from "./experienceShared";
 
 /**
  * A company's roles as master–detail: the list of roles on a rail, the selected
@@ -35,182 +24,155 @@ import {
 
 function RailItem({
   role,
+  index,
   isActive,
   onSelect,
   reduceMotion,
 }: {
   role: BiRole;
+  index: number;
   isActive: boolean;
   onSelect: () => void;
   reduceMotion: boolean;
 }) {
-  /**
-   * False while this row is playing its exit after being filtered out.
-   * AnimatePresence keeps an exiting child rendered with its *last* props, so a
-   * row that was selected when the filter removed it would go on drawing the
-   * marker — leaving two elements claiming the same layoutId at once, which
-   * makes the marker animate to the wrong place.
-   */
-  const isPresent = useIsPresent();
-
   return (
-    <motion.li
-      // `position` only: the item's own box never changes size, so this animates
-      // the reflow after a filter without ever scaling — and so without the
-      // blurring that a size layout animation would put on the label.
-      layout="position"
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={reduceMotion ? { duration: 0 } : { duration: 0.35, ease: EASE }}
-      className="shrink-0 md:shrink"
-    >
+    <li className="shrink-0 md:shrink">
       <button
         type="button"
         onClick={onSelect}
         aria-current={isActive ? "true" : undefined}
-        // `isolate` matters now that the rail has a background of its own: the
-        // active marker sits at -z-10, and without a stacking context here it
-        // would resolve against an ancestor and paint *behind* that background
-        // instead of behind the label.
+        // `isolate` matters because the active marker sits at -z-10: without a
+        // stacking context here it would resolve against an ancestor and paint
+        // behind the rail's own background instead of behind the label.
         className={cn(
-          "relative isolate flex w-full items-center gap-2.5 whitespace-nowrap rounded-full px-4 py-2.5 text-left transition-colors duration-200",
-          "md:gap-3 md:rounded-lg md:px-4 md:py-3.5 md:whitespace-normal",
+          "exp-rail-item relative isolate flex w-full items-center gap-2.5 whitespace-nowrap rounded-lg px-3 py-2.5 text-left transition-colors duration-200",
+          "md:gap-3 md:whitespace-normal",
           isActive ? "text-foreground" : "text-muted hover:text-foreground",
         )}
       >
-        {isActive && isPresent && (
+        {isActive && (
           // One shared element across all rows, so the marker flows from the
           // old row to the new one instead of blinking out and back in.
           <motion.span
             layoutId="rail-active-marker"
-            transition={reduceMotion ? { duration: 0 } : { duration: 0.35, ease: EASE }}
-            className={cn(
-              "absolute inset-0 -z-10 rounded-full bg-accent/12",
-              "md:rounded-lg md:border-l-[3px] md:border-accent",
-            )}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.32, ease: EASE }}
+            className="absolute inset-0 -z-10 rounded-lg bg-accent/12 ring-1 ring-inset ring-accent/25"
           />
         )}
 
+        {/* The numeral is what makes the rail scannable: seven role titles of
+            similar length are hard to keep a place in, and an index gives each
+            one an address. Tabular so the column cannot ripple. */}
+        <span
+          className={cn(
+            "w-4 shrink-0 font-mono text-[10px] leading-none tabular-nums transition-colors duration-200",
+            isActive ? "text-accent-strong dark:text-accent" : "text-muted/60",
+          )}
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+
         <DynamicIcon
           name={role.icon}
-          size={16}
+          size={15}
           className={cn(
             "shrink-0 transition-colors duration-200",
             isActive ? "text-accent-strong dark:text-accent" : "text-muted",
           )}
         />
+
         <span
           className={cn(
-            "font-display text-sm leading-snug tracking-[-0.012em] md:text-[0.95rem]",
+            "font-display text-[0.8125rem] leading-snug tracking-[-0.012em] md:text-sm",
             isActive && "font-semibold",
           )}
         >
           <T en={role.title.en} id={role.title.id} />
         </span>
       </button>
-    </motion.li>
+    </li>
   );
 }
 
 export function RoleSplitRail({ roles }: { roles: BiRole[] }) {
   const prefersReducedMotion = useReducedMotion();
-  const hasFinePointer = useHasFinePointer();
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(
-    roles[0]?.slug ?? null,
-  );
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(roles[0]?.slug ?? null);
 
   const reduceMotion = Boolean(prefersReducedMotion);
-  const tiltEnabled = hasFinePointer && !reduceMotion;
-  const tilt = useTilt(tiltEnabled);
 
   if (roles.length === 0) return null;
 
-  // The filter can remove whatever was selected; falling through to the first
-  // survivor is what keeps the panel from going blank.
+  // Falling through to the first role keeps the panel from ever going blank if
+  // the selected slug stops existing.
   const activeSlug = roles.some((role) => role.slug === selectedSlug)
     ? selectedSlug
     : roles[0].slug;
   const activeRole = roles.find((role) => role.slug === activeSlug) ?? roles[0];
 
-  const panelTransition = reduceMotion
-    ? { duration: 0 }
-    : { duration: 0.3, ease: EASE };
+  const panelTransition = reduceMotion ? { duration: 0 } : { duration: 0.3, ease: EASE };
 
   return (
-    <div className="flex flex-col gap-5 md:flex-row md:gap-8">
+    <div className="flex flex-col gap-4 md:flex-row md:gap-6">
       {/* Rail. A horizontal, swipeable strip of tabs on a phone; a column from
           md up. `data-lenis-prevent` so a sideways flick scrolls the rail
           rather than being taken over as page scroll. */}
-      <motion.ul
-        layout={!reduceMotion}
+      <div
         data-lenis-prevent
         className={cn(
-          // The rail gets the panel's own surface. The two are peers in a
-          // master-detail, and only one of them having a floor was the tell:
-          // the role list was seven lines of type sitting straight on a moving
-          // lattice next to a panel that had been lifted off it.
-          ROLE_SURFACE,
-          "flex gap-2 overflow-x-auto p-2 pb-2",
-          "md:w-[28%] md:shrink-0 md:flex-col md:gap-1 md:overflow-visible md:p-2.5",
-          // Hides the scrollbar on the mobile rail without hiding the page's.
-          "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:[scrollbar-width:thin]",
+          INSET_SURFACE,
+          "exp-rail min-w-0 p-2.5 md:w-[19.5rem] md:shrink-0 md:p-3",
         )}
       >
-        <AnimatePresence initial={false}>
-          {roles.map((role) => (
+        <MicroLabel className="mb-2.5 hidden px-1.5 md:block">
+          <Scramble en={`${roles.length} roles`} id={`${roles.length} peran`} />
+        </MicroLabel>
+
+        <ul
+          className={cn(
+            "flex gap-1.5 overflow-x-auto md:flex-col md:gap-0.5 md:overflow-visible",
+            // Hides the scrollbar on the mobile rail without hiding the page's.
+            "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          )}
+        >
+          {roles.map((role, index) => (
             <RailItem
               key={role.slug}
               role={role}
+              index={index}
               isActive={role.slug === activeSlug}
               onSelect={() => setSelectedSlug(role.slug)}
               reduceMotion={reduceMotion}
             />
           ))}
-        </AnimatePresence>
-      </motion.ul>
+        </ul>
+      </div>
 
-      {/* Detail panel */}
-      <div
-        className="min-w-0 flex-1"
-        onMouseMove={tilt.onMouseMove}
-        onMouseLeave={tilt.onMouseLeave}
-        style={tiltEnabled ? { perspective: 1200 } : undefined}
-      >
+      {/* Detail panel.
+
+          A keyed remount, deliberately not an <AnimatePresence mode="wait">.
+          The presence version is what this replaced, and it wedged: the outgoing
+          panel's exit never completed, so AnimatePresence went on rendering the
+          first role's content forever while the rail underneath it correctly
+          moved its selection — click any role and the marker travelled, the
+          `aria-current` moved, and the panel stayed on "Information Technology
+          Consultant". Verified as a React state problem it was not: a
+          `data-active` attribute on this same element, outside the presence
+          tree, tracked every click.
+
+          Nothing here needs presence anyway. `mode="wait"` exists to stop two
+          panels overlapping mid-air, and a remount cannot produce two panels:
+          the key changes, the old subtree goes, the new one plays its entrance.
+          What is lost is the outgoing slide, and losing it makes the swap read
+          faster rather than poorer — the wait was 300ms of nothing before the
+          content the visitor asked for appeared. */}
+      <div className={cn(INSET_SURFACE, "exp-panel min-w-0 flex-1 p-4 md:p-5")}>
         <motion.div
-          style={
-            tiltEnabled
-              ? { rotateX: tilt.rotateX, rotateY: tilt.rotateY, willChange: "transform" }
-              : undefined
-          }
-          className={cn(ROLE_SURFACE, "p-5 md:p-7")}
+          key={activeRole.slug}
+          initial={{ opacity: 0, x: 14 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={panelTransition}
         >
-          {/* `wait`: the outgoing role clears before the incoming one arrives,
-              so the two never overlap mid-air in the same panel. */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeRole.slug}
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }}
-              transition={panelTransition}
-            >
-              <h4 className="font-display text-lg tracking-[-0.02em] md:text-2xl">
-                <T en={activeRole.title.en} id={activeRole.title.id} />
-              </h4>
-
-              <RoleBullets
-                points={activeRole.points}
-                open
-                animateOnMount
-                className="mt-5"
-              />
-
-              <ExperienceGallery
-                photos={activeRole.photos}
-                roleTitle={activeRole.title}
-                className="mt-6"
-              />
-            </motion.div>
-          </AnimatePresence>
+          <RolePanel role={activeRole} />
         </motion.div>
       </div>
     </div>

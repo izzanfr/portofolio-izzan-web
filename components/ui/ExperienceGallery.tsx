@@ -51,7 +51,11 @@ export function ExperienceGallery({
         />
       </p>
 
-      <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+      {/* `data-lenis-prevent` because inside the Experience stage this grid is
+          re-laid-out as a single scrollable filmstrip (see `.exp-stop ul.grid`
+          in globals.css); without it a sideways flick over the thumbnails is
+          taken over as page scroll and travels the timeline instead. */}
+      <ul data-lenis-prevent className="grid grid-cols-3 gap-2 sm:grid-cols-4">
         {photos.map((photo, index) => (
           <li key={photo.src + index}>
             <motion.button
