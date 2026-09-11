@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "./journey.css";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import "./documentation.css";
+@import "./interlude.css";
 
 /* ---------------------------------------------------------------
    The `stage:` variant
@@ -31,11 +31,11 @@
 
 /* ---------------------------------------------------------------
    Design tokens — navy base, raw-gold accent
-   Light and dark values live on :root / .dark so the theme toggle
-   can crossfade every surface at once.
+   One theme, light, from the hero to the contact form. Navy is the ink
+   and the occasional plate, never a second background.
 
-   Contrast ratios quoted below are against that theme's --background
-   and were measured, not estimated. The floor is 4.5:1 for anything
+   Contrast ratios quoted below are against --background and were
+   measured, not estimated. The floor is 4.5:1 for anything
    that carries text and 3:1 for marks that carry state on their own.
 --------------------------------------------------------------- */
 :root {
@@ -105,10 +105,8 @@
     0 30px 70px -20px rgba(10, 26, 47, 0.4),
     0 0 90px 6px rgba(198, 138, 59, 0.44);
 
-  /* Ambient backdrop washes (see components/ui/SectionBackdrop).
-     Kept as tokens rather than fixed rgba because the cool wash cannot be the
-     same colour in both themes: on the light page it has to be the navy itself,
-     but over the dark navy page navy-on-navy is invisible — see .dark below. */
+  /* Ambient backdrop washes (see components/ui/SectionBackdrop). On the light
+     page the cool wash is the navy itself. */
   --wash-warm: var(--accent-500);
   --wash-cool: #12294a;
   --wash-warm-strength: 11%;
@@ -116,72 +114,13 @@
 
   /* Shared four-hue palette: the hero role rotation and the navbar's active
      link both draw from it. Deep, desaturated shades — on the light page the
-     dark end of each hue is what carries contrast, so these are not the same
-     hex as their dark counterparts. All four land near 5:1.
+     dark end of each hue is what carries contrast. All four land near 5:1.
      role-1 is the gold slot, tuned to sit between accent-600 and accent-700 so
      it reads as the same family as the accent without matching it exactly. */
   --role-1: #96622a;
   --role-2: #0f766e;
   --role-3: #b04a5a;
   --role-4: #4f7a52;
-}
-
-.dark {
-  --background: #070f1c;
-  --surface: #0c1a2e;
-  --surface-2: #12253f;
-  --surface-raised: #0f2036;
-  --foreground: #e8eef6;
-  --muted: #93a4b8;
-  --border: #1c3350;
-  --navy: #0a1a2f;
-  --navy-soft: #12294a;
-
-  /* The ramp stops themselves carry over from :root — a colour ramp is the
-     same ramp in both themes. What flips is which stop each role points at:
-     against navy the brand 500 already clears AA (6.5:1), so it stays the text
-     colour, and --accent-strong moves *up* the ramp for hover fills. */
-  --accent: var(--accent-500);
-  --accent-strong: var(--accent-400);
-  --accent-contrast: #1a1205;
-  --grain-opacity: 0.05;
-  --tint: #0a1524;
-
-  /* Over navy a soft shadow does almost nothing, so the separation here comes
-     from --surface-raised sitting above the page. The shadow only deepens the
-     seam; it is near-black and stronger than its light counterpart. */
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.32), 0 2px 6px rgba(0, 0, 0, 0.24);
-  --shadow-card-hover: 0 18px 42px rgba(0, 0, 0, 0.42), 0 4px 10px rgba(0, 0, 0, 0.3);
-
-  /* Over navy the separation cannot come from a tinted shadow — navy on navy is
-     nothing — so both of these go to near-black and up in strength. The shade
-     especially: on the dark page the outgoing section has to actually go dark
-     to read as being behind something. */
-  --shadow-overlap: 0 -24px 52px -18px rgba(0, 0, 0, 0.68), 0 -3px 14px -6px rgba(0, 0, 0, 0.45);
-  --overlap-shade: rgba(0, 0, 0, 0.55);
-
-  /* On navy the roles flip: amber leads the glow (it pops against the dark) over
-     a near-black drop that carries the lift a soft shadow can't. */
-  --portrait-glow:
-    0 26px 60px -20px rgba(0, 0, 0, 0.6),
-    0 0 66px -4px rgba(198, 138, 59, 0.34);
-  --portrait-glow-hover:
-    0 30px 70px -18px rgba(0, 0, 0, 0.68),
-    0 0 82px -2px rgba(198, 138, 59, 0.46);
-
-  /* Cool wash lifted to a mid blue: the light-mode navy would sink into the
-     dark page. Warm side is nudged down instead — gold reads hotter on navy. */
-  --wash-warm: var(--accent-500);
-  --wash-cool: #4d8fd6;
-  --wash-warm-strength: 9%;
-  --wash-cool-strength: 12%;
-
-  /* Same hues lifted to their light end: against the navy background the deep
-     shades above would sink into it. */
-  --role-1: #dda968;
-  --role-2: #5eccc0;
-  --role-3: #f0a0ac;
-  --role-4: #a3c9a8;
 }
 
 @theme inline {
@@ -244,7 +183,6 @@
     color: var(--foreground);
     font-family: var(--font-sans-stack), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 350ms ease, color 350ms ease;
   }
 
   /* Headings default to the display serif. Optical sizing is left on `auto` so
@@ -550,17 +488,39 @@
   }
 
   /* ---------------------------------------------------------------
-     Immersive panel ground
+     Immersive panel ground — the Certifications sheet
 
-     The Certifications panel is dark in both themes, so it cannot be built
-     from the theme tokens the rest of the page uses — it is deliberately not
-     the page. Two large, heavily blurred washes drift across the navy behind
-     the cards: enough movement that the ground is not a flat rectangle, slow
-     enough that nothing competes with the certificates on top of it.
+     The sheet is a warm ivory, a step apart from the site's cool off-white,
+     so it still reads as a page arriving over the page while staying in the
+     same light family. Its shadow carries the sliding edges; a faint warm
+     vignette keeps the middle, where the certificates travel, the brightest
+     part of the screen. Two large, heavily blurred washes — gold and a soft
+     sky blue — drift behind the cards: enough movement that the ground is
+     not a flat rectangle, slow enough that nothing competes with the
+     certificates on top of it.
 
      Transform only. The blobs are composited layers that never touch layout,
      and the global reduced-motion rule freezes them where they stand.
   --------------------------------------------------------------- */
+  /* Feathered at the sides rather than edged, but only while it moves. A
+     drawn edge — a hairline or a shadow — became a hard vertical line
+     sweeping across the screen as the sheet slid in and out, so its sides
+     fade into the page instead. The width of that fade, --cert-feather, is
+     driven by the scroll (see CertificateCards): full while sliding, nothing
+     once the sheet has landed, so the settled page runs edge to edge. */
+  .cert-sheet {
+    --cert-feather: 0%;
+    background: linear-gradient(180deg, #fdfbf6 0%, #fbf8f1 55%, #f7f2e8 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 var(--cert-feather), #000 calc(100% - var(--cert-feather)), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 var(--cert-feather), #000 calc(100% - var(--cert-feather)), transparent 100%);
+  }
+
+  .cert-sheet-vignette {
+    /* Barely there: enough warmth that the middle reads as the lit part, not
+       so much that the sides of a settled page look shaded. */
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(150, 110, 60, 0.05) 100%);
+  }
+
   .panel-wash {
     position: absolute;
     border-radius: 9999px;
@@ -997,7 +957,7 @@ html[data-preload]:not(.intro-done) body {
    timeline is never quite the same twice.
 
    Transform-only. The blur is rasterised once and then translated,
-   the same trade `.panel-wash` already makes.
+   never re-blurred per frame.
 --------------------------------------------------------------- */
 .aurora-ribbon {
   position: absolute;
@@ -1005,10 +965,6 @@ html[data-preload]:not(.intro-done) body {
   filter: blur(74px);
   opacity: 0.55;
   will-change: transform;
-}
-
-.dark .aurora-ribbon {
-  opacity: 0.7;
 }
 
 .aurora-ribbon-a {
@@ -1081,195 +1037,15 @@ html[data-preload]:not(.intro-done) body {
 }
 
 /* ---------------------------------------------------------------
-   Neumorphic theme switch
-
-   Neumorphism is one idea applied twice: the track is pressed *into*
-   the surface and the knob is raised *out* of it, and both are made
-   of the same pair of shadows — a dark one where the light does not
-   reach and a light one where it does — just inverted between them.
-   Inset on the track, outset on the knob.
-
-   Which is why nothing here has a border. A border would draw the
-   edge that the shadows are meant to imply, and the illusion is that
-   the control is the same material as the page, deformed.
-
-   The dark shadow is navy rather than black, for the reason the card
-   elevation tokens already give: grey over this cool off-white reads
-   muddy. The dark theme flips that — over navy a tinted shadow does
-   nothing, so it goes near-black and the light side drops to a few
-   percent white, because a bright highlight on a dark surface reads
-   as plastic.
-
-   State is the `.dark` class, never React — see ThemeToggle.
---------------------------------------------------------------- */
-.theme-switch {
-  position: relative;
-  display: inline-flex;
-  flex: none;
-  width: 3.375rem;
-  height: 1.75rem;
-  border-radius: 999px;
-  background-color: var(--surface-2);
-  box-shadow:
-    inset 2px 2px 5px color-mix(in srgb, var(--navy) 20%, transparent),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.92);
-  transition: background-color 400ms ease, box-shadow 400ms ease;
-}
-
-.dark .theme-switch {
-  /* A step below --surface: the track has to read as the deepest thing
-     on the bar, or the knob has nothing to sit above. */
-  background-color: #08121f;
-  box-shadow:
-    inset 2px 2px 6px rgba(0, 0, 0, 0.62),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.05);
-}
-
-/* ---------------------------------------------------------------
-   The knob
-
-   `translate` and `scale` as their own properties rather than a
-   composed `transform`, so the slide and the squash can carry their
-   own durations and curves and not fight over one declaration.
-
-   The slide overshoots. That is the whole difference between a knob
-   that moves and one that is thrown: it arrives slightly past its
-   stop and settles back, which is what a physical switch does.
---------------------------------------------------------------- */
-.theme-switch-knob {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  display: grid;
-  place-items: center;
-  width: 1.375rem;
-  height: 1.375rem;
-  border-radius: 999px;
-  background-color: var(--surface-raised);
-  box-shadow:
-    -2px -2px 4px rgba(255, 255, 255, 0.95),
-    2px 3px 6px color-mix(in srgb, var(--navy) 26%, transparent),
-    0 0 0 0 transparent;
-  translate: 0;
-  transition:
-    translate 480ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    background-color 400ms ease,
-    box-shadow 400ms ease,
-    scale 200ms ease-out;
-}
-
-.dark .theme-switch-knob {
-  /* Track width less both insets and the knob: 54 - 6 - 22. */
-  translate: 1.625rem;
-  background-color: var(--surface-2);
-  box-shadow:
-    -2px -2px 4px rgba(255, 255, 255, 0.06),
-    2px 3px 7px rgba(0, 0, 0, 0.65),
-    /* The gold only appears on the dark side, where it reads as the moon
-       being lit rather than as the control being highlighted. */
-    0 0 10px 0 color-mix(in srgb, var(--accent-500) 34%, transparent);
-}
-
-/* Squash on press. The one piece of the motion that is not the theme
-   changing — it answers the finger, not the state. */
-.theme-switch:active .theme-switch-knob {
-  scale: 1.12 0.9;
-}
-
-.theme-switch:hover .theme-switch-knob {
-  box-shadow:
-    -2px -2px 4px rgba(255, 255, 255, 0.95),
-    2px 4px 8px color-mix(in srgb, var(--navy) 32%, transparent),
-    0 0 0 0 transparent;
-}
-
-.dark .theme-switch:hover .theme-switch-knob {
-  box-shadow:
-    -2px -2px 4px rgba(255, 255, 255, 0.06),
-    2px 4px 9px rgba(0, 0, 0, 0.7),
-    0 0 13px 0 color-mix(in srgb, var(--accent-500) 46%, transparent);
-}
-
-/* ---------------------------------------------------------------
-   The two icons
-
-   Both mounted, both positioned in the same grid cell, crossfaded by
-   theme — the same trick the icon button used, and for the same
-   reason: no state, no mismatch. They turn rather than simply fading,
-   and they turn on the knob's own curve, so the pair reads as one
-   object rotating to its other face.
---------------------------------------------------------------- */
-.theme-switch-icon {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  transition:
-    opacity 280ms ease,
-    rotate 480ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    scale 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.theme-switch-icon-sun {
-  color: var(--accent-600);
-  opacity: 1;
-  rotate: 0deg;
-  scale: 1;
-}
-
-.dark .theme-switch-icon-sun {
-  opacity: 0;
-  rotate: 90deg;
-  scale: 0.4;
-}
-
-.theme-switch-icon-moon {
-  color: var(--accent-400);
-  opacity: 0;
-  rotate: -90deg;
-  scale: 0.4;
-}
-
-.dark .theme-switch-icon-moon {
-  opacity: 1;
-  rotate: 0deg;
-  scale: 1;
-}
-
-/* ---------------------------------------------------------------
-   Stars
-
-   Only on the stretch of track the knob has vacated, and only in the
-   dark. Each carries its own size and delay inline, so three elements
-   share one rule and no two arrive together.
---------------------------------------------------------------- */
-.theme-switch-star {
-  position: absolute;
-  width: var(--star-size);
-  height: var(--star-size);
-  border-radius: 999px;
-  background-color: color-mix(in srgb, var(--accent-400) 70%, white);
-  opacity: 0;
-  scale: 0.3;
-  transition:
-    opacity 300ms ease,
-    scale 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.dark .theme-switch-star {
-  opacity: 0.9;
-  scale: 1;
-  transition-delay: var(--star-delay);
-}
-
-/* The global reduced-motion rule already collapses every duration here, which
-   is the right outcome for this control: the switch still ends in the correct
-   state, it simply gets there without the throw. */
-
-/* ---------------------------------------------------------------
    Neumorphic language menu
 
-   Same material as the theme switch, in its other posture: the
-   trigger is raised until it is opened, at which point it presses
+   Neumorphism is one idea applied twice: something pressed *into*
+   the surface and something raised *out* of it, made of the same
+   pair of shadows — a navy one where the light does not reach and a
+   white one where it does — inverted between them. No borders: a
+   border would draw the edge the shadows exist to imply.
+
+   The trigger is raised until it is opened, at which point it presses
    *into* the surface and the panel rises out of it. That is the
    whole reason to build a menu this way — pressed and raised are the
    two states the material already has, so "open" needs no colour,
@@ -1304,13 +1080,6 @@ html[data-preload]:not(.intro-done) body {
     scale 200ms ease-out;
 }
 
-.dark .lang-menu-trigger {
-  background-color: var(--surface-2);
-  box-shadow:
-    -2px -2px 4px rgba(255, 255, 255, 0.06),
-    2px 3px 7px rgba(0, 0, 0, 0.65);
-}
-
 .lang-menu-trigger:hover {
   color: var(--foreground);
 }
@@ -1326,14 +1095,6 @@ html[data-preload]:not(.intro-done) body {
   box-shadow:
     inset 2px 2px 5px color-mix(in srgb, var(--navy) 20%, transparent),
     inset -2px -2px 5px rgba(255, 255, 255, 0.92);
-}
-
-.dark .lang-menu[data-open="true"] .lang-menu-trigger {
-  background-color: #08121f;
-  color: var(--accent);
-  box-shadow:
-    inset 2px 2px 6px rgba(0, 0, 0, 0.62),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.05);
 }
 
 .lang-menu-code {
@@ -1382,10 +1143,6 @@ html[lang="id"] .lang-swap-id {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--navy) 22%, transparent);
 }
 
-.dark .lang-flag {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
-}
-
 .lang-flag > svg {
   width: 100%;
   height: 100%;
@@ -1396,7 +1153,7 @@ html[lang="id"] .lang-swap-id {
    The panel
 
    Raised out of the page, dropping from the trigger it belongs to,
-   on the same overshoot curve the theme switch's knob travels.
+   on an overshoot curve.
    Anchored right so it can never run off the edge on a phone.
 --------------------------------------------------------------- */
 .lang-menu-panel {
@@ -1423,13 +1180,6 @@ html[lang="id"] .lang-swap-id {
     translate 340ms cubic-bezier(0.34, 1.56, 0.64, 1),
     scale 340ms cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 200ms ease;
-}
-
-.dark .lang-menu-panel {
-  background-color: var(--surface-2);
-  box-shadow:
-    -3px -3px 8px rgba(255, 255, 255, 0.045),
-    4px 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 .lang-menu[data-open="true"] .lang-menu-panel {
@@ -1489,15 +1239,6 @@ html[lang="id"] .lang-menu-item[data-set-locale="id"] {
   box-shadow:
     inset 2px 2px 4px color-mix(in srgb, var(--navy) 16%, transparent),
     inset -2px -2px 4px rgba(255, 255, 255, 0.85);
-}
-
-html.dark[lang="en"] .lang-menu-item[data-set-locale="en"],
-html.dark[lang="id"] .lang-menu-item[data-set-locale="id"] {
-  color: var(--accent);
-  background-color: #08121f;
-  box-shadow:
-    inset 2px 2px 5px rgba(0, 0, 0, 0.55),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.05);
 }
 
 
@@ -1597,10 +1338,6 @@ html.dark[lang="id"] .lang-menu-item[data-set-locale="id"] {
 
 .exp-node:hover {
   color: var(--accent-strong);
-}
-
-.dark .exp-node:hover {
-  color: var(--accent);
 }
 
 /* The ring is drawn at full strength and the dot inside it is what GSAP scales,

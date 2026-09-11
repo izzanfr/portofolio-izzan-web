@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { T } from "@/components/ui/T";
@@ -13,6 +12,39 @@ import { navLinks, sectionIds } from "@/lib/content";
 import { useActiveSection } from "@/lib/useActiveSection";
 import { cn } from "@/lib/utils";
 import { EASE } from "@/lib/motion";
+
+/**
+ * True while an element marked `data-nav-hide` covers the top of the screen —
+ * the strip the bar floats in. Used by the held scene before Contact.
+ */
+function useOverNavHide(pathname: string) {
+  const [over, setOver] = useState(false);
+
+  useEffect(() => {
+    const targets = document.querySelectorAll<HTMLElement>("[data-nav-hide]");
+    if (targets.length === 0) return;
+    const covering = new Set<Element>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) covering.add(entry.target);
+          else covering.delete(entry.target);
+        }
+        setOver(covering.size > 0);
+      },
+      // Only the top tenth of the viewport counts: the bar hides once the
+      // stage reaches it, not as soon as the stage peeks up from below.
+      { rootMargin: "0px 0px -90% 0px", threshold: 0 },
+    );
+    targets.forEach((target) => observer.observe(target));
+    return () => {
+      observer.disconnect();
+      setOver(false);
+    };
+  }, [pathname]);
+
+  return over;
+}
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -43,20 +75,11 @@ export function Navbar() {
     };
   }, [open, lenisRef]);
 
-  /**
-   * The credentials page hides the bar.
-   *
-   * That section is meant to read as somewhere else entirely — full bleed,
-   * dark, its own scroll direction — and a floating control from the site
-   * hovering over it is the one thing that keeps saying "you are still on the
-   * page you were on". It comes back on its own the moment the section is no
-   * longer what you are looking at, so nothing is lost: the section ends, the
-   * navigation returns.
-   *
-   * `useActiveSection` already knows which section holds the middle of the
-   * screen, so this needs no observer of its own.
-   */
-  const hidden = active === "credentials" && !open;
+  // The bar only steps aside for a held full-screen scene that asks for it
+  // (`data-nav-hide`); every section, Certifications and Documentation
+  // included, keeps it in reach.
+  const overStage = useOverNavHide(pathname);
+  const hidden = overStage && !open;
 
   return (
     // The name keeps the bar out of the page's view-transition group, so it
@@ -70,16 +93,16 @@ export function Navbar() {
       className={cn("fixed inset-x-0 top-0 z-50", hidden && "pointer-events-none")}
     >
       <nav className="container-page flex h-20 items-center justify-center md:h-24">
-        {/* Floating capsule: the links, the primary CTA and the theme toggle
-            read as one grouped control rather than a flat bar. It carries its
+        {/* Floating capsule: the links and the language switch read as one
+            grouped control rather than a flat bar. It carries its
             own glass surface, so the header stays transparent and the pill
             appears to hover, firming up a touch once the page is scrolled. */}
         <ul
           className={cn(
             "hidden items-center gap-2 rounded-full border p-2 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 md:flex",
             scrolled
-              ? "border-border/80 bg-surface/85 shadow-[0_16px_44px_-20px_rgba(10,26,47,0.5)] dark:bg-surface/60"
-              : "border-border/60 bg-surface/55 shadow-[0_12px_40px_-24px_rgba(10,26,47,0.4)] dark:bg-surface/40",
+              ? "border-border/80 bg-surface/85 shadow-[0_16px_44px_-20px_rgba(10,26,47,0.5)]"
+              : "border-border/60 bg-surface/55 shadow-[0_12px_40px_-24px_rgba(10,26,47,0.4)]",
           )}
         >
           {navLinks.map((link) => {
@@ -117,25 +140,18 @@ export function Navbar() {
             );
           })}
 
-          {/* Divider, then the utility controls: language switch and theme toggle.
+          {/* Divider, then the one utility control: the language switch.
               The talk CTA lived here but was dropped — the Contact section below
               already carries it, so the nav stays purely navigational. */}
           <li aria-hidden className="mx-0.5 h-6 w-px shrink-0 bg-border/70" />
           <li>
             <LanguageToggle />
           </li>
-          {/* No chrome passed: the switch is a neumorphic surface that owns its
-              own size and depth, so a border or a hover fill from out here
-              would draw the edge its shadows exist to imply. */}
-          <li className="flex items-center">
-            <ThemeToggle />
-          </li>
         </ul>
 
         {/* Mobile controls, pushed to the right since the logo is gone */}
         <div className="ml-auto flex items-center gap-2 md:hidden">
           <LanguageToggle />
-          <ThemeToggle />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

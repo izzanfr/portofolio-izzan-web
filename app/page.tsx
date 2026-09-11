@@ -2,6 +2,8 @@ import { Hero } from "@/components/sections/Hero";
 import { Experience } from "@/components/sections/Experience";
 import { Projects } from "@/components/sections/Projects";
 import { Certifications } from "@/components/sections/Certifications";
+import { Documentation } from "@/components/sections/Documentation";
+import { ContactInterlude } from "@/components/sections/ContactInterlude";
 import { Contact } from "@/components/sections/Contact";
 import { ExperienceZone } from "@/components/ui/ExperienceZone";
 import { SectionCut } from "@/components/ui/SectionCut";
@@ -30,6 +32,11 @@ export default function Home() {
         <Projects />
       </SectionOverlap>
       <Certifications />
+      <Documentation />
+      {/* A held scene, not a section: a curtain rises over the navy and a
+          masked heading hands the visitor on to Contact. See
+          <ContactInterlude>. */}
+      <ContactInterlude />
       <Contact />
     </>
   );

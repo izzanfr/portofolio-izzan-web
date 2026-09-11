@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
-import { ThemeProvider, themeInitScript } from "@/components/providers/ThemeProvider";
 import { LocaleProvider, localeInitScript } from "@/components/providers/LocaleProvider";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import "lenis/dist/lenis.css";
@@ -72,10 +71,11 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
+      // One theme, light — native controls and scrollbars included.
+      style={{ colorScheme: "light" }}
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: localeInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: preloaderInitScript }} />
         {/* Marks the document scripted before first paint, which is what lets
@@ -85,18 +85,16 @@ export default function RootLayout({
       <body className="grain flex min-h-full flex-col">
         <Preloader />
         <ImageGuard />
-        <ThemeProvider>
-          <LocaleProvider>
-            <SmoothScrollProvider>
-              {/* Fixed-layer order, since nothing here states it locally:
-                  navbar z-50, grain z-60, modals z-[70], intro curtain z-[100].
-                  The gap at z-[65] is where the reading-progress bar used to
-                  sit; anything new pinned to the top edge belongs there. */}
-              <Navbar />
-              <main className="flex-1">{children}</main>
-            </SmoothScrollProvider>
-          </LocaleProvider>
-        </ThemeProvider>
+        <LocaleProvider>
+          <SmoothScrollProvider>
+            {/* Fixed-layer order, since nothing here states it locally:
+                navbar z-50, grain z-60, modals z-[70], intro curtain z-[100].
+                The gap at z-[65] is where the reading-progress bar used to
+                sit; anything new pinned to the top edge belongs there. */}
+            <Navbar />
+            <main className="flex-1">{children}</main>
+          </SmoothScrollProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

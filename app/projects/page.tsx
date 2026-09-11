@@ -22,7 +22,7 @@ export default function ProjectsIndexPage() {
           <Link
             href="/"
             transitionTypes={["nav-back"]}
-            className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent-strong dark:hover:text-accent"
+            className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent-strong"
           >
             <ArrowLeft
               size={15}

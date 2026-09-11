@@ -31,7 +31,7 @@ export function StatCard({
         aria-hidden
         className="pointer-events-none absolute inset-x-5 top-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent"
       />
-      <dt className="font-display text-3xl font-semibold leading-none text-accent-strong dark:text-accent md:text-4xl">
+      <dt className="font-display text-3xl font-semibold leading-none text-accent-strong md:text-4xl">
         {value}
       </dt>
       <dd className="mt-3 text-xs leading-snug text-balance text-muted">{label}</dd>

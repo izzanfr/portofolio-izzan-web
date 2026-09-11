@@ -46,7 +46,7 @@ export default async function ProjectPage({ params }: Params) {
           <Link
             href="/#projects"
             transitionTypes={["nav-back"]}
-            className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent-strong dark:hover:text-accent"
+            className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent-strong"
           >
             <ArrowLeft
               size={15}
@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: Params) {
             <HairRule />
             <dl className="grid justify-items-center gap-3 py-5 text-sm sm:grid-cols-3">
               <div className="flex items-center gap-2">
-                <Building2 size={15} className="shrink-0 text-accent-strong dark:text-accent" />
+                <Building2 size={15} className="shrink-0 text-accent-strong" />
                 <div>
                   <dt className="sr-only">
                     <T en="Client" id="Klien" />
@@ -76,7 +76,7 @@ export default async function ProjectPage({ params }: Params) {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <UserRound size={15} className="shrink-0 text-accent-strong dark:text-accent" />
+                <UserRound size={15} className="shrink-0 text-accent-strong" />
                 <div>
                   <dt className="sr-only">
                     <T en="Role" id="Peran" />
@@ -87,7 +87,7 @@ export default async function ProjectPage({ params }: Params) {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <CalendarDays size={15} className="shrink-0 text-accent-strong dark:text-accent" />
+                <CalendarDays size={15} className="shrink-0 text-accent-strong" />
                 <div>
                   <dt className="sr-only">
                     <T en="Period" id="Periode" />
@@ -171,7 +171,7 @@ export default async function ProjectPage({ params }: Params) {
             </div>
             <ArrowRight
               size={19}
-              className="shrink-0 text-muted transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent-strong dark:group-hover:text-accent"
+              className="shrink-0 text-muted transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent-strong"
             />
           </Link>
         </Reveal>

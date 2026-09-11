@@ -148,7 +148,7 @@ export function RolePanel({ role, className }: { role: BiRole; className?: strin
   return (
     <div className={cn("min-w-0", className)}>
       <div className="flex items-center gap-3">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent/12 text-accent-strong dark:text-accent">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent/12 text-accent-strong">
           <DynamicIcon name={role.icon} size={16} />
         </span>
         <h4 className="min-w-0 font-display text-base tracking-[-0.02em] md:text-xl">

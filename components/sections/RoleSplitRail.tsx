@@ -66,7 +66,7 @@ function RailItem({
         <span
           className={cn(
             "w-4 shrink-0 font-mono text-[10px] leading-none tabular-nums transition-colors duration-200",
-            isActive ? "text-accent-strong dark:text-accent" : "text-muted/60",
+            isActive ? "text-accent-strong" : "text-muted/60",
           )}
         >
           {String(index + 1).padStart(2, "0")}
@@ -77,7 +77,7 @@ function RailItem({
           size={15}
           className={cn(
             "shrink-0 transition-colors duration-200",
-            isActive ? "text-accent-strong dark:text-accent" : "text-muted",
+            isActive ? "text-accent-strong" : "text-muted",
           )}
         />
 

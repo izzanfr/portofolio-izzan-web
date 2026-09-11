@@ -308,14 +308,14 @@ export function ProjectMarquee({ projects }: { projects: ProjectMeta[] }) {
                   wider than the rest — the cover decides the column, the text
                   wraps inside it. */}
               <span className="project-marquee-caption mt-4 block w-0 min-w-full px-0.5">
-                <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-accent-strong dark:text-accent">
+                <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-accent-strong">
                   {copy === 0 ? (
                     <Scramble en={project.role.en} id={project.role.id} />
                   ) : (
                     <T en={project.role.en} id={project.role.id} />
                   )}
                 </span>
-                <span className="mt-1.5 block text-balance text-sm leading-snug tracking-[-0.012em] transition-colors group-hover:text-accent-strong dark:group-hover:text-accent md:text-base">
+                <span className="mt-1.5 block text-balance text-sm leading-snug tracking-[-0.012em] transition-colors group-hover:text-accent-strong md:text-base">
                   <T en={project.title.en} id={project.title.id} />
                 </span>
                 <span className="mt-1 block truncate text-xs text-muted">

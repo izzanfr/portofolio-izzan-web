@@ -142,10 +142,10 @@ Then fill in the entry in `content/certifications.json`:
 ```
 app/                 Routes: home, /projects, /projects/[slug]
 components/
-  layout/            Navbar, mobile menu, footer, theme toggle
+  layout/            Navbar, mobile menu, language switch
   sections/          One component per homepage section
   ui/                Reusable primitives (Reveal, Section, ProjectCard, carousel, …)
-  providers/         Theme provider
+  providers/         Locale and smooth-scroll providers
 content/             All editable copy (JSON + MDX)
 lib/                 MDX loading, content access, helpers
 public/              Static assets
@@ -153,9 +153,9 @@ public/              Static assets
 
 ## Notes
 
-- **Theme** — light/dark state lives on `<html class="dark">` and is applied by an inline script
-  before first paint, so there is no flash and no hydration mismatch. Preference persists in
-  `localStorage`, defaulting to the OS setting.
+- **Theme** — one light theme, by design. The dark moments (Certifications, Documentation) are
+  scenes with their own fixed navy rather than a mode, and the transitions between them are
+  built around the contrast with the light page.
 - **Contact form** — no backend. Submitting composes a `mailto:` link with the message pre-filled
   in the visitor's own email client; nothing is stored or transmitted by the site.
 - **Colors** — the navy/amber palette is defined as CSS custom properties at the top of

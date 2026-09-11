@@ -40,7 +40,7 @@ export const INTRO_DONE_EVENT = "izzan:intro-done";
 export const INTRO_STORAGE_KEY = "izzan-intro";
 
 /**
- * Inlined in <head> ahead of first paint, same pattern as the theme script.
+ * Inlined in <head> ahead of first paint, same pattern as the locale script.
  * Deciding here rather than in React means a returning visitor never sees a
  * frame of navy before hydration clears it. The flag is written up front, so a
  * refresh partway through the animation does not replay it either.

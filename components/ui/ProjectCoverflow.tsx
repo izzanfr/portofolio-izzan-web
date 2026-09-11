@@ -56,7 +56,7 @@ function ArrowButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-surface/70 text-foreground transition-colors duration-200 hover:border-accent hover:text-accent-strong dark:hover:text-accent sm:h-12 sm:w-12"
+      className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-surface/70 text-foreground transition-colors duration-200 hover:border-accent hover:text-accent-strong sm:h-12 sm:w-12"
     >
       {children}
     </button>
@@ -199,14 +199,14 @@ export function ProjectCoverflow({ projects }: { projects: ProjectMeta[] }) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.28, ease: EASE }}
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-strong dark:text-accent">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-strong">
               <Scramble en={current.role.en} id={current.role.id} />
             </p>
             <h3 className="mx-auto mt-2 max-w-xl text-balance text-lg tracking-[-0.02em] sm:text-xl">
               <Link
                 href={`/projects/${current.slug}`}
                 transitionTypes={["nav-forward"]}
-                className="transition-colors hover:text-accent-strong dark:hover:text-accent"
+                className="transition-colors hover:text-accent-strong"
               >
                 <T en={current.title.en} id={current.title.id} />
               </Link>
@@ -233,7 +233,7 @@ export function ProjectCoverflow({ projects }: { projects: ProjectMeta[] }) {
             className={cn(
               "h-1.5 rounded-full transition-all duration-300",
               index === active
-                ? "w-6 bg-accent-600 dark:bg-accent"
+                ? "w-6 bg-accent-600"
                 : "w-1.5 bg-border hover:bg-muted",
             )}
           />

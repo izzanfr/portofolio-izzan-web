@@ -104,7 +104,7 @@ export function HeroPortrait() {
           while the card turns. */}
       <span
         aria-hidden
-        className="portrait-chip pointer-events-none absolute bottom-3 right-3 grid h-9 w-9 place-items-center rounded-full border border-border/70 bg-background/70 text-accent-strong backdrop-blur-md transition-all duration-300 dark:text-accent"
+        className="portrait-chip pointer-events-none absolute bottom-3 right-3 grid h-9 w-9 place-items-center rounded-full border border-border/70 bg-background/70 text-accent-strong backdrop-blur-md transition-all duration-300"
       >
         <FlipHorizontal2 size={15} />
       </span>

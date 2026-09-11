@@ -26,11 +26,6 @@ import {
  *    held at zero opacity until the effect exists, then crossfades over the
  *    layers underneath, which are already drawing something.
  *
- * 3. **It has to follow the theme.** The theme is a class on <html> rather than
- *    React state (see ThemeProvider), so there is nothing to re-render on — a
- *    MutationObserver watches the class and re-tints through `setOptions`,
- *    which recolours the existing scene instead of rebuilding it.
- *
  * Vanta throttles its own render loop when the element is off screen, so no
  * teardown-on-scroll is needed; the effect is only destroyed on unmount.
  *
@@ -45,14 +40,9 @@ import {
 
 /**
  * Vanta wants numeric hex, so these cannot be `var(--…)`. They mirror tokens
- * rather than inventing colours: the lines are --navy-soft on the light page
- * and --accent-500 on the dark one, which is the same flip --accent-strong
- * makes, and for the same reason — navy disappears into a navy background.
+ * rather than inventing colours: --navy-soft lines over --tint.
  */
-const NET_THEME = {
-  light: { color: 0x12294a, backgroundColor: 0xeceff4 },
-  dark: { color: 0xc68a3b, backgroundColor: 0x0a1524 },
-} as const;
+const NET_COLORS = { color: 0x12294a, backgroundColor: 0xeceff4 } as const;
 
 /**
  * Sparser and wider than Vanta's defaults (10 / 20 / 15). The default lattice is
@@ -102,10 +92,6 @@ function repairLineBlending(scene: unknown, normalBlending: number) {
       if (material.blending === null) material.blending = normalBlending;
     }
   });
-}
-
-function currentTheme() {
-  return document.documentElement.classList.contains("dark") ? "dark" : "light";
 }
 
 /** Cheap probe: if the browser cannot give us a context, there is no point
@@ -172,7 +158,7 @@ export function VantaNet({
         // Transparent, so the washes painted underneath still carry the colour.
         // Without this the canvas would paint its own opaque ground over them.
         backgroundAlpha: 0,
-        ...NET_THEME[currentTheme()],
+        ...NET_COLORS,
         ...NET_SHAPE,
       });
       repairLineBlending(effectRef.current.scene, THREE.NormalBlending);
@@ -228,21 +214,6 @@ export function VantaNet({
     apply(arrival.get());
     return arrival.on("change", apply);
   }, [ready, arrival]);
-
-  // Re-tint in place on a theme flip. Watching the attribute rather than a
-  // context value because <html class="dark"> is where the theme actually
-  // lives; a provider would only be re-describing it.
-  useEffect(() => {
-    if (!ready) return;
-    const observer = new MutationObserver(() => {
-      effectRef.current?.setOptions(NET_THEME[currentTheme()]);
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, [ready]);
 
   return (
     <div

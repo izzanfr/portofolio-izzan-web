@@ -7,6 +7,7 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  type MotionStyle,
   type MotionValue,
 } from "framer-motion";
 import { BadgeCheck, Expand } from "lucide-react";
@@ -184,6 +185,24 @@ export function CertificateCards({ publishers }: { publishers: PublisherGroup[] 
     [0, 1, 1, 0],
   );
 
+  /**
+   * How far the sheet's sides are feathered, as a percentage of its width.
+   * Full while it slides — so its edge sweeps across the screen as a spread
+   * of warm light rather than a line — and closed to nothing once it has
+   * landed, so the settled page fills the screen edge to edge with no fade
+   * at the sides. It opens again as the sheet begins to leave.
+   */
+  const feather = useTransform(
+    glide,
+    [0, enterEnds * 0.7, enterEnds, exitBegins, exitBegins + (1 - exitBegins) * 0.3, 1],
+    [9, 9, 0, 0, 9, 9],
+  );
+  const sheetStyle = {
+    x: pageX,
+    opacity: pageOpacity,
+    "--cert-feather": useTransform(feather, (value) => `${value}%`),
+  } as MotionStyle;
+
   // Before the rail has been measured the two cut points coincide, and a
   // transform whose input range does not increase is invalid — so map over the
   // whole span instead, which travels nowhere because the distance is zero.
@@ -262,18 +281,18 @@ export function CertificateCards({ publishers }: { publishers: PublisherGroup[] 
           style={{ height: `calc(100svh + ${span}px)` }}
         >
           <div className="sticky top-0 h-svh overflow-hidden">
-            {/* Everything the page is made of travels together. The navy ground
-                behind it belongs to the section and stays put, so this slides
-                across it rather than dragging the background with it. */}
+            {/* Everything the page is made of travels together: a warm ivory
+                sheet, set apart from the site's cooler off-white so it still
+                reads as a page arriving over the page rather than more of the
+                same. Its shadow is what carries that at the sliding edges. */}
             <motion.div
-              style={{ x: pageX, opacity: pageOpacity }}
-              className="relative flex h-full flex-col justify-center bg-navy"
+              style={sheetStyle}
+              className="cert-sheet relative flex h-full flex-col justify-center"
             >
               {/* The ground travels with the page rather than being painted on
-                  the section behind it. Left behind, the navy outlived its own
-                  content: the certificates slid away and the dark stayed,
-                  handing Contact a strip of the previous section's background
-                  to arrive on. A page that leaves takes its floor with it. */}
+                  the section behind it, so when the page leaves it takes its
+                  floor with it and the next section arrives on the site's own
+                  ground. */}
               <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
                 {/* The ground drifts at a seventh of the rail's speed — far
                     enough behind to sit at a different distance, not so far
@@ -284,10 +303,10 @@ export function CertificateCards({ publishers }: { publishers: PublisherGroup[] 
                   style={reduceMotion ? undefined : { x: washX }}
                   className="absolute -inset-x-[15%] inset-y-0"
                 >
-                  <div className="panel-wash panel-wash-warm -left-[10%] top-[-15%] h-[55%] w-[55%] bg-accent-500/25" />
-                  <div className="panel-wash panel-wash-cool bottom-[-20%] right-[-10%] h-[60%] w-[60%] bg-[#4d8fd6]/20" />
+                  <div className="panel-wash panel-wash-warm -left-[10%] top-[-15%] h-[55%] w-[55%] bg-accent-400/30" />
+                  <div className="panel-wash panel-wash-cool bottom-[-20%] right-[-10%] h-[60%] w-[60%] bg-[#8fb6e6]/25" />
                 </motion.div>
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(7,15,28,0.8)_100%)]" />
+                <div className="cert-sheet-vignette absolute inset-0" />
               </div>
 
               <PageHeading x={reduceMotion ? undefined : headingX} />
@@ -319,7 +338,7 @@ export function CertificateCards({ publishers }: { publishers: PublisherGroup[] 
         {active && (
           <div>
             <div className="border-b border-border p-6 md:p-8">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent-strong dark:text-accent">
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent-strong">
                 <T
                   en={`${active.certificates.length} ${active.certificates.length > 1 ? "certifications" : "certification"}`}
                   id={`${active.certificates.length} sertifikasi`}
@@ -335,20 +354,20 @@ export function CertificateCards({ publishers }: { publishers: PublisherGroup[] 
             <ul className="divide-y divide-border">
               {active.certificates.map((certificate) => (
                 <li key={certificate.name}>
-                  <div className="grid place-items-center bg-navy p-4 md:p-6">
+                  <div className="grid place-items-center bg-surface p-4 md:p-6">
                     <Image
                       src={certificate.image}
                       alt={`${certificate.name} ${pick({ en: "certificate", id: "sertifikat" }, locale)}`}
                       width={1600}
                       height={1131}
                       sizes="90vw"
-                      className="max-h-[52vh] w-auto max-w-full rounded-md object-contain"
+                      className="max-h-[52vh] w-auto max-w-full rounded-md object-contain shadow-[0_8px_24px_-12px_rgba(10,26,47,0.35)]"
                     />
                   </div>
 
                   <div className="p-6 md:p-8">
                     {certificate.featured && (
-                      <p className="mb-2 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong dark:text-accent">
+                      <p className="mb-2 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong">
                         <BadgeCheck size={12} />
                         <T en="Flagship credential" id="Kredensial unggulan" />
                       </p>
@@ -464,16 +483,16 @@ function RailCard({
         whileHover={reduceMotion ? undefined : { scale: 1.02 }}
         transition={{ type: "spring", stiffness: 300, damping: 24 }}
         aria-label={`${publisher.name} — ${count} ${pick({ en: count > 1 ? "certifications" : "certification", id: "sertifikasi" }, locale)}`}
-        className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-4 focus-visible:ring-offset-navy"
+        className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-4 focus-visible:ring-offset-[#fbf8f1]"
       >
         {/*
           Each mark gets the ground it was drawn for, and which ground that is
           comes from the file rather than from a preference.
 
           Most of these are dark ink meant for paper, so they sit on a white
-          plate — on navy they would sink into it, and the alternatives are
-          worse: recolouring a logo is the one thing brand guidelines uniformly
-          forbid, and knocking one out white is a mark its owners never drew.
+          plate. The alternatives are worse: recolouring a logo is the one
+          thing brand guidelines uniformly forbid, and knocking one out white
+          is a mark its owners never drew.
 
           But iTrain Asia's file is a mixed lockup: a solid dark icon beside a
           wordmark in pure white on transparent. There is no flat ground on
@@ -494,11 +513,13 @@ function RailCard({
         */}
         <span
           className={cn(
-            "relative block aspect-[4/3] w-full overflow-hidden rounded-3xl border transition-colors duration-300",
+            // A white plate lifted off the ivory sheet on a soft navy-tinted
+            // shadow, deepening on hover.
+            "relative block aspect-[4/3] w-full overflow-hidden rounded-3xl border shadow-[0_16px_40px_-22px_rgba(10,26,47,0.32)] transition-[border-color,box-shadow] duration-300 group-hover:shadow-[0_24px_54px_-24px_rgba(10,26,47,0.42)]",
             publisher.logoOnDark ? "bg-navy" : "bg-white",
             publisher.featured
-              ? "border-accent-400/60 ring-1 ring-accent-400/25"
-              : "border-white/15 group-hover:border-accent-400/50",
+              ? "border-accent-400/70 ring-1 ring-accent-400/30"
+              : "border-[#e6dfd2] group-hover:border-accent-400/60",
           )}
         >
           <motion.span
@@ -540,15 +561,15 @@ function RailCard({
 
         <span className="mt-5 block text-center">
           {publisher.featured && (
-            <span className="mb-1.5 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-400">
+            <span className="mb-1.5 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-strong">
               <BadgeCheck size={12} />
               <Scramble en="Flagship credential" id="Kredensial unggulan" />
             </span>
           )}
-          <span className="block text-balance text-base font-medium leading-snug text-white">
+          <span className="block text-balance text-base font-medium leading-snug text-foreground transition-colors duration-300 group-hover:text-accent-strong">
             {publisher.name}
           </span>
-          <span className="mt-1.5 block font-mono text-[11px] uppercase tracking-[0.16em] text-white/45">
+          <span className="mt-1.5 block font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
             <Scramble
               en={`${count} ${count > 1 ? "certifications" : "certification"}`}
               id={`${count} sertifikasi`}
@@ -575,12 +596,12 @@ function PageHeading({ x }: { x?: MotionValue<number> }) {
       style={x ? { x } : undefined}
       className="relative z-[1] mb-10 shrink-0 px-6 text-center md:mb-14"
     >
-      <p className="mb-3 flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.22em] text-accent-400">
-        <span className="h-px w-8 bg-accent-400/70" aria-hidden />
+      <p className="mb-3 flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.22em] text-accent-strong">
+        <span className="h-px w-8 bg-accent/70" aria-hidden />
         <Scramble en="The credentials" id="Kredensial" />
-        <span className="h-px w-8 bg-accent-400/70" aria-hidden />
+        <span className="h-px w-8 bg-accent/70" aria-hidden />
       </p>
-      <h2 className="text-balance text-3xl tracking-[-0.028em] text-white md:text-[2.6rem] md:leading-[1.1]">
+      <h2 className="text-balance text-3xl tracking-[-0.028em] text-foreground md:text-[2.6rem] md:leading-[1.1]">
         <T en="Certifications" id="Sertifikasi" />
       </h2>
     </motion.div>
@@ -615,11 +636,11 @@ function ScrollHint({
   return (
     <div className="relative z-[1] mt-10 shrink-0 px-6 md:mt-14">
       <div className="mx-auto flex max-w-xs flex-col items-center gap-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
           <Scramble en="Scroll to explore" id="Gulir untuk menjelajah" />
         </p>
-        <div className="h-px w-full overflow-hidden bg-white/15">
-          <motion.div style={{ scaleX }} className="h-full origin-left bg-accent-400" />
+        <div className="h-px w-full overflow-hidden bg-navy/10">
+          <motion.div style={{ scaleX }} className="h-full origin-left bg-accent" />
         </div>
       </div>
     </div>

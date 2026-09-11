@@ -50,7 +50,7 @@ export function Hero() {
             {/* Two identical halves feed the seamless -50% drift. The separator
                 gap is padding, not a trailing space, so neither half loses width
                 to whitespace collapsing and the loop never jumps. */}
-            <div className="marquee-wordmark w-max whitespace-nowrap font-sans text-[13vw] font-black uppercase leading-none tracking-[-0.015em] text-navy/[0.05] dark:text-white/[0.055]">
+            <div className="marquee-wordmark w-max whitespace-nowrap font-sans text-[13vw] font-black uppercase leading-none tracking-[-0.015em] text-navy/[0.05]">
               <span className="pe-[0.32em]">Data Science • Artificial Intelligence •</span>
               <span className="pe-[0.32em]">Data Science • Artificial Intelligence •</span>
             </div>
@@ -112,7 +112,7 @@ export function Hero() {
                   href="#contact"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white shadow-lg shadow-navy/15 transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:shadow-accent/20 dark:hover:bg-accent-strong"
+                  className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white shadow-lg shadow-navy/15 transition-colors hover:bg-navy-soft"
                 >
                   <T en="Let's work together" id="Mari bekerja sama" />
                   <ArrowUpRight
@@ -129,7 +129,7 @@ export function Hero() {
                 animate={enter}
                 className="mt-8 flex items-start gap-2 text-sm text-muted"
               >
-                <MapPin size={15} className="mt-0.5 shrink-0 text-accent-strong dark:text-accent" />
+                <MapPin size={15} className="mt-0.5 shrink-0 text-accent-strong" />
                 <span>
                   <T en={profile.location} id={profileId.location} />
                   <span className="block text-xs opacity-80">

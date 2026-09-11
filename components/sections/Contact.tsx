@@ -50,7 +50,12 @@ export function Contact() {
         />
       }
       tone="base"
-      index={4}
+      index={5}
+      // A page of its own, arrived at through the interlude's curtain: at
+      // least a screen tall with its content centred in it, and no wipe or
+      // seam of its own, since the curtain already brought its ground in.
+      transition="none"
+      className="flex min-h-svh flex-col justify-center"
     >
       <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         <Reveal direction="right" className="space-y-4">
@@ -58,7 +63,7 @@ export function Contact() {
             href={`mailto:${profile.email}`}
             className="group flex items-center gap-4 rounded-card border border-border bg-surface/60 p-5 transition-colors duration-300 hover:border-accent/55"
           >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy text-white transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-contrast dark:bg-surface-2 dark:text-accent">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy text-white transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-contrast">
               <Mail size={18} />
             </span>
             <span className="min-w-0 flex-1">
@@ -79,7 +84,7 @@ export function Contact() {
             rel="noreferrer noopener"
             className="group flex items-center gap-4 rounded-card border border-border bg-surface/60 p-5 transition-colors duration-300 hover:border-accent/55"
           >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy text-white transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-contrast dark:bg-surface-2 dark:text-accent">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy text-white transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-contrast">
               <LinkedInIcon size={18} />
             </span>
             <span className="min-w-0 flex-1">
@@ -95,7 +100,7 @@ export function Contact() {
           </a>
 
           <div className="flex items-start gap-4 rounded-card border border-border bg-surface/40 p-5">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-surface-2 text-accent-strong dark:text-accent">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-surface-2 text-accent-strong">
               <MapPin size={18} />
             </span>
             <span>
@@ -174,7 +179,7 @@ export function Contact() {
               transition={{ duration: REVEAL_DURATION, delay: 0.25, ease: EASE }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-navy-soft dark:bg-accent dark:text-accent-contrast dark:hover:bg-accent-strong"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-navy-soft"
             >
               <Send size={15} />
               <T en="Send message" id="Kirim pesan" />

@@ -142,7 +142,7 @@ export function ProjectDocumentation({
                 type="button"
                 onClick={() => go(-1)}
                 aria-label="Previous document"
-                className="absolute left-0 top-1/2 z-40 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/85 text-foreground backdrop-blur transition-colors hover:border-accent hover:text-accent-strong dark:hover:text-accent"
+                className="absolute left-0 top-1/2 z-40 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/85 text-foreground backdrop-blur transition-colors hover:border-accent hover:text-accent-strong"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -150,7 +150,7 @@ export function ProjectDocumentation({
                 type="button"
                 onClick={() => go(1)}
                 aria-label="Next document"
-                className="absolute right-0 top-1/2 z-40 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/85 text-foreground backdrop-blur transition-colors hover:border-accent hover:text-accent-strong dark:hover:text-accent"
+                className="absolute right-0 top-1/2 z-40 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/85 text-foreground backdrop-blur transition-colors hover:border-accent hover:text-accent-strong"
               >
                 <ChevronRight size={18} />
               </button>
@@ -167,7 +167,7 @@ export function ProjectDocumentation({
                   className={cn(
                     "h-1.5 rounded-full transition-all duration-300",
                     index === active
-                      ? "w-6 bg-accent-600 dark:bg-accent"
+                      ? "w-6 bg-accent-600"
                       : "w-1.5 bg-border hover:bg-muted",
                   )}
                 />

@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils";
  *
  * Two kinds of state here, and keeping them apart is the whole design.
  *
- * The *language* is not React state, for the same reason the theme is not: it
- * lives on `<html lang>`, an inline head script sets it before first paint, and
+ * The *language* is not React state: it lives on `<html lang>`, an inline head
+ * script sets it before first paint, and
  * anything derived in React would only catch up a beat later. So which flag the
  * trigger shows and which row reads as chosen are decided by CSS keyed on
  * `html[lang]` (see `.lang-menu*` in globals.css) — correct on the first frame,

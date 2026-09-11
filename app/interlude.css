@@ -1,0 +1,150 @@
+/* Contact interlude: the curtain and the masked heading between Documentation
+   and Contact. See ContactInterlude. */
+
+/* Tall by the scroll the scene plays over; the stage holds for all but the
+   last screenful of it. */
+.contact-interlude {
+  position: relative;
+  height: 300svh;
+}
+
+.contact-interlude__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  /* The page colour Documentation ends on, so the two meet without a join;
+     what rises is the curtain's aurora, not a change of ground. */
+  background: var(--background);
+}
+
+/* Rises from below in the page's own colour — the colour Contact is on, so
+   that join is invisible too.
+
+   No edge on the way up. The curtain is taller than the screen by 35svh and
+   its top stretch is faded out with a mask, so what climbs the screen is the
+   aurora's light thickening rather than a line; once the curtain is home that
+   faded stretch sits above the screen, out of sight. (A gold hairline once
+   marked the leading edge and read as exactly the line this avoids.) */
+.contact-interlude__curtain {
+  position: absolute;
+  inset: -35svh 0 0 0;
+  background: var(--background);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 26%);
+  /* No starting transform here: GSAP places it below the screen on mount.
+     A CSS translateY(100%) was read by GSAP as a pixel `y` it then never
+     animated, pinning the curtain off screen for good. */
+  will-change: transform;
+}
+
+.aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.aurora-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.contact-interlude__heading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-inline: clamp(1.25rem, 6vw, 6rem);
+  will-change: transform;
+}
+
+.contact-interlude--static {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: 70svh;
+  padding-inline: clamp(1.25rem, 6vw, 6rem);
+  background: var(--background);
+}
+
+.contact-interlude--static .aurora { z-index: -1; }
+
+.contact-interlude--static .contact-interlude__heading {
+  position: relative;
+  width: 100%;
+  padding: 0;
+}
+
+/* ---------------------------------------------------------------
+   Masked Heading (adapted from React Bits)
+   --------------------------------------------------------------- */
+.masked-heading {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* Room below the baseline for descenders: the reveal clips at this box. */
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-wrap: balance;
+  -webkit-font-smoothing: antialiased;
+  /* A picture made of letters, not copy: no selecting, no dragging it out.
+     The words stay in the DOM, so screen readers still read the heading. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.masked-heading ::selection,
+.masked-heading::selection { background: transparent; }
+
+.masked-heading__measure { color: transparent; }
+
+.masked-heading__word {
+  display: inline-block;
+  white-space: pre;
+}
+
+.masked-heading__word:not(:last-child)::after { content: " "; }
+
+.masked-heading__baseline {
+  display: inline-block;
+  width: 0;
+  height: 0;
+}
+
+.masked-heading__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.masked-heading__reveal,
+.masked-heading__clip,
+.masked-heading__media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* No overflow clip on the reveal. One was tried, to stop the photo's
+   overscan showing the tops of the waiting letters; at fractional scroll
+   offsets its edge leaked a hairline of photo above and below the heading.
+   The waiting letters are made invisible instead (see MaskedHeading), and an
+   invisible clip-path child contributes nothing to the clip. */
+
+.masked-heading__media { will-change: transform; }
+
+.masked-heading__media img {
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}

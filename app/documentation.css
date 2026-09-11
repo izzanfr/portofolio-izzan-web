@@ -1,0 +1,388 @@
+/* Documentation section: the drifting photo wall and the highlights accordion.
+   Both components are adapted from React Bits; their original stylesheets are
+   folded in here, trimmed to what the section uses. */
+
+/* ---------------------------------------------------------------
+   Stage — full bleed, edge to edge and a screen tall, on the page's own light
+   ground. It has no background of its own: the wall's masked edges and the
+   scrim below dissolve into the section's ground and ambient wash, so there is
+   no box and no line where the wall ends. It breaks out of the page container
+   to the viewport; the section's overflow-x clip absorbs the scrollbar's width
+   that 100vw counts.
+   --------------------------------------------------------------- */
+.documentation-stage {
+  position: relative;
+  left: 50%;
+  translate: -50% 0;
+  width: 100vw;
+  height: min(100svh, 1000px);
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* A light scrim rather than a vignette. A soft pool of the page colour behind
+   the heading in the lower left, and short fades into the page at the top and
+   the foot. Everything else is left clear, so the photos keep their colour and
+   the faces in them stay readable. */
+.documentation-stage__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 58% 62% at 0% 100%,
+      color-mix(in srgb, var(--background) 96%, transparent) 0%,
+      color-mix(in srgb, var(--background) 80%, transparent) 42%,
+      transparent 76%),
+    linear-gradient(to top, var(--background) 0%, transparent 20%),
+    linear-gradient(to bottom, var(--background) 0%, transparent 14%);
+}
+
+/* On a phone the heading runs the full width, so the pool in the corner would
+   leave most of the lead over busy photos. A band of light up from the foot
+   instead, clear again well before the middle of the screen. */
+@media (max-width: 767px) {
+  .documentation-stage__shade {
+    background:
+      linear-gradient(to top,
+        var(--background) 0%,
+        color-mix(in srgb, var(--background) 90%, transparent) 30%,
+        transparent 56%),
+      linear-gradient(to bottom, var(--background) 0%, transparent 14%);
+  }
+}
+
+/* Held to the left edge and the lower third, anchored to the frame rather
+   than to the page's text column. */
+.documentation-stage__heading {
+  position: absolute;
+  left: clamp(1.5rem, 5vw, 6rem);
+  bottom: clamp(3rem, 12vh, 8rem);
+  z-index: 2;
+  max-width: min(36rem, calc(100% - 3rem));
+  color: var(--foreground);
+  /* The wall stays interactive underneath; only the text is out of its way. */
+  pointer-events: none;
+}
+
+/* A halo of the page colour around the letters, for the odd bright photo that
+   drifts in behind them. */
+.documentation-stage__heading h2 {
+  font-size: clamp(3rem, 7.5vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-shadow: 0 0 36px color-mix(in srgb, var(--background) 85%, transparent);
+}
+
+.documentation-lead {
+  max-width: 30rem;
+  margin-top: 1.25rem;
+  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  line-height: 1.65;
+  color: #3d4f66;
+  text-shadow: 0 0 18px var(--background);
+}
+
+/* ---------------------------------------------------------------
+   Drift Wall
+   --------------------------------------------------------------- */
+.drift-wall {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: var(--dw-perspective, 1200px);
+  perspective-origin: 50% 50%;
+  -webkit-mask-image:
+    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+  mask-composite: intersect;
+}
+
+.drift-wall__plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.drift-wall__col {
+  position: relative;
+  width: calc(var(--dw-tile-w) + var(--dw-gap));
+  transform-style: preserve-3d;
+}
+
+.drift-wall__track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.drift-wall__tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(var(--dw-tile-h) + var(--dw-gap));
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  outline: none;
+  transform-style: preserve-3d;
+}
+
+.drift-wall__inner {
+  position: absolute;
+  inset: calc(var(--dw-gap) / 2);
+  display: block;
+  overflow: hidden;
+  border-radius: var(--dw-radius);
+  background: var(--surface-2);
+  box-shadow: 0 10px 26px -16px rgba(10, 26, 47, 0.28);
+  opacity: var(--dw-dim);
+  transform: translateZ(0);
+  pointer-events: none;
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drift-wall__inner img {
+  object-fit: cover;
+  filter: saturate(0.96);
+  transition: filter 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.drift-wall__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--dw-overlay);
+  /* A light veil at rest, just enough to set the hovered tile apart. */
+  opacity: 0.14;
+  transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drift-wall__tile.is-active .drift-wall__inner,
+.drift-wall__tile:focus-visible .drift-wall__inner {
+  opacity: 1;
+  transform: translateZ(var(--dw-lift));
+  box-shadow: 0 26px 50px -20px rgba(10, 26, 47, 0.42);
+}
+
+.drift-wall__tile.is-active img,
+.drift-wall__tile:focus-visible img { filter: saturate(1.05); }
+
+.drift-wall__tile.is-active .drift-wall__overlay,
+.drift-wall__tile:focus-visible .drift-wall__overlay { opacity: 0; }
+
+.drift-wall__tile:focus-visible .drift-wall__inner {
+  box-shadow:
+    0 26px 50px -20px rgba(10, 26, 47, 0.42),
+    0 0 0 2px var(--accent);
+}
+
+.drift-wall--reduced .drift-wall__plane,
+.drift-wall--reduced .drift-wall__track { will-change: auto; }
+
+/* ---------------------------------------------------------------
+   Accordion Gallery
+   --------------------------------------------------------------- */
+.accordion-gallery {
+  --ag-media-size: 320px;
+  display: flex;
+  gap: var(--ag-gap);
+  width: 100%;
+  height: var(--ag-height);
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+}
+
+.ag-slot {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  transform-style: preserve-3d;
+  will-change: flex-grow, transform;
+}
+
+.ag-panel {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--ag-radius);
+  background: var(--surface-2);
+  box-shadow: 0 18px 40px -24px rgba(10, 26, 47, 0.32);
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ag-panel--active { cursor: zoom-in; }
+
+.ag-panel:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 18px 40px -24px rgba(10, 26, 47, 0.32);
+}
+
+.ag-panel__frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ag-panel__media {
+  --ag-gray: 1;
+  --ag-dim: 0.35;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--ag-media-size);
+  height: 100%;
+  filter: grayscale(var(--ag-gray));
+  will-change: transform, filter;
+}
+
+.ag-panel__media img {
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.ag-panel__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* A navy foot only where the caption sits, so the white label reads on any
+     photo; the folded panels are veiled in the page's light rather than
+     dimmed toward navy, which keeps the row bright. */
+  background:
+    linear-gradient(180deg, transparent 52%, color-mix(in srgb, var(--navy) 72%, transparent) 100%),
+    color-mix(in srgb, var(--background) calc(var(--ag-dim, 0.35) * 70%), transparent);
+}
+
+.ag-panel__label {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 22px;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.ag-panel__bar {
+  flex: 0 0 auto;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+  opacity: 0;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.ag-panel__text {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  opacity: 0;
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+.ag-panel__sub {
+  overflow: hidden;
+  font: 10px var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--accent-400);
+}
+
+.ag-panel__title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.5vw, 1.45rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+/* The open panel's number, top left: large, quiet, and only on the open one. */
+.ag-panel__index {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #fff;
+  opacity: 0;
+  translate: 0 -8px;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ag-panel__index span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.ag-panel--active .ag-panel__index {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: 0.15s;
+}
+
+/* Stacked on phones: a row of slivers is unreadable at that width. Every panel
+   keeps a strip of height, and the open one gets room for its photo. */
+@media (max-width: 640px) {
+  .accordion-gallery {
+    flex-direction: column;
+    height: auto;
+    perspective: none;
+  }
+  .ag-slot {
+    flex: none !important;
+    height: 88px;
+    transform: none !important;
+    transition: height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ag-slot:has(.ag-panel--active) { height: 300px; }
+  .accordion-gallery .ag-panel__media { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-slot,
+  .ag-panel__media { will-change: auto; }
+  .ag-slot { transition: none; }
+}

@@ -40,10 +40,9 @@ export const localeInitScript = `(function(){try{var k="${LOCALE_STORAGE_KEY}";v
 
 /**
  * The active language lives on <html lang="en|id">, and the change is broadcast
- * so every <T> re-renders with the other language. Unlike the theme — which can
- * stay a pure CSS swap because both colour sets are just styles — the language
- * has to re-render: only one version may exist in the DOM at a time, or crawlers
- * and screen readers see the page in two languages at once.
+ * so every <T> re-renders with the other language. It cannot be a pure CSS swap:
+ * only one version may exist in the DOM at a time, or crawlers and screen
+ * readers see the page in two languages at once.
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const setLocale = useCallback((locale: Locale) => {

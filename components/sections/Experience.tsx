@@ -7,7 +7,6 @@ import { useGSAP } from "@gsap/react";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { T } from "@/components/ui/T";
-import { ExperienceGallery } from "@/components/ui/ExperienceGallery";
 import { KnowledgeOrbit } from "@/components/ui/KnowledgeOrbit";
 import { getExperience } from "@/lib/experience";
 import { JOURNEY_MEDIA } from "@/lib/motion";
@@ -153,8 +152,9 @@ export function Experience() {
                   </div>
                   <p className="journey-period"><T en={job.period.en} id={job.period.id} /> · <T en={job.location.en} id={job.location.id} /></p>
                   <h3 className="journey-title"><T en={role.title.en} id={role.title.id} /></h3>
+                  {/* Photos live in the Documentation section now; the orbit's
+                      floating field notes still draw from role.photos. */}
                   <ul className="journey-points">{role.points.map((point, i) => <li key={i}><T en={point.en} id={point.id} /></li>)}</ul>
-                  <ExperienceGallery photos={role.photos} roleTitle={role.title} className="journey-gallery" />
                 </article>
               ))}
             </div>

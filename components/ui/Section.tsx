@@ -112,7 +112,7 @@ export function Section({
             {eyebrow && (
               <p
                 className={cn(
-                  "mb-3 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.22em] text-accent-strong dark:text-accent",
+                  "mb-3 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.22em] text-accent-strong",
                   centred && "justify-center",
                 )}
               >

@@ -98,7 +98,7 @@ export function TechMarquee() {
     <div>
       {/* Centred and enlarged so the marquee reads as its own titled block
           rather than a caption trailing the stats above it. */}
-      <h3 className="mb-7 text-center font-mono text-sm uppercase tracking-[0.32em] text-accent-strong dark:text-accent md:text-base">
+      <h3 className="mb-7 text-center font-mono text-sm uppercase tracking-[0.32em] text-accent-strong md:text-base">
         <Scramble text="Tech skills" />
       </h3>
       <div className="flex flex-col gap-4">

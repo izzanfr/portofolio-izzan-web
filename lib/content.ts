@@ -15,8 +15,9 @@ export const profileId = profileIdJson;
 /**
  * `tone` is the accent each link wears while it is the active section. They come
  * from the shared --role-* palette (see globals.css), which is already tuned to
- * hold its contrast in both themes — so the navbar picks up four distinct
- * colours without introducing a fifth set of values to keep in sync.
+ * hold its contrast on the page — so the navbar picks up four distinct colours
+ * without introducing a new set of values to keep in sync. The fifth link
+ * wears the brand gold.
  *
  * `label` carries both languages so the nav dual-renders like everything else.
  */
@@ -41,6 +42,12 @@ export const navLinks = [
     // any shared links already point at.
     label: { en: "Certifications", id: "Sertifikasi" },
     tone: "--role-4",
+  },
+  {
+    href: "/#documentation",
+    id: "documentation",
+    label: { en: "Documentation", id: "Dokumentasi" },
+    tone: "--accent",
   },
   {
     href: "/#contact",

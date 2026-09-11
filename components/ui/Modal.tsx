@@ -167,7 +167,7 @@ export function Modal({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full border border-border bg-background/85 text-foreground backdrop-blur transition-colors hover:border-accent hover:text-accent-strong dark:hover:text-accent"
+              className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full border border-border bg-background/85 text-foreground backdrop-blur transition-colors hover:border-accent hover:text-accent-strong"
             >
               <X size={16} />
             </button>
