@@ -56,6 +56,10 @@
           {
             "alt": "Pelatihan Data Visualization dengan Power BI untuk PT Pupuk Sriwidjaja Palembang",
             "caption": "Data Visualization dengan Power BI untuk PT Pupuk Sriwidjaja Palembang (PUSRI)"
+          },
+          {
+            "alt": "Pelatihan Data Science Forecasting untuk Kantor Perwakilan Bank Indonesia Jawa Timur",
+            "caption": "Data Science Forecasting untuk Bank Indonesia Jawa Timur"
           }
         ]
       },
@@ -69,6 +73,14 @@
           "Kurikulum Generative AI terapan: Retrieval-Augmented Generation (RAG) untuk sistem basis pengetahuan dan otomatisasi alur kerja dengan n8n"
         ],
         "photos": [
+          {
+            "alt": "Pelatihan Artificial Intelligence untuk Kantor Perwakilan Bank Indonesia Jawa Timur",
+            "caption": "Artificial Intelligence untuk Bank Indonesia Jawa Timur"
+          },
+          {
+            "alt": "Sesi Machine Learning pada Liga Jawa Capacity Building untuk Bank Indonesia Jawa Timur",
+            "caption": "Machine Learning pada Liga Jawa Capacity Building untuk Bank Indonesia Jawa Timur"
+          },
           {
             "alt": "Kelas AI Foundation, Governance, Risk & Compliance untuk Universitas Negeri Semarang",
             "caption": "AI Foundation, Governance, Risk & Compliance untuk UNNES"
@@ -117,16 +129,16 @@
         ],
         "photos": [
           {
+            "alt": "Pelatihan proses dan pengetahuan manajemen proyek menggunakan PMBOK 6 dan 7 untuk PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, dan BuanterOne",
+            "caption": "Pelatihan PMBOK 6 & 7 untuk PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, dan BuanterOne"
+          },
+          {
             "alt": "Pelatihan manajemen proyek PMBOK 7 untuk Peruri",
             "caption": "Pelatihan PMBOK 7 untuk Peruri"
           },
           {
             "alt": "Pelatihan manajemen proyek PMBOK 7 untuk PT Pupuk Indonesia",
             "caption": "Pelatihan PMBOK 7 untuk PT Pupuk Indonesia"
-          },
-          {
-            "alt": "Pelatihan proses dan pengetahuan manajemen proyek menggunakan PMBOK 6 dan 7 untuk PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, dan BuanterOne",
-            "caption": "Pelatihan PMBOK 6 & 7 untuk PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, dan BuanterOne"
           },
           {
             "alt": "Pelatihan implementasi Microsoft Project 2019 untuk Paiton Operation & Maintenance Indonesia",
@@ -173,6 +185,10 @@
           {
             "alt": "Pelatihan IT Ethics & Leadership untuk PGN Solution",
             "caption": "IT Ethics & Leadership untuk PGN Solution"
+          },
+          {
+            "alt": "Capacity building Microsoft Office untuk optimalisasi fungsi komputasi, penulisan, dan tampilan dokumen bagi Bank Indonesia Jawa Timur",
+            "caption": "Digital Skills: Operator Komputer Madya untuk Bank Indonesia Jawa Timur"
           }
         ]
       }

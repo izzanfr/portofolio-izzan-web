@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
+import { JOURNEY_MEDIA } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -27,9 +28,13 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  * The negative margin below is what lets the panel start inside that held
  * screen rather than a full viewport beneath it.
  *
- * So the only thing here that is animated is the light: a shade that deepens
- * over the held section as this one covers it, which is what turns "a panel
- * scrolled over a fixed element" into "a page going under another page".
+ * What is animated is depth, not position. A shade deepens over the held
+ * section as this one covers it, and the held content recedes — a touch
+ * smaller, higher and dimmer — so it reads as sinking rather than sitting
+ * frozen. The panel's own content eases into place a little behind its edge
+ * and keeps drifting through the reading hold. A 1:1 rise over a frozen
+ * screen followed by a hold where nothing moved read as rigid: a slab slid
+ * over a still image, then a page that seemed stuck.
  *
  * The two halves have to agree about how deep the overlap runs, and they agree
  * through one media query written twice — `.overlap-frame` in globals.css and
@@ -115,7 +120,7 @@ export function SectionOverlap({
                  rather than only once it has gone. */
               start: "top bottom",
               end: "top 30%",
-              scrub: 0.4,
+              scrub: 0.6,
             },
           },
         );
@@ -153,6 +158,51 @@ export function SectionOverlap({
           window.removeEventListener("keydown", release);
           document.removeEventListener("click", onAnchor, true);
         };
+      });
+
+      // Depth only exists where the overlap does: Experience's pin holds the
+      // screen, and the margin in globals.css lets this panel start inside it.
+      mm.add(JOURNEY_MEDIA, () => {
+        const under = document.querySelector<HTMLElement>(".overlap-under .journey-inner");
+        const inner = panel.querySelector<HTMLElement>(".projects-page-inner");
+        const covering = { trigger: frame, start: "top bottom", end: "top top", scrub: 0.6, invalidateOnRefresh: true };
+
+        // Slow at first, faster as it disappears — it sinks rather than slides.
+        if (under) {
+          gsap.set(under, { transformOrigin: "50% 35%" });
+          gsap.fromTo(
+            under,
+            { scale: 1, yPercent: 0, opacity: 1 },
+            { scale: 0.93, yPercent: -6, opacity: 0.45, ease: "power1.in", scrollTrigger: covering },
+          );
+        }
+
+        if (inner) {
+          // Trails its own top edge and settles as the edge reaches the top.
+          gsap.fromTo(
+            inner,
+            { y: () => window.innerHeight * 0.12 },
+            { y: 0, ease: "power2.out", scrollTrigger: covering },
+          );
+          // A small drift through the reading hold, so scrolling there still
+          // moves something instead of feeling stuck.
+          gsap.fromTo(
+            inner,
+            { y: 0 },
+            {
+              y: () => -window.innerHeight * 0.03,
+              ease: "none",
+              immediateRender: false,
+              scrollTrigger: {
+                trigger: frame,
+                start: "top top",
+                end: () => `+=${window.innerHeight * 0.65}`,
+                scrub: 0.6,
+                invalidateOnRefresh: true,
+              },
+            },
+          );
+        }
       });
       return () => mm.revert();
     },

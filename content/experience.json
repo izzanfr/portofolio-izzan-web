@@ -66,6 +66,11 @@
             "src": "/experience/data-science-instructor/Data Visualization with PowerBI with PT. Pupuk Sriwidjaja Palembang (PUSRI).jpg",
             "alt": "Data Visualization with Power BI training for PT Pupuk Sriwidjaja Palembang",
             "caption": "Data Visualization with Power BI for PT Pupuk Sriwidjaja Palembang (PUSRI)"
+          },
+          {
+            "src": "/experience/data-science-instructor/BI Jatim Data Science Forecasting.jpeg",
+            "alt": "Data Science forecasting training for Bank Indonesia East Java Representative Office",
+            "caption": "Data Science Forecasting for Bank Indonesia Jawa Timur"
           }
         ],
         "points": [
@@ -82,6 +87,16 @@
         "category": "instructor",
         "icon": "BrainCircuit",
         "photos": [
+          {
+            "src": "/experience/ai-instructor/BI Jatim AI.jpeg",
+            "alt": "Artificial Intelligence training for Bank Indonesia East Java Representative Office",
+            "caption": "Artificial Intelligence for Bank Indonesia Jawa Timur"
+          },
+          {
+            "src": "/experience/ai-instructor/BI Jatim Machine Learning.jpeg",
+            "alt": "Machine Learning session at the Liga Jawa Capacity Building for Bank Indonesia East Java",
+            "caption": "Machine Learning at Liga Jawa Capacity Building for Bank Indonesia Jawa Timur"
+          },
           {
             "src": "/experience/ai-instructor/Artificial Intelligence Foundation, Governance, Risk & Compliance Class with UNNES.jpeg",
             "alt": "AI Foundation, Governance, Risk and Compliance class for Universitas Negeri Semarang",
@@ -142,6 +157,11 @@
         "icon": "ClipboardCheck",
         "photos": [
           {
+            "src": "/experience/project-management-instructor/Project Management Process and Knowledge using PMBOK 6 & 7 with PT. Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne.jpeg",
+            "alt": "Project management process and knowledge training using PMBOK 6 and 7 for PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne",
+            "caption": "PMBOK 6 & 7 training for PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne"
+          },
+          {
             "src": "/experience/project-management-instructor/Project Management Body of Knowledge 7 with Peruri.jpeg",
             "alt": "PMBOK 7 project management training for Peruri",
             "caption": "PMBOK 7 training for Peruri"
@@ -150,11 +170,6 @@
             "src": "/experience/project-management-instructor/Project Management Body of Knowledge 7 with PT. Pupuk Indonesia..jpeg",
             "alt": "PMBOK 7 project management training for PT Pupuk Indonesia",
             "caption": "PMBOK 7 training for PT Pupuk Indonesia"
-          },
-          {
-            "src": "/experience/project-management-instructor/Project Management Process and Knowledge using PMBOK 6 & 7 with PT. Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne.jpeg",
-            "alt": "Project management process and knowledge training using PMBOK 6 and 7 for PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne",
-            "caption": "PMBOK 6 & 7 training for PT Pasifik Satelit Nusantara, Bakti Kominfo, iForte, TelkomSAT, Lintasarta, and BuanterOne"
           },
           {
             "src": "/experience/project-management-instructor/Implementation of Microsoft Project 2019 with Paiton Operation & Maintenance Indonesia (POMI).jpeg",
@@ -214,6 +229,11 @@
             "src": "/experience/digital-skills-instructor/IT Ethics & Leadership with PGN Solution.jpeg",
             "alt": "IT Ethics and Leadership training for PGN Solution",
             "caption": "IT Ethics & Leadership for PGN Solution"
+          },
+          {
+            "src": "/experience/digital-skills-instructor/BI Jatim Digital Skills Operator Komputer Madya.jpeg",
+            "alt": "Microsoft Office capacity building for computation, writing and document layout, for Bank Indonesia East Java",
+            "caption": "Digital Skills: Operator Komputer Madya for Bank Indonesia Jawa Timur"
           }
         ],
         "points": [

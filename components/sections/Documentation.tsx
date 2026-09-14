@@ -62,8 +62,8 @@ export function Documentation() {
           </h2>
           <p className="documentation-lead">
             <T
-              en="Classrooms, workshops and client sessions across Indonesia. Hover a column to hold it still, and click any photo to see it full size."
-              id="Ruang kelas, workshop, dan sesi bersama klien di berbagai daerah di Indonesia. Arahkan kursor ke satu kolom untuk menahannya, lalu klik foto mana pun untuk melihatnya penuh."
+              en="Classrooms, workshops and client sessions across Indonesia."
+              id="Ruang kelas, workshop, dan sesi bersama klien di berbagai daerah di Indonesia."
             />
           </p>
         </div>
