@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { LanguageToggle } from "./LanguageToggle";
 import { useLenisRef } from "@/components/providers/SmoothScrollProvider";
 import { T } from "@/components/ui/T";
@@ -47,6 +47,7 @@ function useOverNavHide(pathname: string) {
 }
 
 export function Navbar() {
+  const reducedMotion = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
@@ -87,23 +88,17 @@ export function Navbar() {
     <motion.header
       style={{ viewTransitionName: "site-header" }}
       animate={{ y: hidden ? -120 : 0, opacity: hidden ? 0 : 1 }}
-      transition={{ duration: 0.45, ease: EASE }}
+      transition={{ duration: reducedMotion ? 0 : 0.45, ease: EASE }}
+      inert={hidden}
       // Out of the way for the pointer as well as the eye — a bar faded to
       // zero still swallows clicks aimed at what is behind it.
       className={cn("fixed inset-x-0 top-0 z-50", hidden && "pointer-events-none")}
     >
       <nav className="container-page flex h-20 items-center justify-center md:h-24">
-        {/* Floating capsule: the links and the language switch read as one
-            grouped control rather than a flat bar. It carries its
-            own glass surface, so the header stays transparent and the pill
-            appears to hover, firming up a touch once the page is scrolled. */}
+        {/* A beveled glass shell; overflow stays visible for the language menu. */}
         <ul
-          className={cn(
-            "hidden items-center gap-2 rounded-full border p-2 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 md:flex",
-            scrolled
-              ? "border-border/80 bg-surface/85 shadow-[0_16px_44px_-20px_rgba(10,26,47,0.5)]"
-              : "border-border/60 bg-surface/55 shadow-[0_12px_40px_-24px_rgba(10,26,47,0.4)]",
-          )}
+          data-scrolled={scrolled}
+          className="floating-nav hidden items-center gap-1 p-2 md:flex"
         >
           {navLinks.map((link) => {
             const isActive = active === link.id;
@@ -112,24 +107,14 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   aria-current={isActive ? "true" : undefined}
-                  style={isActive ? { color: `var(${link.tone})` } : undefined}
-                  className={cn(
-                    "relative block rounded-full px-5 py-2.5 text-sm transition-colors duration-200",
-                    isActive ? "" : "text-muted hover:text-foreground",
-                  )}
+                  style={{ "--nav-tone": `var(${link.tone})` } as CSSProperties}
+                  className="floating-nav-link"
                 >
                   {isActive && (
-                    // Fill and ring are inline rather than utility classes: the
-                    // pill is one shared element that slides between links, so
-                    // its colour has to follow whichever link it landed on.
                     <motion.span
                       layoutId="nav-pill"
-                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                      style={{
-                        backgroundColor: `color-mix(in srgb, var(${link.tone}) 14%, transparent)`,
-                        boxShadow: `inset 0 0 0 1px color-mix(in srgb, var(${link.tone}) 32%, transparent)`,
-                      }}
-                      className="absolute inset-0 -z-10 rounded-full"
+                      transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }}
+                      className="floating-nav-active"
                     />
                   )}
                   <span className="relative">
@@ -143,21 +128,22 @@ export function Navbar() {
           {/* Divider, then the one utility control: the language switch.
               The talk CTA lived here but was dropped — the Contact section below
               already carries it, so the nav stays purely navigational. */}
-          <li aria-hidden className="mx-0.5 h-6 w-px shrink-0 bg-border/70" />
+          <li aria-hidden className="floating-nav-divider" />
           <li>
             <LanguageToggle />
           </li>
         </ul>
 
         {/* Mobile controls, pushed to the right since the logo is gone */}
-        <div className="ml-auto flex items-center gap-2 md:hidden">
+        <div data-scrolled={scrolled} className="floating-nav ml-auto flex items-center gap-2 p-2 md:hidden">
           <LanguageToggle />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="grid h-10 w-10 place-items-center rounded-full border border-border bg-surface/70 md:hidden"
+            aria-controls="mobile-navigation"
+            className="floating-nav-menu grid h-11 w-11 place-items-center rounded-full"
           >
             <AnimatePresence initial={false} mode="wait">
               <motion.span
@@ -165,7 +151,7 @@ export function Navbar() {
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.18 }}
+                transition={{ duration: reducedMotion ? 0 : 0.18 }}
                 className="grid place-items-center"
               >
                 {open ? <X size={18} /> : <Menu size={18} />}
@@ -181,8 +167,9 @@ export function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.32, ease: EASE }}
-            className="overflow-hidden border-t border-border bg-background/95 backdrop-blur-xl md:hidden"
+            transition={{ duration: reducedMotion ? 0 : 0.32, ease: EASE }}
+            id="mobile-navigation"
+            className="floating-nav-sheet overflow-hidden md:hidden"
           >
             <ul className="container-page flex flex-col py-4">
               {navLinks.map((link, index) => (
@@ -190,14 +177,14 @@ export function Navbar() {
                   key={link.href}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 + index * 0.05, duration: 0.3 }}
+                  transition={{ delay: reducedMotion ? 0 : 0.05 + index * 0.05, duration: reducedMotion ? 0 : 0.3 }}
                 >
                   <Link
                     href={link.href}
                     onClick={() => setOpen(false)}
                     aria-current={active === link.id ? "true" : undefined}
                     style={
-                      active === link.id ? { color: `var(${link.tone})` } : undefined
+                      active === link.id ? { color: `color-mix(in srgb, var(${link.tone}) 65%, var(--navy))` } : undefined
                     }
                     className={cn(
                       "flex items-center justify-between border-b border-border/60 py-3.5 text-base transition-colors",

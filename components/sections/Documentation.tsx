@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { GoldDivider } from "@/components/ui/GoldDivider";
 import { T } from "@/components/ui/T";
 import { DriftWall } from "@/components/ui/DriftWall";
 import { AccordionGallery } from "@/components/ui/AccordionGallery";
@@ -69,9 +70,12 @@ export function Documentation() {
         </div>
       </div>
 
-      <div className="mt-16 md:mt-24">
+      <div className="mt-10 md:mt-14">
+        <Reveal>
+          <GoldDivider />
+        </Reveal>
         <Reveal className="mb-8 md:mb-10">
-          <h3 className="text-balance text-2xl tracking-[-0.028em] md:text-[2rem] md:leading-[1.15]">
+          <h3 className="text-center text-balance text-2xl tracking-[-0.028em] md:text-[2rem] md:leading-[1.15]">
             <T en="Top events" id="Acara unggulan" />
           </h3>
         </Reveal>

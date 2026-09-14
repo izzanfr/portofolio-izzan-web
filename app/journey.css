@@ -36,12 +36,12 @@
   .experience-journey[data-journey-ready] .journey-chapter { grid-area: 1 / 1; border: 0; padding: 0; }
   .experience-journey[data-journey-ready] .journey-visual { display: block; min-width: 0; position: relative; height: 100%; perspective: 1100px; }
   .experience-journey[data-journey-ready] .journey-controls { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 14px; flex-shrink: 0; }
-  .experience-journey[data-journey-ready] .journey-progress { display: block; height: 1px; margin-top: 12px; background: var(--border); }
+  .experience-journey[data-journey-ready] .journey-progress { display: block; margin-top: 12px; flex-shrink: 0; }
 }
 
 .journey-position { font: 11px var(--font-mono); color: var(--muted); white-space: nowrap; }
 .journey-position > span:first-child { color: var(--accent-strong); }
-.journey-scroll-hint { margin-left: 22px; font: 11px var(--font-sans); }
+.journey-scroll-hint { margin-left: 22px; font: 11px/1.5 var(--font-mono-stack), monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--navy-soft); }
 .journey-stops, .journey-actions { display: flex; align-items: center; gap: 8px; }
 .journey-stops button { width: 32px; height: 44px; display: grid; place-items: center; cursor: pointer; }
 .journey-stops button span { width: 24px; height: 2px; background: var(--border); transition: background 200ms, transform 200ms; }
@@ -50,7 +50,6 @@
 .journey-actions button { width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 50%; display: grid; place-items: center; color: var(--foreground); cursor: pointer; background: var(--tint); }
 .journey-actions button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-strong); }
 .journey-actions button:disabled { opacity: .3; cursor: default; }
-.journey-progress-fill { height: 100%; background: var(--accent); transform-origin: left; }
 
 /* The core remains the same object as the journey advances. Orbital planes
    carry real CSS perspective; branches are progressively drawn by GSAP. */

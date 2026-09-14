@@ -632,15 +632,23 @@ function ScrollHint({
     exitBegins > enterEnds ? [enterEnds, exitBegins] : [0, 1],
     [0, 1],
   );
+  const reducedMotion = useReducedMotion();
+  const easedProgress = useSpring(scaleX, { stiffness: 180, damping: 30, mass: 0.2 });
+  const boundedProgress = useTransform(easedProgress, (value) => Math.max(0, Math.min(1, value)));
+  const displayedProgress = reducedMotion ? scaleX : boundedProgress;
+  const headPosition = useTransform(displayedProgress, [0, 1], ["0%", "100%"]);
 
   return (
     <div className="relative z-[1] mt-10 shrink-0 px-6 md:mt-14">
-      <div className="mx-auto flex max-w-xs flex-col items-center gap-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-          <Scramble en="Scroll to explore" id="Gulir untuk menjelajah" />
-        </p>
-        <div className="h-px w-full overflow-hidden bg-navy/10">
-          <motion.div style={{ scaleX }} className="h-full origin-left bg-accent" />
+      <div className="cert-explore">
+        <div className="cert-explore__heading">
+          <p className="cert-explore__label">
+            <T en="Scroll to explore" id="Gulir untuk menjelajah" />
+          </p>
+        </div>
+        <div className="cert-explore__track" aria-hidden="true">
+          <motion.div style={{ scaleX: displayedProgress }} className="cert-explore__fill" />
+          <motion.span style={{ left: headPosition }} className="cert-explore__head" />
         </div>
       </div>
     </div>

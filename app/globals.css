@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./navbar.css";
 @import "./journey.css";
 @import "./documentation.css";
 @import "./interlude.css";
@@ -350,7 +351,7 @@
   }
 
   /* ---------------------------------------------------------------
-     Inside the credentials page, the page scrollbar goes quiet.
+     Inside credentials and the active Experience stage, the scrollbar goes quiet.
 
      That section already draws its own progress — the rail's own bar under
      "Scroll to explore" — and two indicators of the same scroll, moving on
@@ -363,11 +364,13 @@
      viewport by ~10px mid-scroll and shunting the whole page sideways at the
      exact moment this section is asking to be looked at.
   --------------------------------------------------------------- */
-  html.credentials-open {
+  html.credentials-open,
+  html:has(.experience-journey[data-journey-ready][data-journey-visible]) {
     scrollbar-color: transparent transparent;
   }
 
-  html.credentials-open::-webkit-scrollbar-thumb {
+  html.credentials-open::-webkit-scrollbar-thumb,
+  html:has(.experience-journey[data-journey-ready][data-journey-visible])::-webkit-scrollbar-thumb {
     background-color: transparent;
     background-image: none;
   }
@@ -1469,4 +1472,228 @@ html[lang="id"] .lang-menu-item[data-set-locale="id"] {
   .exp-stop ul.grid {
     grid-auto-columns: minmax(0, 3.5rem);
   }
+}
+
+/* Centered figures with small corner accents, keeping the compact footprint. */
+.hero-stat {
+  --stat-tone: var(--accent-strong);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  row-gap: 10px;
+  align-content: center;
+  text-align: center;
+  min-width: 0;
+  padding: 24px 20px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--stat-tone) 13%, var(--surface));
+  border-radius: 24px 24px 24px 10px;
+  background: radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--stat-tone) 9%, transparent), transparent 65%), linear-gradient(145deg, var(--background), var(--surface));
+  box-shadow: inset 0 1px 0 var(--surface-raised), inset 0 -2px 0 color-mix(in srgb, var(--navy) 4%, transparent), 0 4px 8px -5px color-mix(in srgb, var(--navy) 13%, transparent), 0 18px 32px -20px color-mix(in srgb, var(--navy) 22%, transparent);
+  transition: transform 350ms var(--ease-signature), box-shadow 350ms var(--ease-signature), border-color 350ms ease;
+}
+
+.hero-stat:nth-child(even) {
+  --stat-tone: var(--navy-soft);
+  border-radius: 24px 10px 24px 24px;
+}
+
+.hero-stat-label {
+  display: contents;
+}
+
+.hero-stat-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  color: var(--stat-tone);
+  border: 1px solid color-mix(in srgb, var(--stat-tone) 14%, var(--surface));
+  border-radius: 9px;
+  background: linear-gradient(145deg, var(--surface), color-mix(in srgb, var(--stat-tone) 10%, var(--surface-2)));
+  box-shadow: inset 0 1px 0 var(--surface-raised), 0 4px 6px -3px color-mix(in srgb, var(--navy) 24%, transparent);
+  transform: rotate(-6deg);
+  transition: transform 350ms var(--ease-signature);
+}
+
+.hero-stat:nth-child(even) .hero-stat-icon { transform: rotate(6deg); }
+
+.hero-stat-icon svg { width: 14px; height: 14px; }
+
+.hero-stat-value {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  padding-inline: 20px;
+  color: var(--stat-tone);
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 2.6vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.hero-stat-label > span:last-child {
+  position: relative;
+  z-index: 1;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  max-width: 24ch;
+  justify-self: center;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.hero-stat-orbit {
+  position: absolute;
+  z-index: -1;
+  width: 110px;
+  height: 110px;
+  top: -50px;
+  right: -40px;
+  border: 1px solid color-mix(in srgb, var(--stat-tone) 12%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 18px color-mix(in srgb, var(--stat-tone) 3%, transparent), 0 0 0 36px color-mix(in srgb, var(--stat-tone) 2%, transparent);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .hero-stats { padding-bottom: 6px; }
+  .hero-stat:nth-child(even) { translate: 0 6px; }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero-stat:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--stat-tone) 27%, var(--surface));
+    box-shadow: inset 0 1px 0 var(--surface-raised), 0 24px 40px -22px color-mix(in srgb, var(--navy) 32%, transparent);
+  }
+  .hero-stat:hover .hero-stat-icon { transform: rotate(0); }
+}
+
+@media (max-width: 479px) {
+  .hero-stat { padding: 22px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-stat, .hero-stat-icon { transition: none; }
+}
+
+/* Shared gold divider for the hero and documentation content groups. */
+.gold-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  pointer-events: none;
+}
+
+.gold-divider::before {
+  content: "";
+  position: absolute;
+  inset: -16px 15%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%);
+}
+
+.gold-divider__line {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border) 35%, color-mix(in srgb, var(--accent) 65%, var(--border)));
+  box-shadow: 0 1px 0 var(--surface-raised);
+}
+
+.gold-divider__line:last-child { transform: scaleX(-1); }
+
+.gold-divider__seal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--background), var(--surface-2));
+  box-shadow: inset 0 1px 0 var(--surface-raised), 0 3px 6px -3px color-mix(in srgb, var(--navy) 25%, transparent);
+}
+
+.gold-divider__gem {
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--accent-600);
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--accent-400), var(--accent-700));
+  transform: rotate(45deg);
+  box-shadow: 2px 2px 4px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* A compact scroll cue; the gold marker follows the certificate rail. */
+.cert-explore {
+  width: min(100%, 19rem);
+  margin-inline: auto;
+}
+
+.cert-explore__heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cert-explore__label {
+  color: var(--navy-soft);
+  font-family: var(--font-mono-stack), monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cert-explore__track {
+  position: relative;
+  height: 2px;
+  margin: 17px 8px 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--navy) 10%, var(--surface));
+  box-shadow: inset 0 1px 1px color-mix(in srgb, var(--navy) 8%, transparent), 0 1px 0 var(--surface-raised);
+}
+
+.cert-explore__fill {
+  height: 100%;
+  border-radius: inherit;
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--accent-700), var(--accent-400));
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.cert-explore__head {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent-400), var(--accent-600));
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--background) 45%, transparent), 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.cert-explore__head::before {
+  content: "";
+  position: absolute;
+  inset: -7px -12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--accent) 15%, transparent), transparent 70%);
+  pointer-events: none;
 }

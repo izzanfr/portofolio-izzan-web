@@ -52,6 +52,7 @@ export function Experience() {
       const panels = gsap.utils.toArray<HTMLElement>(".journey-chapter", root);
       const system = root.querySelector(".orbit-system");
       const progress = root.querySelector(".journey-progress-fill");
+      const progressHead = root.querySelector(".journey-progress-head");
       const distance = () => frame.clientHeight * SPAN * CHAPTER_DISTANCE;
       root.setAttribute("data-journey-ready", "");
       zone?.setAttribute("data-experience-pinned", "");
@@ -103,6 +104,7 @@ export function Experience() {
         { rotationY: -32, rotationX: 14, rotationZ: -12, scale: 0.76 },
         { rotationY: 22, rotationX: -8, rotationZ: 6, scale: 1, duration: SPAN }, 0);
       if (progress) timeline.fromTo(progress, { scaleX: 0 }, { scaleX: 1, duration: SPAN }, 0);
+      if (progressHead) timeline.fromTo(progressHead, { left: "0%" }, { left: "100%", duration: SPAN }, 0);
       // Branch k belongs to chapter k + 1, which takes over at time k + 1 - LEAD.
       root.querySelectorAll(".orbit-branch").forEach((branch, index) => timeline.fromTo(branch,
         { strokeDashoffset: 1, opacity: 0.15 },
@@ -170,7 +172,10 @@ export function Experience() {
               <button type="button" onClick={() => goTo(Math.min(chapters.length - 1, active + 1))} disabled={active === chapters.length - 1} aria-label="Next chapter / Peran berikutnya"><ArrowRight size={17} /></button>
             </div>
           </footer>
-          <div className="journey-progress" aria-hidden="true"><div className="journey-progress-fill" /></div>
+          <div className="journey-progress cert-explore__track" aria-hidden="true">
+            <div className="journey-progress-fill cert-explore__fill" />
+            <span className="journey-progress-head cert-explore__head" />
+          </div>
         </div>
       </div>
     </section>

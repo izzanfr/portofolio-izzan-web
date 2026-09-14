@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowUpRight, MapPin, BriefcaseBusiness, Users, GraduationCap, Award } from "lucide-react";
 import { RotatingText } from "@/components/ui/RotatingText";
 import { Reveal } from "@/components/ui/Reveal";
 import { HeroPortrait } from "@/components/ui/HeroPortrait";
@@ -9,6 +9,7 @@ import { SectionBackdrop } from "@/components/ui/SectionBackdrop";
 import { StatCard } from "@/components/ui/StatCard";
 import { CountUp } from "@/components/ui/CountUp";
 import { TechMarquee } from "@/components/ui/TechMarquee";
+import { GoldDivider } from "@/components/ui/GoldDivider";
 import { useIntroDone } from "@/components/Preloader";
 import { T } from "@/components/ui/T";
 import { profile, profileId } from "@/lib/content";
@@ -22,6 +23,8 @@ const rise = {
     transition: { duration: 0.7, delay: 0.1 + i * 0.09, ease: EASE },
   }),
 };
+
+const statIcons = [BriefcaseBusiness, Users, GraduationCap, Award];
 
 export function Hero() {
   // Hold the entrance until the intro curtain is rising, so the two read as one
@@ -155,14 +158,15 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Four separate cards rather than one divided box. Grid rows stretch by
-            default, so every card matches the tallest — the short labels don't
-            leave their card floating half-empty. */}
+        {/* A staggered rhythm on desktop, returning to a level grid on mobile. */}
         <Reveal delay={0.1}>
-          <dl className="mt-16 grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 md:mt-20 md:gap-5 lg:grid-cols-4">
-            {profile.stats.map((stat, index) => (
+          <dl className="hero-stats mt-16 grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 md:mt-20 md:gap-5 lg:grid-cols-4">
+            {profile.stats.map((stat, index) => {
+              const Icon = statIcons[index % statIcons.length];
+              return (
               <StatCard
                 key={stat.label}
+                icon={<Icon size={21} strokeWidth={1.6} />}
                 value={
                   <T
                     en={<CountUp value={stat.value} delay={0.15 + index * 0.08} />}
@@ -171,21 +175,18 @@ export function Hero() {
                 }
                 label={<T en={stat.label} id={profileId.stats[index]?.label ?? stat.label} />}
               />
-            ))}
+              );
+            })}
           </dl>
         </Reveal>
 
         {/* Closes off the stats before the marquee starts, so the two blocks
             don't read as one continuous run of chrome. */}
         <Reveal delay={0.1} className="mt-14">
-          <div aria-hidden className="flex items-center gap-4">
-            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-border" />
-            <span className="h-1.5 w-1.5 rotate-45 bg-accent/70" />
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-border" />
-          </div>
+          <GoldDivider />
         </Reveal>
 
-        <Reveal delay={0.1} className="mt-12">
+        <Reveal delay={0.1}>
           <TechMarquee />
         </Reveal>
       </div>

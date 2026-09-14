@@ -13,11 +13,26 @@ export function StatCard({
   value,
   label,
   className,
+  icon,
 }: {
   value: ReactNode;
   label: ReactNode;
   className?: string;
+  icon?: ReactNode;
 }) {
+  if (icon) {
+    return (
+      <div className={cn("hero-stat", className)}>
+        <dt className="hero-stat-label">
+          <span aria-hidden="true" className="hero-stat-icon">{icon}</span>
+          <span>{label}</span>
+        </dt>
+        <dd className="hero-stat-value">{value}</dd>
+        <span aria-hidden="true" className="hero-stat-orbit" />
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
