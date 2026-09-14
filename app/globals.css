@@ -693,45 +693,147 @@ html[data-preload]:not(.intro-done) body {
 }
 
 /* ---------------------------------------------------------------
-   Hero portrait — borderless card with an ambient glow
+   Hero profile card (see <HeroPortrait>)
 
-   No frame on the photo itself; the exclusivity is a soft two-tone
-   halo behind the card (see --portrait-glow). The glow lives on its
-   own static layer rather than on the flipping card, so it stays put
-   while the card turns instead of rotating with it.
+   After React Bits' Profile Card: tilt, a light that follows the
+   pointer, a glow behind, a frosted info bar. The five variables are
+   written by the component's tilt loop on `.pcard-stage`; the values
+   here are the resting card, which is also all a reduced-motion or
+   touch-without-sensor visitor ever sees.
 --------------------------------------------------------------- */
-.portrait-glow-layer {
-  box-shadow: var(--portrait-glow);
-  transition: box-shadow 300ms ease;
+.pcard-stage {
+  --px: 50%;
+  --py: 50%;
+  --rx: 0deg;
+  --ry: 0deg;
+  --active: 0;
+  perspective: 900px;
 }
 
-.portrait-img {
+.pcard {
+  container-type: inline-size;
+  border-radius: var(--radius-card, 1.25rem);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  box-shadow: var(--portrait-glow);
+  transition: box-shadow 300ms ease;
+  will-change: transform;
+}
+
+.pcard-stage:hover .pcard {
+  box-shadow: var(--portrait-glow-hover);
+}
+
+.pcard-img {
   /* A hair over 100% so the image overfills its rounded, 3D-transformed frame.
      Without it a sub-pixel gap at one edge reveals the face's light background
      as a thin white seam — most visible on the mirrored back face's right edge. */
   transform: scale(1.02);
-  transition: transform 300ms ease;
+  /* Dimmed a touch at rest, so the spotlight has somewhere darker to land. */
+  filter: brightness(0.84) contrast(1.05);
 }
 
-.portrait-stage:hover .portrait-glow-layer {
-  box-shadow: var(--portrait-glow-hover);
+/* Outside the spotlight the photo sinks a little further while the pointer
+   is on the card; inside it, nothing — so the lit spot reads by contrast. */
+.pcard-shade {
+  background: radial-gradient(circle at var(--px) var(--py), rgba(10, 26, 47, 0) 16%, rgba(10, 26, 47, calc(var(--active) * 0.38)) 68%);
 }
 
-.portrait-stage:hover .portrait-img {
-  transform: scale(1.05);
+/* Gold light behind the card, drifting toward the pointer. */
+.pcard-behind {
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle at var(--px) var(--py), color-mix(in srgb, var(--accent-400) 70%, transparent), transparent 62%);
+  filter: blur(42px);
+  opacity: calc(0.28 + var(--active) * 0.45);
 }
 
-/* The affordance chip firms up when the photo is hovered, hinting it is live. */
-.portrait-stage:hover .portrait-chip {
-  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+/* The light on the photo: plain white on soft-light, so it brightens the
+   photo where the pointer is without tinting it. The foot darkens slightly
+   so the info bar stays legible over a pale photo. */
+.pcard-glare {
+  background:
+    radial-gradient(circle at var(--px) var(--py), rgba(255, 255, 255, calc(var(--active) * 0.8)), rgba(255, 255, 255, calc(var(--active) * 0.25)) 22%, rgba(255, 255, 255, 0) 44%),
+    linear-gradient(to top, rgba(10, 26, 47, 0.42), rgba(10, 26, 47, 0) 34%);
+  mix-blend-mode: soft-light;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.pcard-info {
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px 10px 12px;
+  border-radius: calc(var(--radius-card, 1.25rem) - 8px);
+  color: #fff;
+  background: color-mix(in srgb, var(--navy) 52%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(16px) saturate(1.2);
+}
+
+.pcard-info-avatar {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.pcard-info-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.pcard-info-text { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.25; }
+.pcard-info-text strong { font-size: 14px; font-weight: 600; }
+.pcard-info-text small { font-size: 11px; color: rgba(255, 255, 255, 0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* A small gold ingot: lit from above (the inset highlight and the lighter top
+   of the gradient), casting a warm shadow, with the arrow nudging out on hover
+   the way the site's other outbound links do. */
+.pcard-info-cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px 0 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--navy);
+  background: linear-gradient(180deg, #ecc995 0%, var(--accent-400) 52%, #cf9a55 100%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 6px 16px -6px rgba(198, 138, 59, 0.75);
+  transition: transform 220ms var(--ease-signature, ease), box-shadow 220ms ease, filter 220ms ease;
+}
+
+.pcard-info-cta svg { transition: transform 220ms var(--ease-signature, ease); }
+
+.pcard-info-cta:hover {
   transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 10px 22px -8px rgba(198, 138, 59, 0.9);
+}
+
+.pcard-info-cta:hover svg { transform: translate(2px, -2px); }
+.pcard-info-cta:active { transform: translateY(0); filter: brightness(0.97); }
+.pcard-info-cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* On the phone-width card there is room for the name and the button only. */
+@container (max-width: 300px) {
+  .pcard-info { gap: 10px; left: 10px; right: 10px; bottom: 10px; }
+  .pcard-info-avatar, .pcard-info-text small { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Hold the overfill so the seam stays covered; just drop the hover zoom. */
-  .portrait-stage:hover .portrait-img {
-    transform: scale(1.02);
-  }
+  .pcard { transform: none; will-change: auto; }
+  .pcard-info-cta:hover { transform: none; }
 }
 
 /* ---------------------------------------------------------------
@@ -1451,7 +1553,7 @@ html[lang="id"] .lang-menu-item[data-set-locale="id"] {
 .contact-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 7vw, 100px); align-items: center; }
 .contact-eyebrow, .contact-small-label { font-family: var(--font-mono-stack), monospace; font-size: 10px; line-height: 1.6; letter-spacing: .13em; text-transform: uppercase; color: var(--accent-strong); }
 .contact-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
-.contact-title { font-size: clamp(3rem, 5.4vw, 5rem); line-height: 1.03; letter-spacing: -.045em; }
+.contact-title { font-size: clamp(2.5rem, 4.3vw, 4.25rem); line-height: 1.05; letter-spacing: -.045em; text-wrap: balance; }
 .contact-title em { color: var(--accent-strong); font-weight: 400; }
 .contact-description { max-width: 56ch; margin-top: 24px; color: var(--muted); font-size: 15px; line-height: 1.8; }
 .contact-location { margin-top: 26px; }
@@ -1487,7 +1589,8 @@ html[lang="id"] .lang-menu-item[data-set-locale="id"] {
 .social-flow-menu { margin-top: 28px; border-top: 1px solid var(--border); }
 .social-flow-row { position: relative; isolation: isolate; display: flex; align-items: center; gap: 15px; min-height: 70px; padding: 10px 12px; border-bottom: 1px solid var(--border); overflow: hidden; }
 .social-flow-logo { position: relative; z-index: 2; display: grid; place-items: center; flex: none; width: 32px; height: 32px; transition: opacity 180ms ease; }
-.social-flow-logo img { width: 30px; height: auto; max-height: 30px; object-fit: contain; }
+/* Both dimensions set: next/image warns when CSS changes only one of them. */
+.social-flow-logo img { width: 30px; height: 30px; object-fit: contain; }
 .social-flow-row[data-active="true"] .social-flow-logo { opacity: 0; }
 .social-flow-copy small { overflow-wrap: anywhere; }
 .social-flow-copy { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px 12px; flex: 1; min-width: 0; transition: opacity 180ms ease; }

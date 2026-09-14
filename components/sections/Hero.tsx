@@ -151,7 +151,7 @@ export function Hero() {
             >
               {/* Capped on mobile so the photo stays a companion to the text
                   rather than filling the first screen on its own. */}
-              <div className="relative mx-auto w-full max-w-[15rem] sm:max-w-[17rem] lg:max-w-none">
+              <div className="relative mx-auto w-full max-w-[15rem] sm:max-w-[17rem] lg:max-w-[27rem]">
                 <HeroPortrait />
               </div>
             </motion.div>

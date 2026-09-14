@@ -36,7 +36,7 @@ export function Contact() {
         <Reveal className="contact-intro">
           <p className="contact-eyebrow"><T en="Contact" id="Kontak" /></p>
           <h2 className="contact-title">
-            <T en={<>Let’s talk<br /><em>data.</em></>} id={<>Mari bicara<br /><em>tentang data.</em></>} />
+            <T en={<>Let’s talk <em>data.</em></>} id={<>Mari bicara <em>tentang data.</em></>} />
           </h2>
           <p className="contact-description">
             <T
