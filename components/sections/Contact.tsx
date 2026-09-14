@@ -1,25 +1,17 @@
-﻿"use client";
+"use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Mail, MapPin, Send } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { SocialFlowMenu } from "@/components/ui/SocialFlowMenu";
+import { ArrowUpRight } from "lucide-react";
+import { type FormEvent } from "react";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
-import { LinkedInIcon } from "@/components/ui/icons";
 import { T } from "@/components/ui/T";
-import { Scramble } from "@/components/ui/Scramble";
 import { useCurrentLocale } from "@/components/providers/LocaleProvider";
 import { profile, profileId } from "@/lib/content";
 import { pick } from "@/lib/i18n";
-import { EASE, REVEAL_DISTANCE, REVEAL_DURATION, VIEWPORT } from "@/lib/motion";
-
-const inputClass =
-  "w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-sm outline-none transition-colors duration-200 placeholder:text-muted/70 focus:border-accent";
 
 export function Contact() {
-  const [sent, setSent] = useState(false);
   const locale = useCurrentLocale();
-  const reduceMotion = useReducedMotion();
 
   // No backend yet — compose a mailto: so the message lands in the visitor's own client
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -36,178 +28,59 @@ export function Contact() {
     const subject = encodeURIComponent(subjectText);
     const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
     window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-    setSent(true);
   }
 
   return (
-    <Section
-      id="contact"
-      title={<T en="Contact" id="Kontak" />}
-      lead={
-        <T
-          en="Got a data challenge worth talking through? Consulting engagements, training programs, or a conversation about switching into data science are all welcome."
-          id="Punya tantangan data yang layak didiskusikan? Penugasan konsultasi, program pelatihan, atau sekadar obrolan tentang alih karier ke data science, semuanya saya sambut."
-        />
-      }
-      tone="base"
-      index={5}
-      // A page of its own, arrived at through the interlude's curtain: at
-      // least a screen tall with its content centred in it, and no wipe or
-      // seam of its own, since the curtain already brought its ground in.
-      transition="none"
-      className="flex min-h-svh flex-col justify-center"
-    >
-      <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-        <Reveal direction="right" className="space-y-4">
-          <a
-            href={`mailto:${profile.email}`}
-            className="group flex items-center gap-4 rounded-card border border-border bg-surface/60 p-5 transition-colors duration-300 hover:border-accent/55"
-          >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy text-white transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-contrast">
-              <Mail size={18} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                <Scramble text="Email" />
-              </span>
-              <span className="block truncate text-sm font-medium">{profile.email}</span>
-            </span>
-            <ArrowUpRight
-              size={16}
-              className="shrink-0 text-muted transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+    <Section id="contact" index={5} transition="none" className="contact-section" contentClassName="contact-content">
+      <div className="contact-layout">
+        <Reveal className="contact-intro">
+          <p className="contact-eyebrow"><T en="Contact" id="Kontak" /></p>
+          <h2 className="contact-title">
+            <T en={<>Let’s talk<br /><em>data.</em></>} id={<>Mari bicara<br /><em>tentang data.</em></>} />
+          </h2>
+          <p className="contact-description">
+            <T
+              en="A project to shape. A team to train. A new direction in data science. Tell me what you have in mind."
+              id="Merancang proyek, melatih tim, atau memulai langkah di data science. Ceritakan apa yang ingin Anda kerjakan."
             />
-          </a>
-
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="group flex items-center gap-4 rounded-card border border-border bg-surface/60 p-5 transition-colors duration-300 hover:border-accent/55"
-          >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy text-white transition-colors duration-300 group-hover:bg-accent group-hover:text-accent-contrast">
-              <LinkedInIcon size={18} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                <Scramble text="LinkedIn" />
-              </span>
-              <span className="block truncate text-sm font-medium">{profile.linkedinLabel}</span>
-            </span>
-            <ArrowUpRight
-              size={16}
-              className="shrink-0 text-muted transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            />
-          </a>
-
-          <div className="flex items-start gap-4 rounded-card border border-border bg-surface/40 p-5">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-surface-2 text-accent-strong">
-              <MapPin size={18} />
-            </span>
-            <span>
-              <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                <Scramble en="Based in" id="Berbasis di" />
-              </span>
-              <span className="block text-sm font-medium">
-                <T en={profile.location} id={profileId.location} />
-              </span>
-              <span className="mt-1 block text-xs leading-relaxed text-muted">
-                <T en={profile.locationNote} id={profileId.locationNote} />
-              </span>
-            </span>
+          </p>
+          <SocialFlowMenu />
+          <div className="contact-location">
+            <p className="contact-small-label"><T en="Based in Indonesia" id="Berbasis di Indonesia" /></p>
+            <p><T en={profile.location} id={profileId.location} /></p>
+            <p className="contact-location-note"><T en={profile.locationNote} id={profileId.locationNote} /></p>
           </div>
         </Reveal>
 
-        <Reveal direction="left" delay={0.1}>
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-card border border-border bg-surface/60 p-6 md:p-8"
-          >
-            <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block">
-                <span className="mb-2 block text-xs font-medium text-muted">
-                  <T en="Name" id="Nama" />
-                </span>
-                <input
-                  required
-                  name="name"
-                  type="text"
-                  placeholder={pick({ en: "Your name", id: "Nama Anda" }, locale)}
-                  className={inputClass}
-                />
+        <Reveal delay={0.1} className="contact-form-wrap">
+          <form onSubmit={handleSubmit} className="contact-form" aria-labelledby="contact-form-title">
+            <div className="contact-form-heading">
+              <h3 id="contact-form-title"><T en="What are you working on?" id="Apa yang ingin Anda kerjakan?" /></h3>
+            </div>
+            <div className="contact-fields">
+              <label>
+                <span><T en="Your name" id="Nama Anda" /></span>
+                <input required name="name" autoComplete="name" maxLength={120} type="text" placeholder={pick({ en: "How should I address you?", id: "Siapa nama Anda?" }, locale)} />
               </label>
-              <label className="block">
-                <span className="mb-2 block text-xs font-medium text-muted">Email</span>
-                <input
-                  required
-                  name="email"
-                  type="email"
-                  placeholder="you@company.com"
-                  className={inputClass}
-                />
+              <label>
+                <span>Email</span>
+                <input required name="email" autoComplete="email" type="email" placeholder="you@company.com" />
+              </label>
+              <label className="contact-message">
+                <span><T en="A little about your plans" id="Ceritakan rencana Anda" /></span>
+                <textarea required name="message" rows={4} maxLength={5000} placeholder={pick({en: "Your project, training needs, or a question you’d like to discuss…", id: "Proyek, kebutuhan pelatihan, atau pertanyaan yang ingin Anda diskusikan…"}, locale)} />
               </label>
             </div>
-            <label className="mt-4 block">
-              <span className="mb-2 block text-xs font-medium text-muted">
-                <T en="Message" id="Pesan" />
-              </span>
-              <textarea
-                required
-                name="message"
-                rows={5}
-                placeholder={pick(
-                  {
-                    en: "Tell me about the project, training need, or question.",
-                    id: "Ceritakan tentang proyek, kebutuhan pelatihan, atau pertanyaan Anda.",
-                  },
-                  locale,
-                )}
-                className={`${inputClass} resize-y`}
-              />
-            </label>
-
-            {/* The button follows the form in rather than arriving with it: the
-                fields are what the visitor reads first, and the call to action
-                landing a beat later is what draws the eye down to it. A quarter
-                second — long enough to register as a sequence, short enough
-                that nobody ready to click is kept waiting. */}
-            <motion.button
-              type="submit"
-              data-reveal
-              initial={reduceMotion ? false : { opacity: 0, y: REVEAL_DISTANCE }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={VIEWPORT}
-              transition={{ duration: REVEAL_DURATION, delay: 0.25, ease: EASE }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-navy-soft"
-            >
-              <Send size={15} />
-              <T en="Send message" id="Kirim pesan" />
-            </motion.button>
-
-            <p className="mt-4 text-center text-xs leading-relaxed text-muted">
-              {sent ? (
-                <T
-                  en="Your email client should have opened with the message ready to send."
-                  id="Aplikasi email Anda semestinya terbuka dengan pesan siap dikirim."
-                />
-              ) : (
-                <T
-                  en="This opens your own email client with the message pre-filled. Nothing is stored here."
-                  id="Ini membuka aplikasi email Anda sendiri dengan pesan yang sudah terisi. Tidak ada data yang disimpan di sini."
-                />
-              )}
-            </p>
+            <button type="submit" className="contact-submit">
+              <T en="Compose email" id="Siapkan email" /><ArrowUpRight size={19} aria-hidden="true" />
+            </button>
           </form>
         </Reveal>
       </div>
-
-      {/* Carried over from the deleted footer: the copyright was the only thing
-          there not already covered by this section. */}
-      <p className="mt-16 border-t border-border pt-6 text-xs text-muted">
-        © {new Date().getFullYear()} {profile.name}.{" "}
-        <T en="All rights reserved." id="Hak cipta dilindungi." />
-      </p>
+      <footer className="contact-footer">
+        <p>© {new Date().getFullYear()} {profile.name}.</p>
+        <a href="#home"><T en="Back to top" id="Kembali ke atas" /><ArrowUpRight size={15} aria-hidden="true" /></a>
+      </footer>
     </Section>
   );
 }

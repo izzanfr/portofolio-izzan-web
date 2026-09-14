@@ -33,8 +33,11 @@ function useOverNavHide(pathname: string) {
         setOver(covering.size > 0);
       },
       // Only the top tenth of the viewport counts: the bar hides once the
-      // stage reaches it, not as soon as the stage peeks up from below.
-      { rootMargin: "0px 0px -90% 0px", threshold: 0 },
+      // stage reaches it, not as soon as the stage peeks up from below. The
+      // 1px off the top ignores a stage that merely touches the top edge —
+      // sitting on Contact leaves its foot at a sub-pixel there, which an
+      // observer counts as intersecting.
+      { rootMargin: "-1px 0px -90% 0px", threshold: 0 },
     );
     targets.forEach((target) => observer.observe(target));
     return () => {

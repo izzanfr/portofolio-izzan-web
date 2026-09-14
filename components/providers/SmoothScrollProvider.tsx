@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cancelFrame, frame, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { LOCALE_EVENT } from "@/components/providers/LocaleProvider";
 import {
   createContext,
   useContext,
@@ -198,6 +199,70 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       lenisRef.current = null;
     };
   }, [prefersReducedMotion]);
+
+  /**
+   * Keeps the visitor's place across a language switch.
+   *
+   * Every <T> re-renders, and Indonesian runs longer than English, so the page
+   * above the visitor grows (about 95px at 1342px wide) while the scroll
+   * position stays put — whatever they were reading slides down. At Contact
+   * that uncovers the foot of the interlude, whose `data-nav-hide` then hid the
+   * navbar. So the section at the top of the screen is held where it was, and
+   * ScrollTrigger is refreshed, since every pin below the change is still
+   * measured against the old heights.
+   *
+   * The listener runs during the event's dispatch, before React commits the
+   * new text, which is what makes the "before" measurement possible at all.
+   */
+  useEffect(() => {
+    let release = () => {};
+
+    const onLocale = () => {
+      release();
+      const anchor = Array.from(document.querySelectorAll<HTMLElement>("section[id]")).find((section) => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= 1 && rect.bottom > 1;
+      });
+      if (!anchor) return;
+      const offset = anchor.getBoundingClientRect().top;
+
+      const restore = () => {
+        const drift = anchor.getBoundingClientRect().top - offset;
+        if (Math.abs(drift) < 1) return;
+        const target = window.scrollY + drift;
+        const lenis = lenisRef.current;
+        if (lenis) {
+          // Its scroll limit is cached, and the page just got taller.
+          lenis.resize();
+          lenis.scrollTo(target, { immediate: true, force: true });
+        } else {
+          window.scrollTo(0, target);
+        }
+      };
+
+      // After React has committed the new language. Pins refresh on their own
+      // schedule too (Experience debounces one off a ResizeObserver), so each
+      // refresh in the next moment re-anchors as well.
+      const settle = window.setTimeout(() => {
+        ScrollTrigger.refresh();
+        restore();
+      }, 60);
+      ScrollTrigger.addEventListener("refresh", restore);
+      const stop = window.setTimeout(() => release(), 1500);
+      release = () => {
+        window.clearTimeout(settle);
+        window.clearTimeout(stop);
+        ScrollTrigger.removeEventListener("refresh", restore);
+        release = () => {};
+      };
+    };
+
+    window.addEventListener(LOCALE_EVENT, onLocale);
+    return () => {
+      window.removeEventListener(LOCALE_EVENT, onLocale);
+      release();
+    };
+  }, []);
 
   // On a route change the router jumps to the top; tell Lenis so it agrees with
   // the new position instead of easing back from the old one. Skipped when the
